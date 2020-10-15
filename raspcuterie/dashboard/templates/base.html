@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Raspcuterie</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<section class="section">
+    <div class="container">
+        <h1 class="title">
+            Hello World
+        </h1>
+        <p class="subtitle">
+            My first website with <strong>Bulma</strong>!
+        </p>
+    </div>
+</section>
+<div class="columns">
+    <div class="column">
+        <div id="app">
+            <div>
+                <apexchart type="radialBar" ref="humidity" height="350" :options="chartOptions"
+                           :series="series"></apexchart>
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <div id="app2">
+            <div>
+                <apexchart type="radialBar" ref="weight" height="350" :options="chartOptions"
+                           :series="series"></apexchart>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="appl">
+    <div id="chart">
+        <apexchart type="line" height="350" ref="am2302" :options="chartOptions" :series="series"></apexchart>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"
+        integrity="sha256-FZ8KwMj1F6qnNgA7bhPryVm19xKduH5OVr8u7I1tAtc=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.22.0/dist/apexcharts.js"
+        integrity="sha256-4Lasz800h6YPi4MMNryQ1EUqRsW+PBE8g2pus4sK5Nw=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-apexcharts@1.6.0/dist/vue-apexcharts.js"
+        integrity="sha256-uFIs+Z5USR6iT5utTt+Hx6Du05iEURM/uwwfVsUUvxc=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@0.20.0/dist/axios.js"
+        integrity="sha256-n7FNwoYsyZMMiu5/NHArDRUq4JFdaZNPz8mE+OMC5VM=" crossorigin="anonymous"></script>
+<script>
+
+
+    Vue.component('apexchart', VueApexCharts)
+
+    var y = new Vue({
+        el: '#app',
+        components: {
+            apexchart: VueApexCharts,
+        },
+        data: {
+
+            series: [67],
+            chartOptions: {
+                chart: {
+                    height: 350,
+                    type: 'radialBar',
+                    offsetY: -10
+                },
+                plotOptions: {
+                    radialBar: {
+                        startAngle: -135,
+                        endAngle: 135,
+                        dataLabels: {
+                            name: {
+                                fontSize: '16px',
+                                color: undefined,
+                                offsetY: 120
+                            },
+                            value: {
+                                offsetY: 76,
+                                fontSize: '22px',
+                                color: undefined,
+                                formatter: function (val) {
+                                    return val + "%";
+                                }
+                            }
+                        }
+                    }
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shade: 'dark',
+                        shadeIntensity: 0.15,
+                        inverseColors: false,
+                        opacityFrom: 1,
+                        opacityTo: 1,
+                        stops: [0, 50, 65, 91]
+                    },
+                },
+                stroke: {
+                    dashArray: 4
+                },
+                labels: ['Humidity', 'Temperature'],
+            },
+
+
+        },
+        mounted: function () {
+            var me = this
+            window.setInterval(function () {
+
+                axios({
+                    method: 'GET',
+                    url: "/api/am2302/current.json",
+                }).then(function (response) {
+                    console.log(response)
+                    me.$refs.humidity.updateSeries([response.data["humidity"], response.data["temperature"]])
+                })
+            }, 60000)
+        },
+
+    });
+
+    var z = new Vue({
+        el: '#app2',
+        components: {
+            apexchart: VueApexCharts,
+        },
+        data: {
+
+            series: [67],
+            chartOptions: {
+                chart: {
+                    height: 350,
+                    type: 'radialBar',
+                    offsetY: -10
+                },
+                plotOptions: {
+                    radialBar: {
+                        startAngle: -135,
+                        endAngle: 135,
+                        dataLabels: {
+                            name: {
+                                fontSize: '16px',
+                                color: undefined,
+                                offsetY: 120
+                            },
+                            value: {
+                                offsetY: 76,
+                                fontSize: '22px',
+                                color: undefined,
+                                formatter: function (val) {
+                                    return val + "%";
+                                }
+                            }
+                        }
+                    }
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shade: 'dark',
+                        shadeIntensity: 0.15,
+                        inverseColors: false,
+                        opacityFrom: 1,
+                        opacityTo: 1,
+                        stops: [0, 50, 65, 91]
+                    },
+                },
+                stroke: {
+                    dashArray: 4
+                },
+                labels: ['Weight'],
+            },
+
+
+        },
+        mounted: function () {
+            var me = this
+            window.setInterval(function () {
+
+                axios({
+                    method: 'GET',
+                    url: "/api/am2302/current.json",
+                }).then(function (response) {
+                    console.log(response)
+                    me.$refs.humidity.updateSeries([response.data["humidity"], response.data["temperature"]])
+                })
+            }, 60000)
+        },
+
+    });
+
+    axios({
+        method: 'GET',
+        url: "/api/am2302/chart.json",
+    }).then(function (response) {
+        x.$refs.am2302.updateSeries(response.data)
+    });
+
+    axios({
+        method: 'GET',
+        url: "/api/am2302/current.json",
+    }).then(function (response) {
+        console.log(response)
+        y.$refs.humidity.updateSeries([response.data["humidity"], response.data["temperature"]])
+    })
+
+    var x = new Vue({
+        el: '#appl',
+        components: {
+            apexchart: VueApexCharts,
+        },
+        data: {
+            series: [],
+            noData: {
+                text: 'Loading...'
+            },
+            chartOptions: {
+                chart: {
+                    height: 350,
+                    type: 'line',
+                },
+                stroke: {
+                    curve: 'smooth'
+                },
+                fill: {
+                    type: 'solid',
+                    opacity: [0.35, 1],
+                },
+                markers: {
+                    size: 0
+                },
+                yaxis: [
+                    {
+                        title: {
+                            text: 'Temperature',
+                        },
+                        min: 5,
+                        max: 25,
+                    },
+                    {
+                        opposite: true,
+                        title: {
+                            text: 'Humidity',
+                        },
+                        min: 0,
+                        max: 100,
+                    },
+                ],
+                xaxis: {
+                    type: 'datetime'
+                },
+                tooltip: {
+                    shared: true,
+                    intersect: false,
+                    y: {
+                        formatter: function (y) {
+                            if (typeof y !== "undefined") {
+                                return y.toFixed(0) + " points";
+                            }
+                            return y;
+                        }
+                    }
+                }
+            },
+        },
+        mounted: function () {
+            var me = this
+            window.setInterval(function () {
+
+                axios({
+                    method: 'GET',
+                    url: "/api/am2302/chart.json",
+                }).then(function (response) {
+                    me.$refs.am2302.updateSeries(response.data)
+                })
+            }, 10 * 1000)
+        },
+    });
+
+</script>
+<script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>
+</body>
+</html>
