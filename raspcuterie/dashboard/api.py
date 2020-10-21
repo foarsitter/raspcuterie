@@ -1,7 +1,8 @@
 from flask import Blueprint, send_file, jsonify
 
-from raspcuterie import base_path
+from raspcuterie import base_path, FAKE_VALUES
 from raspcuterie.db import connection
+from raspcuterie.devices.relay import OutputDevice
 
 bp = Blueprint("api", __name__, url_prefix="/api")
 
@@ -12,10 +13,9 @@ def am2303_current():
     Returns the current values for the humidity and temperature
     :return:
     """
-    from raspcuterie.devices import AM2302
-    import Adafruit_DHT
+    from raspcuterie.devices.am2302 import AM2302
 
-    humidity, temperature = Adafruit_DHT.read_retry(AM2302.sensor, AM2302.pin)
+    humidity, temperature = AM2302.read()
 
     return jsonify(dict(temperature=temperature, humidity=humidity))
 
@@ -29,6 +29,23 @@ def hx711_current():
     from raspcuterie.devices.hx711.calibration import hx
 
     return jsonify(dict(weight=hx.get_grams()))
+
+
+@bp.route("/hx711/24.json")
+def hx711_last_24_hours():
+    with connection:
+        cursor = connection.execute(
+            """SELECT time, value
+FROM weight
+WHERE time >= date('now', '-24 hours')
+ORDER BY time DESC;"""
+        )
+
+        data = cursor.fetchall()
+
+        cursor.close()
+
+    return jsonify(data)
 
 
 @bp.route("/am2302/temperature.json")
@@ -45,7 +62,12 @@ def am2303_temperature():
 @bp.route("/am2302/humidity.json")
 def am2303_humidity():
     with connection:
-        cursor = connection.execute("SELECT time,value FROM humidity")
+        cursor = connection.execute(
+            """SELECT time, value
+FROM humidity
+WHERE time >= date('now', '-24 hours')
+ORDER BY time DESC;"""
+        )
 
         data = cursor.fetchall()
 
@@ -57,19 +79,36 @@ def am2303_humidity():
 @bp.route("/am2302/chart.json")
 def am2303_chart():
     with connection:
-        cursor = connection.execute("SELECT time,value FROM temperature WHERE value is not null")
+        cursor = connection.execute(
+            """SELECT time, value
+FROM temperature
+WHERE value is not null
+  and time >= date('now', '-24 hours')
+ORDER BY time DESC;"""
+        )
 
         temperature = cursor.fetchall()
         cursor.close()
 
     with connection:
-        cursor = connection.execute("SELECT time,value FROM humidity WHERE value is not null")
+        cursor = connection.execute(
+            """SELECT time, value
+FROM humidity
+WHERE value is not null
+  and time >= date('now', '-24 hours')
+ORDER BY time DESC;"""
+        )
 
         humidity = cursor.fetchall()
 
         cursor.close()
 
-    return jsonify([dict(data=temperature, name="Temperature"), dict(name="Humidity", data=humidity)])
+    return jsonify(
+        [
+            dict(data=temperature, name="Temperature"),
+            dict(name="Humidity", data=humidity),
+        ]
+    )
 
 
 @bp.route("/relay/current.json")
@@ -86,7 +125,32 @@ def relay_current():
     )
 
 
-@bp.route("/data/<string:path>.json")
-def json_data(path: str):
-    path = base_path / f"{path}.json"
-    return send_file(path)
+@bp.route("/relay/chart.json")
+def relay_chart():
+    with connection:
+        cursor = connection.execute(
+            """SELECT time, value_1, value_2, value_3, value_4
+FROM relay
+WHERE time >= date('now', '-24 hours')
+ORDER BY time DESC;"""
+        )
+
+        temperature = cursor.fetchall()
+        cursor.close()
+
+    return jsonify(
+        temperature
+    )
+
+
+@bp.route("/relay/<name>/toggle")
+def relay_toggle(name):
+
+    device = OutputDevice._registry[name]
+
+    if device.value == 0:
+        device.on()
+    else:
+        device.off()
+
+    return jsonify(device.value)

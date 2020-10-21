@@ -31,9 +31,10 @@ class HX711:
         :param pd_sck: Power Down and Serial Clock Input pin
         :param gain: set gain 128, 64, 32
         """
+
         self.GAIN = 0
-        self.offset = 8436807.40
-        self.scale = (8284629.00 - self.offset) / 362
+        self.offset = 8447362.25
+        self.scale = 419.79834254143645
 
         # Setup the gpio pin numbering system
         GPIO.setmode(GPIO.BCM)
@@ -51,6 +52,12 @@ class HX711:
         # Power up the chip
         self.power_up()
         self.set_gain(gain)
+
+    def set_offset(self, value):
+        self.offset = value
+
+    def set_scale(self, value):
+        self.scale = value
 
     def set_gain(self, gain=128):
 

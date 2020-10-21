@@ -17,31 +17,43 @@
         </p>
     </div>
 </section>
-<div class="columns">
-    <div class="column">
-        <div id="app">
-            <div>
-                <apexchart type="radialBar" ref="humidity" height="350" :options="chartOptions"
-                           :series="series"></apexchart>
-            </div>
+{#<div class="columns">#}
+{#    <div class="column">#}
+{#        <div id="app">#}
+{#            <div>#}
+{#                <apexchart type="radialBar" ref="humidity" height="350" :options="chartOptions"#}
+{#                           :series="series"></apexchart>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#    <div class="column">#}
+{#        <div id="app2">#}
+{#            <div>#}
+{#                <apexchart type="radialBar" ref="weight" height="350" :options="chartOptions"#}
+{#                           :series="series"></apexchart>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}
+{##}
+{#<div id="appl">#}
+{#    <div id="chart">#}
+{#        <apexchart type="line" height="350" ref="am2302" :options="chartOptions" :series="series"></apexchart>#}
+{#    </div>#}
+{#</div>#}
+
+<div id="appu">
+    <div id="wrapper">
+        <div id="chart-line2">
+            <apexchart type="line" height="230" ref="humidity" :options="humidityChartOptions" :series="humiditySeries"></apexchart>
+            <apexchart type="line" height="230" ref="temperature" :options="temperatureChartOptions" :series="temperatureSeries"></apexchart>
+        </div>
+        <div id="chart-line">
+            <apexchart type="area" height="130" ref="xyz2" :options="chartOptionsLine" :series="seriesLine"></apexchart>
         </div>
     </div>
-    <div class="column">
-        <div id="app2">
-            <div>
-                <apexchart type="radialBar" ref="weight" height="350" :options="chartOptions"
-                           :series="series"></apexchart>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div id="appl">
-    <div id="chart">
-        <apexchart type="line" height="350" ref="am2302" :options="chartOptions" :series="series"></apexchart>
-    </div>
 </div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"
         integrity="sha256-FZ8KwMj1F6qnNgA7bhPryVm19xKduH5OVr8u7I1tAtc=" crossorigin="anonymous"></script>
@@ -55,234 +67,339 @@
 
 
     Vue.component('apexchart', VueApexCharts)
+    {#
+        var y = new Vue({
+            el: '#app',
+            components: {
+                apexchart: VueApexCharts,
+            },
+            data: {
 
-    var y = new Vue({
-        el: '#app',
-        components: {
-            apexchart: VueApexCharts,
-        },
-        data: {
-
-            series: [67],
-            chartOptions: {
-                chart: {
-                    height: 350,
-                    type: 'radialBar',
-                    offsetY: -10
-                },
-                plotOptions: {
-                    radialBar: {
-                        startAngle: -135,
-                        endAngle: 135,
-                        dataLabels: {
-                            name: {
-                                fontSize: '16px',
-                                color: undefined,
-                                offsetY: 120
-                            },
-                            value: {
-                                offsetY: 76,
-                                fontSize: '22px',
-                                color: undefined,
-                                formatter: function (val) {
-                                    return val + "%";
+                series: [67],
+                chartOptions: {
+                    chart: {
+                        height: 350,
+                        type: 'radialBar',
+                        offsetY: -10
+                    },
+                    plotOptions: {
+                        radialBar: {
+                            startAngle: -135,
+                            endAngle: 135,
+                            dataLabels: {
+                                name: {
+                                    fontSize: '16px',
+                                    color: undefined,
+                                    offsetY: 120
+                                },
+                                value: {
+                                    offsetY: 76,
+                                    fontSize: '22px',
+                                    color: undefined,
+                                    formatter: function (val) {
+                                        return val + "%";
+                                    }
                                 }
+                            }
+                        }
+                    },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shade: 'dark',
+                            shadeIntensity: 0.15,
+                            inverseColors: false,
+                            opacityFrom: 1,
+                            opacityTo: 1,
+                            stops: [0, 50, 65, 91]
+                        },
+                    },
+                    stroke: {
+                        dashArray: 4
+                    },
+                    labels: ['Humidity', 'Temperature'],
+                },
+
+
+            },
+            mounted: function () {
+                var me = this
+                window.setInterval(function () {
+
+                    axios({
+                        method: 'GET',
+                        url: "/api/am2302/current.json",
+                    }).then(function (response) {
+                        console.log(response)
+                        me.$refs.humidity.updateSeries([response.data["humidity"], response.data["temperature"]])
+                    })
+                }, 60000)
+            },
+
+        });
+
+        var z = new Vue({
+            el: '#app2',
+            components: {
+                apexchart: VueApexCharts,
+            },
+            data: {
+
+                series: [67],
+                chartOptions: {
+                    chart: {
+                        height: 350,
+                        type: 'radialBar',
+                        offsetY: -10
+                    },
+                    plotOptions: {
+                        radialBar: {
+                            startAngle: -135,
+                            endAngle: 135,
+                            dataLabels: {
+                                name: {
+                                    fontSize: '16px',
+                                    color: undefined,
+                                    offsetY: 120
+                                },
+                                value: {
+                                    offsetY: 76,
+                                    fontSize: '22px',
+                                    color: undefined,
+                                    formatter: function (val) {
+                                        return val + "%";
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shade: 'dark',
+                            shadeIntensity: 0.15,
+                            inverseColors: false,
+                            opacityFrom: 1,
+                            opacityTo: 1,
+                            stops: [0, 50, 65, 91]
+                        },
+                    },
+                    stroke: {
+                        dashArray: 4
+                    },
+                    labels: ['Weight'],
+                },
+
+
+            },
+            mounted: function () {
+                var me = this
+                window.setInterval(function () {
+
+                    axios({
+                        method: 'GET',
+                        url: "/api/am2302/current.json",
+                    }).then(function (response) {
+                        console.log(response)
+                        me.$refs.humidity.updateSeries([response.data["humidity"], response.data["temperature"]])
+                    })
+                }, 60000)
+            },
+
+        });
+
+        axios({
+            method: 'GET',
+            url: "/api/am2302/chart.json",
+        }).then(function (response) {
+            x.$refs.am2302.updateSeries(response.data)
+        });
+
+        axios({
+            method: 'GET',
+            url: "/api/am2302/current.json",
+        }).then(function (response) {
+
+            y.$refs.humidity.updateSeries([response.data["humidity"], response.data["temperature"]])
+        })
+
+        var x = new Vue({
+            el: '#appl',
+            components: {
+                apexchart: VueApexCharts,
+            },
+            data: {
+                series: [],
+                noData: {
+                    text: 'Loading...'
+                },
+                chartOptions: {
+                    chart: {
+                        height: 350,
+                        type: 'line',
+                    },
+                    stroke: {
+                        curve: 'smooth'
+                    },
+                    fill: {
+                        type: 'solid',
+                        opacity: [0.35, 1],
+                    },
+                    markers: {
+                        size: 0
+                    },
+                    yaxis: [
+                        {
+                            title: {
+                                text: 'Temperature',
+                            },
+                            min: 5,
+                            max: 25,
+                        },
+                        {
+                            opposite: true,
+                            title: {
+                                text: 'Humidity',
+                            },
+                            min: 0,
+                            max: 100,
+                        },
+                    ],
+                    xaxis: {
+                        type: 'datetime'
+                    },
+                    tooltip: {
+                        shared: true,
+                        intersect: false,
+                        y: {
+                            formatter: function (y) {
+                                if (typeof y !== "undefined") {
+                                    return y.toFixed(0) + " points";
+                                }
+                                return y;
                             }
                         }
                     }
                 },
-                fill: {
-                    type: 'gradient',
-                    gradient: {
-                        shade: 'dark',
-                        shadeIntensity: 0.15,
-                        inverseColors: false,
-                        opacityFrom: 1,
-                        opacityTo: 1,
-                        stops: [0, 50, 65, 91]
-                    },
-                },
-                stroke: {
-                    dashArray: 4
-                },
-                labels: ['Humidity', 'Temperature'],
             },
+            mounted: function () {
+                var me = this
+                window.setInterval(function () {
 
-
-        },
-        mounted: function () {
-            var me = this
-            window.setInterval(function () {
-
-                axios({
-                    method: 'GET',
-                    url: "/api/am2302/current.json",
-                }).then(function (response) {
-                    console.log(response)
-                    me.$refs.humidity.updateSeries([response.data["humidity"], response.data["temperature"]])
-                })
-            }, 60000)
-        },
-
-    });
-
-    var z = new Vue({
-        el: '#app2',
+                    axios({
+                        method: 'GET',
+                        url: "/api/am2302/chart.json",
+                    }).then(function (response) {
+                        me.$refs.am2302.updateSeries(response.data)
+                    })
+                }, 10 * 1000)
+            },
+        });
+     #}
+    var u = new Vue({
+        el: '#appu',
         components: {
             apexchart: VueApexCharts,
         },
         data: {
 
-            series: [67],
-            chartOptions: {
+            humiditySeries: [],
+            temperatureSeries: [],
+            seriesLine: [],
+
+            humidityChartOptions: {
                 chart: {
-                    height: 350,
-                    type: 'radialBar',
-                    offsetY: -10
-                },
-                plotOptions: {
-                    radialBar: {
-                        startAngle: -135,
-                        endAngle: 135,
-                        dataLabels: {
-                            name: {
-                                fontSize: '16px',
-                                color: undefined,
-                                offsetY: 120
-                            },
-                            value: {
-                                offsetY: 76,
-                                fontSize: '22px',
-                                color: undefined,
-                                formatter: function (val) {
-                                    return val + "%";
-                                }
-                            }
-                        }
-                    }
-                },
-                fill: {
-                    type: 'gradient',
-                    gradient: {
-                        shade: 'dark',
-                        shadeIntensity: 0.15,
-                        inverseColors: false,
-                        opacityFrom: 1,
-                        opacityTo: 1,
-                        stops: [0, 50, 65, 91]
-                    },
-                },
-                stroke: {
-                    dashArray: 4
-                },
-                labels: ['Weight'],
-            },
-
-
-        },
-        mounted: function () {
-            var me = this
-            window.setInterval(function () {
-
-                axios({
-                    method: 'GET',
-                    url: "/api/am2302/current.json",
-                }).then(function (response) {
-                    console.log(response)
-                    me.$refs.humidity.updateSeries([response.data["humidity"], response.data["temperature"]])
-                })
-            }, 60000)
-        },
-
-    });
-
-    axios({
-        method: 'GET',
-        url: "/api/am2302/chart.json",
-    }).then(function (response) {
-        x.$refs.am2302.updateSeries(response.data)
-    });
-
-    axios({
-        method: 'GET',
-        url: "/api/am2302/current.json",
-    }).then(function (response) {
-        console.log(response)
-        y.$refs.humidity.updateSeries([response.data["humidity"], response.data["temperature"]])
-    })
-
-    var x = new Vue({
-        el: '#appl',
-        components: {
-            apexchart: VueApexCharts,
-        },
-        data: {
-            series: [],
-            noData: {
-                text: 'Loading...'
-            },
-            chartOptions: {
-                chart: {
-                    height: 350,
+                    id: 'chart2',
                     type: 'line',
+                    group: 'social',
+                    height: 230,
+                    toolbar: {
+                        autoSelected: 'pan',
+                        show: false
+                    }
                 },
-                stroke: {
-                    curve: 'smooth'
-                },
-                fill: {
-                    type: 'solid',
-                    opacity: [0.35, 1],
-                },
-                markers: {
-                    size: 0
-                },
-                yaxis: [
-                    {
-                        title: {
-                            text: 'Temperature',
-                        },
-                        min: 5,
-                        max: 25,
-                    },
-                    {
-                        opposite: true,
-                        title: {
-                            text: 'Humidity',
-                        },
-                        min: 0,
-                        max: 100,
-                    },
-                ],
                 xaxis: {
                     type: 'datetime'
                 },
-                tooltip: {
-                    shared: true,
-                    intersect: false,
-                    y: {
-                        formatter: function (y) {
-                            if (typeof y !== "undefined") {
-                                return y.toFixed(0) + " points";
-                            }
-                            return y;
-                        }
+                yaxis: {
+                    tickAmount: 2,
+                    labels: {
+                        minWidth: 0
                     }
                 }
             },
+            temperatureChartOptions: {
+                chart: {
+                    id: 'chart3',
+                    type: 'line',
+                    group: 'social',
+                    height: 230,
+                    toolbar: {
+                        autoSelected: 'pan',
+                        show: false
+                    }
+                },
+                xaxis: {
+                    type: 'datetime'
+                },
+                yaxis: {
+                    tickAmount: 2,
+                    labels: {
+                        minWidth: 0
+                    }
+                }
+            },
+
+            chartOptionsLine: {
+                chart: {
+                    id: 'chart1',
+                    height: 130,
+                    type: 'area',
+                    brush: {
+                        target: 'chart2',
+                        enabled: true
+                    },
+                    selection: {
+                        enabled: true,
+                    },
+                },
+                colors: ['#008FFB'],
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        opacityFrom: 0.91,
+                        opacityTo: 0.1,
+                    }
+                },
+                xaxis: {
+                    type: 'datetime',
+                    tooltip: {
+                        enabled: false
+                    }
+                },
+                yaxis: {
+                    tickAmount: 2,
+                    labels: {
+                        minWidth: 0
+                    }
+                }
+            },
+
+
         },
         mounted: function () {
-            var me = this
-            window.setInterval(function () {
-
-                axios({
-                    method: 'GET',
-                    url: "/api/am2302/chart.json",
-                }).then(function (response) {
-                    me.$refs.am2302.updateSeries(response.data)
-                })
-            }, 10 * 1000)
+            axios({
+                method: 'GET',
+                url: "/api/am2302/chart.json",
+            }).then(function (response) {
+                u.$refs.xyz2.updateSeries([{data: response.data[1]["data"]}])
+                u.$refs.humidity.updateSeries([{data: response.data[1]["data"]}])
+                u.$refs.temperature.updateSeries([{data: response.data[0]["data"]}])
+            })
         },
-    });
+
+    })
+
 
 </script>
 <script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>
