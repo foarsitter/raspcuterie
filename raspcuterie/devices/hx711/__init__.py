@@ -20,7 +20,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 """
 
 
-import RPi.GPIO as GPIO
+from raspcuterie.gpio import GPIO
 
 
 class HX711:
@@ -154,3 +154,6 @@ class HX711:
         Power the chip up
         """
         GPIO.output(self.PD_SCK, False)
+
+
+hx = HX711(23, 24, gain=128)

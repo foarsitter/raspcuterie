@@ -36,10 +36,10 @@ of the offset and scale values!
 import sys
 
 sys.path.extend(["/home/pi/raspcuterie-pi", "/home/pi/raspcuterie-pi"])
-import RPi.GPIO as GPIO
+from raspcuterie.gpio import GPIO
 import time
 import sys
-from raspcuterie.devices.hx711 import HX711
+from raspcuterie.devices.hx711 import hx
 
 # Force Python 3 ########################################################### 362
 
@@ -50,7 +50,7 @@ if sys.version_info[0] != 3:
 
 # Make sure you correct these to the correct pins for DOUT and SCK.
 # gain is set to 128 as default, change as needed.
-hx = HX711(23, 24, gain=128)
+
 
 
 def cleanAndExit():

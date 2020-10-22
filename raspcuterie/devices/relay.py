@@ -1,9 +1,8 @@
-from typing import List, Dict
+from typing import Dict
 
-import RPi.GPIO as GPIO
+from raspcuterie.gpio import GPIO
+
 from raspcuterie import FAKE_VALUES
-
-GPIO.setmode(GPIO.BCM)
 
 
 class OutputDevice:
