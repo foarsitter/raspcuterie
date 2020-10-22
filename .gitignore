@@ -1,2 +1,4 @@
 *.pyc
 .idea
+venv
+raspcuterie.db
