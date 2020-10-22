@@ -6,4 +6,4 @@ def cli():
     pass
 
 
-from raspcuterie.scripts import cron  # noqa
+from raspcuterie.scripts import cron, fake  # noqa

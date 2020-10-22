@@ -17,17 +17,25 @@ def init_db():
     print("Database Initialized")
 
 
-def insert_temperature(value: float):
+def insert_temperature(value: float, time_value=None):
+
+    if time_value is None:
+        time_value = datetime.now()
+
     with connection:
         connection.execute(
-            "INSERT INTO temperature(time,value) VALUES (?,?)", (datetime.now(), value)
+            "INSERT INTO temperature(time,value) VALUES (?,?)", (time_value, value)
         )
 
 
-def insert_humidity(value: float):
+def insert_humidity(value: float, time_value=None):
+
+    if time_value is None:
+        time_value = datetime.now()
+
     with connection:
         connection.execute(
-            "INSERT INTO humidity(time,value) VALUES (?,?)", (datetime.now(), value)
+            "INSERT INTO humidity(time,value) VALUES (?,?)", (time_value, value)
         )
 
 
@@ -39,8 +47,12 @@ def insert_relay(value_1, value_2, value_3, value_4):
         )
 
 
-def insert_weight(value: float):
+def insert_weight(value: float, time_value=None):
+
+    if time_value is None:
+        time_value = datetime.now()
+
     with connection:
         connection.execute(
-            "INSERT INTO weight(time,value) VALUES (?,?)", (datetime.now(), value)
+            "INSERT INTO weight(time,value) VALUES (?,?)", (time_value, value)
         )

@@ -37,7 +37,7 @@ def hx711_last_24_hours():
         cursor = connection.execute(
             """SELECT time, value
 FROM weight
-WHERE time >= date('now', '-24 hours')
+WHERE time >= date('now', '-3 hours')
 ORDER BY time DESC;"""
         )
 
@@ -51,7 +51,11 @@ ORDER BY time DESC;"""
 @bp.route("/am2302/temperature.json")
 def am2303_temperature():
     with connection:
-        cursor = connection.execute("SELECT time,value FROM temperature")
+        cursor = connection.execute(
+            """SELECT time, value
+FROM temperature
+WHERE time >= date('now', '-3 hours')
+ORDER BY time DESC;""")
 
         data = cursor.fetchall()
         cursor.close()
@@ -65,7 +69,7 @@ def am2303_humidity():
         cursor = connection.execute(
             """SELECT time, value
 FROM humidity
-WHERE time >= date('now', '-24 hours')
+WHERE time >= date('now', '-3 hours')
 ORDER BY time DESC;"""
         )
 
@@ -83,7 +87,7 @@ def am2303_chart():
             """SELECT time, value
 FROM temperature
 WHERE value is not null
-  and time >= date('now', '-24 hours')
+  and time >= datetime('now', '-3 hours')
 ORDER BY time DESC;"""
         )
 
@@ -95,7 +99,7 @@ ORDER BY time DESC;"""
             """SELECT time, value
 FROM humidity
 WHERE value is not null
-  and time >= date('now', '-24 hours')
+  and time >= datetime('now', '-3 hours')
 ORDER BY time DESC;"""
         )
 
@@ -131,7 +135,7 @@ def relay_chart():
         cursor = connection.execute(
             """SELECT time, value_1, value_2, value_3, value_4
 FROM relay
-WHERE time >= date('now', '-24 hours')
+WHERE time >= date('now', '-3 hours')
 ORDER BY time DESC;"""
         )
 
@@ -145,7 +149,6 @@ ORDER BY time DESC;"""
 
 @bp.route("/relay/<name>/toggle")
 def relay_toggle(name):
-
     device = OutputDevice._registry[name]
 
     if device.value == 0:
