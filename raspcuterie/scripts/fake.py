@@ -1,9 +1,10 @@
-import click
-
-from raspcuterie.cli import cli
 import datetime
+
+import click
 import random
+
 from raspcuterie import db
+from raspcuterie.cli import cli
 
 
 def date_generator(start, stop, **interval):
@@ -32,13 +33,11 @@ def weight():
     insert_single_value_data(db.insert_weight)
 
 
-
-
-def insert_single_value_data(callable):
+def insert_single_value_data(db_function):
     today = datetime.datetime.now()
     yesterday = today - datetime.timedelta(hours=24)
     x = list(date_generator(yesterday, today, minutes=1))
 
     with click.progressbar(x) as bar:
         for date in bar:
-            callable(random.randint(5, 25), date)
+            db_function(random.randint(5, 25), date)

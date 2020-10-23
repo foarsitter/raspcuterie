@@ -1,2 +1,2 @@
-cp raspcuterie.service /etc/systemd/system
-systemctl daemon-reload
+sudo cp raspcuterie.service /etc/systemd/system
+sudo systemctl daemon-reload

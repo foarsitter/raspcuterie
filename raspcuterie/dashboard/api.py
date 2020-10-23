@@ -84,10 +84,12 @@ ORDER BY time DESC;"""
 def am2303_chart():
     with connection:
         cursor = connection.execute(
-            """SELECT time, value
-FROM temperature
-WHERE value is not null
-  and time >= datetime('now', '-3 hours')
+            """SELECT datetime(strftime('%s', t.time) - (strftime('%s', t.time) % (5 * 60)), 'unixepoch') time,
+       round(avg(value), 2)                                                                value
+FROM temperature t
+WHERE t.value is not null
+  and time >= datetime('now', '-24 hours')
+GROUP BY strftime('%s', t.time) / (5 * 60)
 ORDER BY time DESC;"""
         )
 
@@ -96,10 +98,12 @@ ORDER BY time DESC;"""
 
     with connection:
         cursor = connection.execute(
-            """SELECT time, value
-FROM humidity
-WHERE value is not null
-  and time >= datetime('now', '-3 hours')
+            """SELECT datetime(strftime('%s', t.time) - (strftime('%s', t.time) % (5 * 60)), 'unixepoch') time,
+       round(avg(value), 2)                                                                value
+FROM humidity t
+WHERE t.value is not null
+  and time >= datetime('now', '-24 hours')
+GROUP BY strftime('%s', t.time) / (5 * 60)
 ORDER BY time DESC;"""
         )
 
@@ -156,4 +160,4 @@ def relay_toggle(name):
     else:
         device.off()
 
-    return jsonify(device.value)
+    return jsonify(dict(state=device.value))

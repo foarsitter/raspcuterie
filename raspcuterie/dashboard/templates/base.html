@@ -56,7 +56,7 @@
                             </article>
                             <article class="tile is-child notification is-warning">
                                 <apexchart type="radialBar" :options="currentTemperatureOptions"
-                                           :series="currentTemperature"></apexchart>
+                                           :series="currentHumidity"></apexchart>
                                 <p class="title">Humidity</p>
                                 <div class="field">
                                     <input id="switchExample3" type="checkbox" name="switchExample3"
@@ -112,6 +112,12 @@
                 curve: 'smooth',
                 width: 1,
             },
+            tooltip: {
+                x: {
+                    show: true,
+                    format: 'HH:mm',
+                },
+            },
             xaxis: {
                 type: 'datetime',
                 labels: {
@@ -141,15 +147,14 @@
             apexchart: VueApexCharts,
         },
         data: {
-            is_loaded: false,
-            refrigerator: false,
-            dehumidifier: false,
-            humidifier: false,
-            heater: false,
+            refrigerator: {% if relay_1 %}true{% else %}false{% endif %},
+            dehumidifier: {% if relay_2 %}true{% else %}false{% endif %},
+            humidifier: {% if relay_3 %}true{% else %}false{% endif %},
+            heater: {% if relay_4 %}true{% else %}false{% endif %},
             humiditySeries: [],
             temperatureSeries: [],
-            seriesLine: [],
-            currentTemperature: [25],
+            currentTemperature: [{{ temperature }}],
+            currentHumidity: [{{ humidity }}],
             currentTemperatureOptions: {
                 chart: {
                     type: 'radialBar',
@@ -210,53 +215,67 @@
         },
         watch: {
             refrigerator: function (val) {
-                if(app.is_loaded === true){
-                    alert(val)
-                }
+                console.log("refrigerator")
+                axios({
+                    method: 'GET',
+                    url: "/api/relay/relay1/toggle",
+                }).then(function (response) {
+
+                })
             },
             humidifier: function (val) {
-                if(this.is_loaded === true){
-                    alert(val)
-                }
+
+                console.log("humidifier")
+                axios({
+                    method: 'GET',
+                    url: "/api/relay/relay3/toggle",
+                }).then(function (response) {
+
+                })
             },
             dehumidifier: function (val) {
-                if(this.is_loaded === true){
-                    alert(val)
-                }
+
+                console.log("dehumidifier")
+                axios({
+                    method: 'GET',
+                    url: "/api/relay/relay2/toggle",
+                })
             },
             heater: function (val) {
-                if(this.is_loaded === true){
-                    alert(val)
-                }
+
+                console.log("heater")
+                axios({
+                    method: 'GET',
+                    url: "/api/relay/relay4/toggle",
+                })
             }
         },
-        beforeCreate: function () {
-            axios({
-                method: 'GET',
-                url: "/api/relay/current.json",
-            }).then(function (response) {
+        {# beforeCreate: function () {
+                axios({
+                    method: 'GET',
+                    url: "/api/relay/current.json",
+                }).then(function (response) {
 
-                app.refrigerator = response.data["relay_1"]
-                app.dehumidifier = response.data["relay_2"]
-                app.humidifier = response.data["relay_3"]
-                app.heater = response.data["relay_4"]
-                app.is_loaded = true
+                    app.refrigerator = response.data["relay_1"]
+                    app.dehumidifier = response.data["relay_2"]
+                    app.humidifier = response.data["relay_3"]
+                    app.heater = response.data["relay_4"]
+                    app.is_loaded = true
 
-            })
-        },
+                })
+            }, #}
         mounted: function () {
-
 
             axios({
                 method: 'GET',
                 url: "/api/am2302/chart.json",
             }).then(function (response) {
-                app.$refs.humidity.updateSeries([{data: response.data[1]["data"]}])
-                app.$refs.temperature.updateSeries([{data: response.data[0]["data"]}])
+                app.$refs.humidity.updateSeries([{name: "Humidity", data: response.data[1]["data"]}])
+                app.$refs.temperature.updateSeries([{name: "Temperature", data: response.data[0]["data"]}])
             })
         },
 
-    })
+    });
 
 
 </script>

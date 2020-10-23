@@ -4,7 +4,6 @@ from raspcuterie import FAKE_VALUES
 
 
 class AM2302:
-
     @staticmethod
     def read():
         if FAKE_VALUES:
@@ -19,5 +18,6 @@ class AM2302:
         sensor = Adafruit_DHT.DHT22
 
         pin = 4
+        humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
 
-        return Adafruit_DHT.read_retry(sensor, pin)
+        return round(humidity, 2), round(temperature, 2)
