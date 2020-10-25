@@ -57,5 +57,16 @@ class RelayManager:
     def is_on(self, index: int) -> bool:
         return bool(self.relays[index].value)
 
+    def heater(self):
+        return self.relay_4
+
+    def refrigerator(self):
+        return self.relay_1
+
+    def humidifier(self):
+        return self.relay_3
+
+    def dehumidifier(self):
+        return self.relay_2
 
 manager = RelayManager()

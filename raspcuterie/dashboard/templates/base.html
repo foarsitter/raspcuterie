@@ -95,7 +95,7 @@
         integrity="sha256-n7FNwoYsyZMMiu5/NHArDRUq4JFdaZNPz8mE+OMC5VM=" crossorigin="anonymous"></script>
 <script>
 
-    function graph(name) {
+    function graph(name, _min, _max) {
 
         return {
             chart: {
@@ -109,7 +109,7 @@
                 align: 'left'
             },
             stroke: {
-                curve: 'smooth',
+                curve: ['smooth', 'stepline', 'stepline'],
                 width: 1,
             },
             tooltip: {
@@ -129,12 +129,31 @@
                     }
                 }
             },
-            yaxis: {
-                tickAmount: 2,
-                labels: {
-                    minWidth: 40
+            yaxis: [
+                {
+                    tickAmount: 2,
+                    labels: {
+                        minWidth: 40
+                    },
+                    seriesName: "Temperature",
+                    min: _min,
+                    max: _max,
+                },
+                {
+                    opposite: true,
+                    seriesName: "Relay",
+                    min: 0,
+                    max: 3,
+                    show: false,
+                },
+                {
+                    seriesName: "Relay",
+                    opposite: true,
+                    show: false,
+                    min: 0,
+                    max: 3,
                 }
-            }
+            ]
         }
     }
 
@@ -146,13 +165,39 @@
         components: {
             apexchart: VueApexCharts,
         },
+
+
         data: {
             refrigerator: {% if relay_1 %}true{% else %}false{% endif %},
             dehumidifier: {% if relay_2 %}true{% else %}false{% endif %},
             humidifier: {% if relay_3 %}true{% else %}false{% endif %},
             heater: {% if relay_4 %}true{% else %}false{% endif %},
-            humiditySeries: [],
-            temperatureSeries: [],
+            humiditySeries: [{
+                "data": {{ humidity_data|tojson }},
+                "name": "Humidity"
+            },
+                {
+                    "data": {{ dehumidifier_data|tojson }},
+                    "name": "Dehumidifier"
+                },
+                {
+                    "data": {{ humidity_data|tojson }},
+                    "name": "Humidifier"
+                }],
+            temperatureSeries: [
+                {
+                    "data": {{ temperature_data|tojson }},
+                    "name": "Temperature"
+                },
+                {
+                    "data": {{ refrigerator_data|tojson }},
+                    "name": "Refrigerator"
+                },
+                {
+                    "data": {{ heater_data|tojson }},
+                    "name": "Heater"
+                }
+            ],
             currentTemperature: [{{ temperature }}],
             currentHumidity: [{{ humidity }}],
             currentTemperatureOptions: {
@@ -210,8 +255,8 @@
                 labels: ['Average Results'],
             },
 
-            humidityChartOptions: graph("Humidity"),
-            temperatureChartOptions: graph("Temperature"),
+            humidityChartOptions: graph("Humidity", {{ humidity_min }}, {{humidity_max}}),
+            temperatureChartOptions: graph("Temperature", {{ temperature_min }}, {{ temperature_max }}),
         },
         watch: {
             refrigerator: function (val) {
@@ -264,16 +309,16 @@
 
                 })
             }, #}
-        mounted: function () {
+    {# mounted: function () {
 
-            axios({
+             axios({
                 method: 'GET',
                 url: "/api/am2302/chart.json",
             }).then(function (response) {
                 app.$refs.humidity.updateSeries([{name: "Humidity", data: response.data[1]["data"]}])
                 app.$refs.temperature.updateSeries([{name: "Temperature", data: response.data[0]["data"]}])
-            })
-        },
+            });
+        },#}
 
     });
 
