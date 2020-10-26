@@ -1,22 +1,29 @@
 import datetime
-from typing import Dict
+from builtins import super
+from typing import Dict, Type
 
 from raspcuterie.gpio import GPIO
 
-from raspcuterie import FAKE_VALUES
-
 
 class OutputDevice:
-    _registry: Dict[str, "OutputDevice"] = {}
+    type: str
+    registry: Dict[str, "OutputDevice"] = {}
+    types: Dict[str, Type["OutputDevice"]] = {}
 
     def __init__(self, name):
-        OutputDevice._registry[name] = self
+        OutputDevice.registry[name] = self
         self.name = name
 
+    def __init_subclass__(cls, **kwargs):
+        super(OutputDevice, cls).__init_subclass__(**kwargs)
+        OutputDevice.types[cls.type] = cls
 
-class ReplaySwitch(OutputDevice):
+
+class RelaySwitch(OutputDevice):
+    type = "relay"
+
     def __init__(self, name, bmc_number):
-        super(ReplaySwitch, self).__init__(name)
+        super(RelaySwitch, self).__init__(name)
 
         self.last_witch = datetime.datetime.now() - datetime.timedelta(seconds=60)
 
@@ -40,13 +47,12 @@ class ReplaySwitch(OutputDevice):
 
 
 class RelayManager:
-
     def __init__(self):
 
-        self.relay_4 = ReplaySwitch("relay4", 6)
-        self.relay_3 = ReplaySwitch("relay3", 13)
-        self.relay_2 = ReplaySwitch("relay2", 19)
-        self.relay_1 = ReplaySwitch("relay1", 26)
+        self.relay_4 = RelaySwitch("relay4", 6)
+        self.relay_3 = RelaySwitch("relay3", 13)
+        self.relay_2 = RelaySwitch("relay2", 19)
+        self.relay_1 = RelaySwitch("relay1", 26)
         self.relays = {
             1: self.relay_1,
             2: self.relay_2,
@@ -68,5 +74,6 @@ class RelayManager:
 
     def dehumidifier(self):
         return self.relay_2
+
 
 manager = RelayManager()

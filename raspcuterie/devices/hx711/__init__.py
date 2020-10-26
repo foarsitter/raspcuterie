@@ -18,13 +18,14 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 """
-
-
+from raspcuterie.devices import InputDevice
 from raspcuterie.gpio import GPIO
 
 
-class HX711:
-    def __init__(self, dout, pd_sck, gain=128):
+class HX711(InputDevice):
+
+    def __init__(self, name, dout=23, pd_sck=24, gain=128):
+        super(HX711, self).__init__(name)
         """
         Set GPIO Mode, and pin for communication with HX711
         :param dout: Serial Data Output pin
@@ -155,5 +156,8 @@ class HX711:
         """
         GPIO.output(self.PD_SCK, False)
 
+    def get_context(self):
+        return dict(weight=self.get_grams())
 
-hx = HX711(23, 24, gain=128)
+
+hx = HX711("HX711")

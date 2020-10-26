@@ -1,8 +1,9 @@
 rpi.gpio==0.7.0
 Flask==1.1.2
 Click
-gunicorn
+gunicorn==20.0.4
 bump2version==1.0.1
 pytest==6.1.1
+pyyaml
 # allowed to fail
 Adafruit_DHT==1.4.0

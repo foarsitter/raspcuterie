@@ -20,7 +20,8 @@ def dashboard():
     relay_3 = manager.is_on(3)
     relay_4 = manager.is_on(4)
 
-    humidity, temperature = AM2302.read()
+    temperature = connection.execute("SELECT value FROM temperature ORDER BY time DESC LIMIT 1").fetchone()[0]
+    humidity = connection.execute("SELECT value FROM humidity ORDER BY time DESC LIMIT 1").fetchone()[0]
 
     weight = hx.get_grams()
 
@@ -97,11 +98,7 @@ ORDER BY time DESC;"""
                 humidifier_data = cursor.fetchall()
 
                 cursor.close()
-    #
-    # chart = [
-    #         dict(data=temperature_data, name="Temperature"),
-    #         dict(name="Humidity", data=humidity_data),
-    #     ]
+
     x = list(dict(temperature_data).values())
     temperature_min = min(x)
     temperature_max = max(x)

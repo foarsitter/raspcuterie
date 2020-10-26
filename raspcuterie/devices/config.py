@@ -1,19 +1,26 @@
-from raspcuterie.devices.am2302 import AM2302
-from raspcuterie.devices.relay import ReplaySwitch
+from typing import List
+
+from raspcuterie.devices import InputDevice
+from raspcuterie.devices.relay import OutputDevice
 
 
 class ConfigRule:
-    def __init__(self, device: ReplaySwitch, expression: str, action: str, name=None):
+    registry: List["ConfigRule"] = []
+
+    def __init__(self, device: OutputDevice, expression: str, action: str, name: str = None):
+        ConfigRule.registry.append(self)
         self.name = name
-        self.device: ReplaySwitch = device
+        self.device: OutputDevice = device
         self.expression: str = expression
         self.action: str = action
 
     def context(self):
+        context = {}
 
-        humidity, temperature = AM2302.read()
+        for device in InputDevice.registry.values():
+            context.update(device.get_context())
 
-        return dict(temperature=temperature, humidity=humidity)
+        return context
 
     def matches(self):
         return eval(self.expression, self.context())

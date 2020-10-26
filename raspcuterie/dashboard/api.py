@@ -153,7 +153,7 @@ ORDER BY time DESC;"""
 
 @bp.route("/relay/<name>/toggle")
 def relay_toggle(name):
-    device = OutputDevice._registry[name]
+    device = OutputDevice.registry[name]
 
     if device.value == 0:
         device.on()

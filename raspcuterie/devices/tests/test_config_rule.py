@@ -26,7 +26,7 @@ def test_execute(monkeypatch):
     # x = ConfigRule(device=manager.relay_3, expression="True", action="off")
     # x.execute()
 
-    assert len(OutputDevice._registry) == 4
+    assert len(OutputDevice.registry) == 4
 
     x = ConfigRule(device=manager.relay_4, expression="True", action="on")
     x.execute()
