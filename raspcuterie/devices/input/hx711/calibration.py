@@ -33,24 +33,15 @@ current offset and scale values and weigh a new item to test the accuracy
 of the offset and scale values!
 #######################################################################
 """
-import sys
 
-sys.path.extend(["/home/pi/raspcuterie-pi", "/home/pi/raspcuterie-pi"])
-from raspcuterie.gpio import GPIO
+import sys
 import time
-import sys
-from raspcuterie.devices.input.hx711 import hx
 
-# Force Python 3 ########################################################### 362
+from raspcuterie.devices.input.hx711 import HX711
+from raspcuterie.gpio import GPIO
 
-if sys.version_info[0] != 3:
-    raise Exception("Python 3 is required.")
 
-############################################################################
-
-# Make sure you correct these to the correct pins for DOUT and SCK.
-# gain is set to 128 as default, change as needed.
-
+hx = HX711("weight")
 
 
 def cleanAndExit():
@@ -119,8 +110,6 @@ def loop():
     except (KeyboardInterrupt, SystemExit):
         cleanAndExit()
 
-
-##################################
 
 if __name__ == "__main__":
 

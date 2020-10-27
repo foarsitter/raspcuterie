@@ -1,9 +1,5 @@
-import datetime
-import math
-
-from raspcuterie import db
+import db
 from raspcuterie.devices import InputDevice
-from raspcuterie.utils import time_based_sinus
 
 
 class AM2302(InputDevice):
@@ -25,22 +21,49 @@ class AM2302(InputDevice):
 
         return dict(humidity=humidity, temperature=temperature)
 
+    def read_from_database(self):
+        temperature = db.connection.execute(
+            "SELECT value FROM temperature ORDER BY time DESC LIMIT 1"
+        ).fetchone()[0]
+        humidity = db.connection.execute(
+            "SELECT value FROM humidity ORDER BY time DESC LIMIT 1"
+        ).fetchone()[0]
 
-class SinusInput(InputDevice):
-    type = "sinus"
-    radial = math.pi / 180
+        return humidity, temperature
 
-    def sinus(self, lower, upper):
-        return time_based_sinus(datetime.datetime.now().minute, lower, upper)
+    def temperature_data(self):
+        with db.connection:
+            cursor = db.connection.execute(
+                """SELECT datetime(strftime('%s', t.time) - (strftime('%s', t.time) % (5 * 60)), 'unixepoch') time,
+           round(avg(value), 2)                                                                value
+    FROM temperature t
+    WHERE t.value is not null
+      and time >= datetime('now', '-24 hours')
+    GROUP BY strftime('%s', t.time) / (5 * 60)
+    ORDER BY time DESC;"""
+            )
 
-    def read(self):
-        return self.sinus(60, 100), self.sinus(5, 25)
+            temperature_data = cursor.fetchall()
+            cursor.close()
+            return temperature_data
 
-    def get_context(self):
-        return dict(humidity=self.sinus(60, 100), temperature=self.sinus(5, 25))
+    def humidity_data(self):
+        with db.connection:
+            cursor = db.connection.execute(
+                """SELECT datetime(strftime('%s', t.time) - (strftime('%s', t.time) % (5 * 60)), 'unixepoch') time,
+           round(avg(value), 2)                                                                value
+    FROM humidity t
+    WHERE t.value is not null
+      and time >= datetime('now', '-24 hours')
+    GROUP BY strftime('%s', t.time) / (5 * 60)
+    ORDER BY time DESC;"""
+            )
 
-    def get_grams(self):
-        return self.sinus(50, 100)
+            humidity_data = cursor.fetchall()
+
+            cursor.close()
+
+            return humidity_data
 
     def log(self):
         humidity, temperature = self.read()

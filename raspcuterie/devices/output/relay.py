@@ -44,11 +44,12 @@ create table if not exists {0}
     value integer not null
 );"""
 
-    def __init__(self, name, **kwargs):
+    def __init__(self, name, created_table=True, **kwargs):
         super().__init__(name)
 
-        with connection:
-            connection.execute(DBRelay.table_sql.format(self.table_name))
+        if created_table:
+            with connection:
+                connection.execute(DBRelay.table_sql.format(self.table_name))
 
     @property
     def table_name(self):

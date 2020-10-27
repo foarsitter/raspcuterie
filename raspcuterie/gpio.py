@@ -2,7 +2,7 @@ import random
 
 try:
     import RPi.GPIO as GPIO
-except RuntimeError:
+except Exception:
 
     class GPIO:
         OUT = 0

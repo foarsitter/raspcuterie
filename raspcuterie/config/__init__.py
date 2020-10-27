@@ -10,8 +10,11 @@ def parse_config():
 
     file = base_path / "config.yaml"
 
-    from raspcuterie.devices.input.am2302 import SinusInput, AM2302  # noqa
+    from raspcuterie.devices.input.sinus import SinusInput  # noqa
+    from raspcuterie.devices.input.am2302 import AM2302  # noqa
     from raspcuterie.devices.input.hx711 import HX711  # noqa
+
+    from raspcuterie.devices.output.relay import RelaySwitch, DBRelay  # noqa
 
     with file.open() as f:
         data_loaded = yaml.safe_load(f)
@@ -53,9 +56,9 @@ def register_output_devices(config):
 
 def register_config_rules(config):
 
-    config_rules = config["config"]
+    control_rules = config["control"]
 
-    for device, rules in config_rules.items():
+    for device, rules in control_rules.items():
 
         device = OutputDevice.registry[device]
 
