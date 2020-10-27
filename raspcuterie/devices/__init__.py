@@ -27,3 +27,30 @@ class InputDevice(ABC):
 
     def get_context(self):
         return {}
+
+    def log(self):
+        return
+
+
+class OutputDevice(ABC):
+    type: str
+    registry: Dict[str, "OutputDevice"] = {}
+    types: Dict[str, Type["OutputDevice"]] = {}
+
+    def __init__(self, name):
+        OutputDevice.registry[name] = self
+        self.name = name
+
+    def __init_subclass__(cls, **kwargs):
+        super(OutputDevice, cls).__init_subclass__(**kwargs)
+        OutputDevice.types[cls.type] = cls
+
+    @abstractmethod
+    def value(self):
+        raise NotImplementedError
+
+    def get_context(self):
+        return {self.name: self.value()}
+
+    def log(self):
+        return

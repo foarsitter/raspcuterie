@@ -1,8 +1,7 @@
-from flask import Blueprint, send_file, jsonify
+from flask import Blueprint, jsonify
 
-from raspcuterie import base_path, FAKE_VALUES
 from raspcuterie.db import connection
-from raspcuterie.devices.relay import OutputDevice
+from raspcuterie.devices.output.relay import OutputDevice
 
 bp = Blueprint("api", __name__, url_prefix="/api")
 
@@ -13,7 +12,7 @@ def am2303_current():
     Returns the current values for the humidity and temperature
     :return:
     """
-    from raspcuterie.devices.am2302 import AM2302
+    from raspcuterie.devices.input.am2302 import AM2302
 
     humidity, temperature = AM2302.read()
 
@@ -26,7 +25,7 @@ def hx711_current():
     Returns the current values for the humidity and temperature
     :return:
     """
-    from raspcuterie.devices.hx711.calibration import hx
+    from raspcuterie.devices.input.hx711.calibration import hx
 
     return jsonify(dict(weight=hx.get_grams()))
 
@@ -121,7 +120,7 @@ ORDER BY time DESC;"""
 
 @bp.route("/relay/current.json")
 def relay_current():
-    from raspcuterie.devices.relay import manager
+    from raspcuterie.devices.output.relay import manager
 
     return jsonify(
         dict(
@@ -155,9 +154,9 @@ ORDER BY time DESC;"""
 def relay_toggle(name):
     device = OutputDevice.registry[name]
 
-    if device.value == 0:
+    if device.value() == 0:
         device.on()
     else:
         device.off()
 
-    return jsonify(dict(state=device.value))
+    return jsonify(dict(state=device.value()))

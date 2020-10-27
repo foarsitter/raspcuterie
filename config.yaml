@@ -1,34 +1,35 @@
 name: raspcuterie
 devices:
   input:
-    - name: AM2303
-    - name: HX711
+    temperature:
+      type: sinus
+    weight:
+      type: sinus
   output:
-    - name: refrigerator
-      type: relay
+    refrigerator:
+      type: dbrelay
       gpio: 26
-    - name: heater
-      type: relay
+    heater:
+      type: dbrelay
       gpio: 19
-    - name: humidifier
-      type: relay
+    humidifier:
+      type: dbrelay
       gpio: 13
-    - name: dehumidifier
-      type: relay
+    dehumidifier:
+      type: dbrelay
       gpio: 6
 config:
   refrigerator:
     - rule: Stop cooling
       expression: temperature < 12
-      action: off
+      action: "off"
     - rule: Start cooling
       expression: temperature > 15
-      action: on
+      action: "on"
   dehumidifier:
     - rule: Start
       expression: humidity > 77
-      action: on
+      action: "on"
     - rule: Stop
       expression: humidity < 70
-      action: off
-
+      action: "off"

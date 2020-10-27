@@ -39,7 +39,7 @@ sys.path.extend(["/home/pi/raspcuterie-pi", "/home/pi/raspcuterie-pi"])
 from raspcuterie.gpio import GPIO
 import time
 import sys
-from raspcuterie.devices.hx711 import hx
+from raspcuterie.devices.input.hx711 import hx
 
 # Force Python 3 ########################################################### 362
 

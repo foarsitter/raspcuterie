@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-switch@2.0.0/dist/css/bulma-switch.min.css"
           integrity="sha256-jCV/cXwP13w0GNHLgFx6SFgTNAvJPvS5MIhuE30Ng08=" crossorigin="anonymous">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://kit.fontawesome.com/3409146a90.js" crossorigin="anonymous"></script>
 </head>
 <body class="has-background-danger">
 
@@ -23,6 +24,7 @@
                 <div class="tile is-8 is-parent ">
                     <div class="tile is-child notification is-white">
                         <div id="humidity">
+
                             <apexchart type="line" height="230" ref="humidity" :options="humidityChartOptions"
                                        :series="humiditySeries"></apexchart>
                         </div>
@@ -36,11 +38,19 @@
                     <div class="tile">
                         <div class="tile is-parent is-vertical">
                             <article class="tile is-child notification is-primary">
+                                <i class="fas fa-refrigerator fa-lg"></i>
+                                <i class="fas fa-heat fa-lg"></i>
+                                <i class="fas fa-shower fa-lg"></i>
+                                <i class="fas fa-air-conditioner fa-lg"></i>
 
-                                <apexchart type="radialBar" :options="currentTemperatureOptions"
-                                           :series="currentTemperature"></apexchart>
+                            </article>
+                            <article class="tile is-child notification is-primary">
 
-                                <p class="title">Temperature</p>
+                                <i class="far fa-thermometer-half fa-3x"></i> {{ temperature }}&deg;
+                                <i class="far fa-humidity fa-3x"></i> {{ humidity }}%
+
+                            </article>
+                            <article class="tile is-child notification is-warning">
                                 <div class="field">
                                     <input id="switchExample1" type="checkbox" name="switchExample1"
                                            class="switch is-danger"
@@ -53,11 +63,7 @@
                                            checked="checked" v-model="heater">
                                     <label for="switchExample2">Verwarming</label>
                                 </div>
-                            </article>
-                            <article class="tile is-child notification is-warning">
-                                <apexchart type="radialBar" :options="currentTemperatureOptions"
-                                           :series="currentHumidity"></apexchart>
-                                <p class="title">Humidity</p>
+
                                 <div class="field">
                                     <input id="switchExample3" type="checkbox" name="switchExample3"
                                            class="switch is-info"
@@ -166,12 +172,11 @@
             apexchart: VueApexCharts,
         },
 
-
         data: {
-            refrigerator: {% if relay_1 %}true{% else %}false{% endif %},
-            dehumidifier: {% if relay_2 %}true{% else %}false{% endif %},
-            humidifier: {% if relay_3 %}true{% else %}false{% endif %},
-            heater: {% if relay_4 %}true{% else %}false{% endif %},
+            refrigerator: {% if refrigerator %}true{% else %}false{% endif %},
+            dehumidifier: {% if dehumidifier %}true{% else %}false{% endif %},
+            humidifier: {% if humidifier %}true{% else %}false{% endif %},
+            heater: {% if heater %}true{% else %}false{% endif %},
             humiditySeries: [{
                 "data": {{ humidity_data|tojson }},
                 "name": "Humidity"
@@ -198,62 +203,6 @@
                     "name": "Heater"
                 }
             ],
-            currentTemperature: [{{ temperature }}],
-            currentHumidity: [{{ humidity }}],
-            currentTemperatureOptions: {
-                chart: {
-                    type: 'radialBar',
-                    offsetY: -20,
-                    sparkline: {
-                        enabled: true
-                    }
-                },
-                plotOptions: {
-                    radialBar: {
-                        startAngle: -90,
-                        endAngle: 90,
-                        track: {
-                            background: "#e7e7e7",
-                            strokeWidth: '97%',
-                            margin: 5, // margin is in pixels
-                            dropShadow: {
-                                enabled: true,
-                                top: 2,
-                                left: 0,
-                                color: '#999',
-                                opacity: 1,
-                                blur: 2
-                            }
-                        },
-                        dataLabels: {
-                            name: {
-                                show: false
-                            },
-                            value: {
-                                offsetY: -2,
-                                fontSize: '22px'
-                            }
-                        }
-                    }
-                },
-                grid: {
-                    padding: {
-                        top: -10
-                    }
-                },
-                fill: {
-                    type: 'gradient',
-                    gradient: {
-                        shade: 'light',
-                        shadeIntensity: 0.4,
-                        inverseColors: false,
-                        opacityFrom: 1,
-                        opacityTo: 1,
-                        stops: [0, 50, 53, 91]
-                    },
-                },
-                labels: ['Average Results'],
-            },
 
             humidityChartOptions: graph("Humidity", {{ humidity_min }}, {{humidity_max}}),
             temperatureChartOptions: graph("Temperature", {{ temperature_min }}, {{ temperature_max }}),
@@ -263,7 +212,7 @@
                 console.log("refrigerator")
                 axios({
                     method: 'GET',
-                    url: "/api/relay/relay1/toggle",
+                    url: "/api/relay/refrigerator/toggle",
                 }).then(function (response) {
 
                 })
@@ -273,7 +222,7 @@
                 console.log("humidifier")
                 axios({
                     method: 'GET',
-                    url: "/api/relay/relay3/toggle",
+                    url: "/api/relay/humidifier/toggle",
                 }).then(function (response) {
 
                 })
@@ -283,7 +232,7 @@
                 console.log("dehumidifier")
                 axios({
                     method: 'GET',
-                    url: "/api/relay/relay2/toggle",
+                    url: "/api/relay/dehumidifier/toggle",
                 })
             },
             heater: function (val) {
@@ -291,7 +240,7 @@
                 console.log("heater")
                 axios({
                     method: 'GET',
-                    url: "/api/relay/relay4/toggle",
+                    url: "/api/relay/heater/toggle",
                 })
             }
         },
@@ -309,22 +258,23 @@
 
                 })
             }, #}
-    {# mounted: function () {
+        {# mounted: function () {
 
-             axios({
-                method: 'GET',
-                url: "/api/am2302/chart.json",
-            }).then(function (response) {
-                app.$refs.humidity.updateSeries([{name: "Humidity", data: response.data[1]["data"]}])
-                app.$refs.temperature.updateSeries([{name: "Temperature", data: response.data[0]["data"]}])
-            });
-        },#}
+                 axios({
+                    method: 'GET',
+                    url: "/api/am2302/chart.json",
+                }).then(function (response) {
+                    app.$refs.humidity.updateSeries([{name: "Humidity", data: response.data[1]["data"]}])
+                    app.$refs.temperature.updateSeries([{name: "Temperature", data: response.data[0]["data"]}])
+                });
+            },#}
 
     });
 
 
 </script>
-<script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>
+
+
 <script src="https://cdn.jsdelivr.net/npm/bulma-extensions@6.2.7/dist/js/bulma-extensions.min.js"
         integrity="sha256-q4zsxO0fpPm6VhtL/9QkCFE5ZkNa0yeUxhmt1VO1ev0=" crossorigin="anonymous"></script>
 </body>

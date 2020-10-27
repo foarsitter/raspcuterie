@@ -160,4 +160,4 @@ class HX711(InputDevice):
         return dict(weight=self.get_grams())
 
 
-hx = HX711("HX711")
+# hx = HX711("HX711")

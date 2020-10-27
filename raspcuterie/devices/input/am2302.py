@@ -1,22 +1,15 @@
 import datetime
 import math
 
-import random
-
-from raspcuterie import FAKE_VALUES
+from raspcuterie import db
 from raspcuterie.devices import InputDevice
+from raspcuterie.utils import time_based_sinus
 
 
 class AM2302(InputDevice):
     type = "AM2303"
 
     def read(self):
-        if FAKE_VALUES:
-            return random.randint(0, 100), random.randint(5, 25)
-        return self._read_am2303()
-
-    def _read_am2303(self):
-
         import Adafruit_DHT
 
         sensor = Adafruit_DHT.DHT22
@@ -37,19 +30,20 @@ class SinusInput(InputDevice):
     type = "sinus"
     radial = math.pi / 180
 
-    def sinus(self, lower=5, upper=25):
-
-        delta = upper - lower
-        middle = lower + delta / 2
-
-        return (
-            middle
-            + math.sin(datetime.datetime.utcnow().minute * 6 * SinusInput.radial)
-            + delta / 2
-        )
+    def sinus(self, lower, upper):
+        return time_based_sinus(datetime.datetime.now().minute, lower, upper)
 
     def read(self):
-        return self.sinus()
+        return self.sinus(60, 100), self.sinus(5, 25)
 
     def get_context(self):
-        return dict(humidity=self.sinus(60, 100), temperature=self.sinus())
+        return dict(humidity=self.sinus(60, 100), temperature=self.sinus(5, 25))
+
+    def get_grams(self):
+        return self.sinus(50, 100)
+
+    def log(self):
+        humidity, temperature = self.read()
+
+        db.insert_humidity(humidity)
+        db.insert_temperature(temperature)

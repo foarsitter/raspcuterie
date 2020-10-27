@@ -1,4 +1,4 @@
-from raspcuterie.devices.relay import manager
+from raspcuterie.devices.output.relay import manager
 
 
 def test_relay():

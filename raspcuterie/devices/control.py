@@ -1,20 +1,21 @@
 from typing import List
 
 from raspcuterie.devices import InputDevice
-from raspcuterie.devices.relay import OutputDevice
+from raspcuterie.devices import OutputDevice
 
 
-class ConfigRule:
-    registry: List["ConfigRule"] = []
+class ControlRule:
+    registry: List["ControlRule"] = []
 
     def __init__(self, device: OutputDevice, expression: str, action: str, name: str = None):
-        ConfigRule.registry.append(self)
+        ControlRule.registry.append(self)
         self.name = name
         self.device: OutputDevice = device
         self.expression: str = expression
         self.action: str = action
 
-    def context(self):
+    @staticmethod
+    def context():
         context = {}
 
         for device in InputDevice.registry.values():
@@ -26,8 +27,12 @@ class ConfigRule:
         return eval(self.expression, self.context())
 
     def execute(self):
-        action = getattr(self.device, self.action)
-        return action()
+        print(self.action)
+        try:
+            action = getattr(self.device, self.action)
+            return action()
+        except Exception as e:
+            print(e)
 
     def execute_if_matches(self):
         if self.matches():

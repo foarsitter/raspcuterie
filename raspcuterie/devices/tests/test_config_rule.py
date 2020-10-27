@@ -1,8 +1,8 @@
 import pytest
 
-from raspcuterie.devices.am2302 import AM2302
-from raspcuterie.devices.config import ConfigRule
-from raspcuterie.devices.relay import manager, OutputDevice
+from raspcuterie.devices.input.am2302 import AM2302
+from raspcuterie.devices.control import ControlRule
+from raspcuterie.devices.output.relay import manager, OutputDevice
 
 
 @pytest.mark.parametrize("temperature,match", [(11, True), (9, False)])
@@ -10,7 +10,7 @@ def test_matches(monkeypatch, temperature, match):
 
     monkeypatch.setattr(AM2302, "read", lambda: (0, temperature))
 
-    x = ConfigRule(device=manager.relay_1, expression="temperature >= 10", action="on")
+    x = ControlRule(device=manager.relay_1, expression="temperature >= 10", action="on")
 
     assert x.matches() == match
 
@@ -28,5 +28,5 @@ def test_execute(monkeypatch):
 
     assert len(OutputDevice.registry) == 4
 
-    x = ConfigRule(device=manager.relay_4, expression="True", action="on")
+    x = ControlRule(device=manager.relay_4, expression="True", action="on")
     x.execute()
