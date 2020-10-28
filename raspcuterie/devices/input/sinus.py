@@ -1,7 +1,7 @@
 import datetime
 import math
 
-from devices.input.am2302 import AM2302
+from raspcuterie.devices.input.am2302 import AM2302
 from raspcuterie.utils import time_based_sinus
 
 

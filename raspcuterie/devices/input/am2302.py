@@ -1,4 +1,4 @@
-import db
+from raspcuterie import db
 from raspcuterie.devices import InputDevice
 
 
@@ -6,7 +6,7 @@ class AM2302(InputDevice):
     type = "AM2303"
 
     def read(self):
-        import Adafruit_DHT
+        import Adafruit_DHT # noqa
 
         sensor = Adafruit_DHT.DHT22
 
