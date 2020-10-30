@@ -8,4 +8,4 @@ pyyaml==5.3.1
 flask-babel==2.0.0
 # allowed to fail
 rpi.gpio==0.7.0
-Adafruit_DHT==1.4.0
+# Adafruit_DHT==1.4.0
