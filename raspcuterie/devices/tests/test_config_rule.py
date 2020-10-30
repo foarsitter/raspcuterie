@@ -9,7 +9,7 @@ from raspcuterie.devices.output.relay import DBRelay
 @pytest.mark.parametrize("temperature,match", [(11, True), (9, False)])
 def test_matches(monkeypatch, temperature, match):
 
-    monkeypatch.setattr(AM2302, "read", lambda: (0, temperature))
+    monkeypatch.setattr(AM2302, "read", lambda x: (0, temperature))
 
     AM2302("am2303")
 
@@ -26,7 +26,7 @@ def test_execute(monkeypatch):
 
     relay = DBRelay("test", created_table=False)
 
-    assert len(OutputDevice.registry) == 1
+    assert len(OutputDevice.registry) == 5
 
     x = ControlRule(device=relay, expression="True", action="on")
     x.execute()
