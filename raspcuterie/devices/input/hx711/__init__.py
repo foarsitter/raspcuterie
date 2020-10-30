@@ -18,22 +18,24 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 """
+from raspcuterie.devices import InputDevice
+from raspcuterie.gpio import GPIO
 
 
-import RPi.GPIO as GPIO
+class HX711(InputDevice):
 
-
-class HX711:
-    def __init__(self, dout, pd_sck, gain=128):
+    def __init__(self, name, dout=23, pd_sck=24, gain=128):
+        super(HX711, self).__init__(name)
         """
         Set GPIO Mode, and pin for communication with HX711
         :param dout: Serial Data Output pin
         :param pd_sck: Power Down and Serial Clock Input pin
         :param gain: set gain 128, 64, 32
         """
+
         self.GAIN = 0
-        self.offset = 8436807.40
-        self.scale = (8284629.00 - self.offset) / 362
+        self.offset = 8447362.25
+        self.scale = 419.79834254143645
 
         # Setup the gpio pin numbering system
         GPIO.setmode(GPIO.BCM)
@@ -52,17 +54,22 @@ class HX711:
         self.power_up()
         self.set_gain(gain)
 
+    def set_offset(self, value):
+        self.offset = value
+
+    def set_scale(self, value):
+        self.scale = value
+
     def set_gain(self, gain=128):
 
-        try:
-            if gain is 128:
-                self.GAIN = 3
-            elif gain is 64:
-                self.GAIN = 2
-            elif gain is 32:
-                self.GAIN = 1
-        except:
-            self.GAIN = 3  # Sets default GAIN at 128
+        if gain == 128:
+            self.GAIN = 3
+        elif gain == 64:
+            self.GAIN = 2
+        elif gain == 32:
+            self.GAIN = 1
+        else:
+            self.GAIN = 3
 
         GPIO.output(self.PD_SCK, False)
         self.read()
@@ -147,3 +154,6 @@ class HX711:
         Power the chip up
         """
         GPIO.output(self.PD_SCK, False)
+
+    def get_context(self):
+        return dict(weight=self.get_grams())

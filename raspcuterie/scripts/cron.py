@@ -1,21 +1,25 @@
-#!/usr/bin/env /home/pi/.virtualenvs/raspcuterie/bin/python
-import sys
-
-sys.path.extend(['/home/pi/raspcuterie-pi', '/home/pi/raspcuterie-pi'])
-
-import Adafruit_DHT
-
-from raspcuterie.db import insert_humidity, insert_temperature
-from raspcuterie.devices import AM2302
+from raspcuterie.cli import cli
+from raspcuterie.config import setup
+from raspcuterie.devices import InputDevice, OutputDevice
+from raspcuterie.devices.control import ControlRule
 
 
-def log_am2302():
-    humidity, temperature = Adafruit_DHT.read_retry(AM2302.sensor, AM2302.pin)
-
-    insert_humidity(humidity)
-    insert_temperature(temperature)
-
-    print("am2302 values insert to the database")
+def evaluate_config_rules():
+    for rule in ControlRule.registry:
+        rule.execute_if_matches()
 
 
-log_am2302()
+@cli.command()
+def log_values():
+    setup()
+    evaluate_config_rules()
+
+    for input_device in InputDevice.registry.values():
+        input_device.log()
+
+    for output_device in OutputDevice.registry.values():
+        output_device.log()
+
+
+if __name__ == "__main__":
+    log_values()

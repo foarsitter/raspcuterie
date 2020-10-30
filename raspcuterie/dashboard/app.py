@@ -1,14 +1,28 @@
-from flask import Flask, render_template
+from flask import Flask, request
+from flask_babel import Babel
 
-from raspcuterie import FAKE_VALUES
-from raspcuterie.dashboard import api
+from raspcuterie import base_path
+from raspcuterie.config import setup
+from raspcuterie.dashboard import api, dashboard
 
-app = Flask(__name__, template_folder="./templates")
-
-app.register_blueprint(api.bp)
+babel = Babel()
 
 
-@app.route("/")
-def dashboard():
-    print(FAKE_VALUES)
-    return render_template("base.html")
+def create_app():
+    app = Flask(__name__, template_folder="./templates")
+
+    app.register_blueprint(api.bp)
+    app.register_blueprint(dashboard.bp)
+
+    app.config["BABEL_TRANSLATION_DIRECTORIES"] = str(base_path / "translations")
+
+    babel.init_app(app)
+
+    setup()
+
+    return app
+
+
+@babel.localeselector
+def get_locale():
+    return request.accept_languages.best_match(["nl", "en"])

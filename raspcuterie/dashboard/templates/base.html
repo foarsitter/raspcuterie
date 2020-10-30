@@ -1,47 +1,117 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="has-background-danger">
 <head>
     <meta charset="UTF-8">
     <title>Raspcuterie</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-switch@2.0.0/dist/css/bulma-switch.min.css"
+          integrity="sha256-jCV/cXwP13w0GNHLgFx6SFgTNAvJPvS5MIhuE30Ng08=" crossorigin="anonymous">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://kit.fontawesome.com/3409146a90.js" crossorigin="anonymous"></script>
 </head>
-<body>
-<section class="section">
-    <div class="container">
-        <h1 class="title">
-            Hello World
-        </h1>
-        <p class="subtitle">
-            My first website with <strong>Bulma</strong>!
-        </p>
-    </div>
-</section>
-<div class="columns">
-    <div class="column">
-        <div id="app">
-            <div>
-                <apexchart type="radialBar" ref="humidity" height="350" :options="chartOptions"
-                           :series="series"></apexchart>
+<body class="has-background-danger">
+<div id="app">
+    <section class="section">
+        <div class="container">
+            <h1 class="title">
+                Raspcuterie
+            </h1>
+            <p class="subtitle">
+                Let it <strong>dry</strong>!
+            </p>
+            <div class="columns">
+                <div class="column is-9">
+                    <div class="notification is-white">
+                        <div id="humidity">
+                            <apexchart type="line" height="230" ref="humidity" :options="humidityChartOptions"
+                                       :series="humiditySeries"></apexchart>
+                        </div>
+                        <div id="temperature">
+                            <apexchart type="line" height="230" ref="temperature" :options="temperatureChartOptions"
+                                       :series="temperatureSeries"></apexchart>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="notification is-white has-text-justified">
+                        <div class="level" title="Refrigerator">
+                            <div class="level-item">
+                                <span class="fa-stack fa-md">
+                                    <i class="fas fa-refrigerator fa-lg  fa-stack-1x"></i>
+                                    <i v-if="refrigerator" class="fas fa-stack-2x fa-check has-text-success"></i>
+                                    <i v-else class="fas fa-stack-2x fa-ban has-text-danger"></i>
+                                </span>
+                            </div>
+                            <div class="level-item" title="Heater">
+                                <span class="fa-stack fa-md">
+                                    <i class="fas fa-heat fa-lg  fa-stack-1x"></i>
+                                    <i v-if="heater" class="fas fa-stack-2x fa-check has-text-success"></i>
+                                    <i v-else class="fas fa-stack-2x fa-ban has-text-danger"></i>
+                                </span>
+                            </div>
+                            <div class="level-item" title="Humidifier">
+                                <span class="fa-stack fa-md">
+                                    <i class="fas fa-shower fa-lg  fa-stack-1x"></i>
+                                    <i v-if="humidifier" class="fas fa-stack-2x fa-check has-text-success"></i>
+                                    <i v-else class="fas fa-stack-2x fa-ban has-text-danger"></i>
+                                </span>
+                            </div>
+                            <div class="level-item" title="Dehumidifier">
+                                <div class="level-item">
+                                    <span class="fa-stack fa-md">
+                                        <i class="fas fa-air-conditioner fa-lg  fa-stack-1x"></i>
+                                        <i v-if="dehumidifier" class="fas fa-stack-2x fa-check has-text-success"></i>
+                                        <i v-else class="fas fa-stack-2x fa-ban has-text-danger"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="notification is-primary is-size-1">
+                        <div class="level">
+                            <div class="level-item"><i class="far fa-thermometer-half fa-2x"></i></div>
+                            <div class="level-item">{{ temperature|round }}&deg;</div>
+                        </div>
+                    </div>
+                    <div class="notification is-primary is-size-1">
+                        <div class="level">
+                            <div class="level-item"><i class="far fa-humidity fa-2x"></i></div>
+                            <div class="level-item">{{ humidity|round }}%</div>
+                        </div>
+                    </div>
+                    <article class="tile is-child notification is-warning">
+                        <div class="field">
+                            <input id="refrigerator-switch" type="checkbox"
+                                   class="switch is-danger"
+                                   checked="checked" v-model="refrigerator">
+                            <label for="refrigerator-switch">{{ gettext("Refrigerator") }}</label>
+                        </div>
+                        <div class="field">
+                            <input id="heater-switch" type="checkbox"
+                                   class="switch is-danger"
+                                   checked="checked" v-model="heater">
+                            <label for="heater-switch">{{ gettext("Heater") }}</label>
+                        </div>
+
+                        <div class="field">
+                            <input id="dehumidifier-switch" type="checkbox"
+                                   class="switch is-info"
+                                   checked="checked" v-model="dehumidifier">
+                            <label for="dehumidifier-switch">{{ gettext("Dehumidifier") }}</label>
+                        </div>
+                        <div class="field">
+                            <input id="humidifier-switch" type="checkbox"
+                                   class="switch is-info"
+                                   checked="checked" v-model="humidifier">
+                            <label for="humidifier-switch">{{ gettext("Humidifier") }}</label>
+                        </div>
+
+                    </article>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="column">
-        <div id="app2">
-            <div>
-                <apexchart type="radialBar" ref="weight" height="350" :options="chartOptions"
-                           :series="series"></apexchart>
-            </div>
-        </div>
-    </div>
+    </section>
 </div>
-
-<div id="appl">
-    <div id="chart">
-        <apexchart type="line" height="350" ref="am2302" :options="chartOptions" :series="series"></apexchart>
-    </div>
-</div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"
         integrity="sha256-FZ8KwMj1F6qnNgA7bhPryVm19xKduH5OVr8u7I1tAtc=" crossorigin="anonymous"></script>
@@ -53,238 +123,176 @@
         integrity="sha256-n7FNwoYsyZMMiu5/NHArDRUq4JFdaZNPz8mE+OMC5VM=" crossorigin="anonymous"></script>
 <script>
 
+    function graph(name, _min, _max) {
+
+        return {
+            chart: {
+                id: name,
+                type: 'line',
+                group: 'social',
+                height: 230,
+            },
+            title: {
+                text: name,
+                align: 'left'
+            },
+            stroke: {
+                curve: ['smooth', 'stepline', 'stepline'],
+                width: 1,
+            },
+            tooltip: {
+                x: {
+                    show: true,
+                    format: 'HH:mm',
+                },
+            },
+            xaxis: {
+                type: 'datetime',
+                labels: {
+                    datetimeFormatter: {
+                        year: 'yyyy',
+                        month: 'MMM \'yy',
+                        day: 'dd MMM',
+                        hour: 'HH:mm'
+                    }
+                }
+            },
+            yaxis: [
+                {
+                    tickAmount: 2,
+                    labels: {
+                        minWidth: 40
+                    },
+                    seriesName: name,
+                    min: _min,
+                    max: _max,
+                },
+                {
+                    opposite: true,
+                    seriesName: "Relay",
+                    min: 0,
+                    max: 3,
+                    show: false,
+                },
+                {
+                    seriesName: "Relay",
+                    opposite: true,
+                    show: false,
+                    min: 0,
+                    max: 3,
+                }
+            ]
+        }
+    }
 
     Vue.component('apexchart', VueApexCharts)
 
-    var y = new Vue({
+    var app = new Vue({
         el: '#app',
         components: {
             apexchart: VueApexCharts,
         },
+
         data: {
-
-            series: [67],
-            chartOptions: {
-                chart: {
-                    height: 350,
-                    type: 'radialBar',
-                    offsetY: -10
+            refrigerator: {% if refrigerator %}true{% else %}false{% endif %},
+            dehumidifier: {% if dehumidifier %}true{% else %}false{% endif %},
+            humidifier: {% if humidifier %}true{% else %}false{% endif %},
+            heater: {% if heater %}true{% else %}false{% endif %},
+            humiditySeries: [
+                {
+                    "data": {{ humidity_data|tojson }},
+                    "name": "{{ gettext("Humidity") }}"
                 },
-                plotOptions: {
-                    radialBar: {
-                        startAngle: -135,
-                        endAngle: 135,
-                        dataLabels: {
-                            name: {
-                                fontSize: '16px',
-                                color: undefined,
-                                offsetY: 120
-                            },
-                            value: {
-                                offsetY: 76,
-                                fontSize: '22px',
-                                color: undefined,
-                                formatter: function (val) {
-                                    return val + "%";
-                                }
-                            }
-                        }
-                    }
+                {
+                    "data": {{ dehumidifier_data|tojson }},
+                    "name": "{{ gettext("Dehumidifier") }}"
                 },
-                fill: {
-                    type: 'gradient',
-                    gradient: {
-                        shade: 'dark',
-                        shadeIntensity: 0.15,
-                        inverseColors: false,
-                        opacityFrom: 1,
-                        opacityTo: 1,
-                        stops: [0, 50, 65, 91]
-                    },
+                {
+                    "data": {{ humidifier_data|tojson }},
+                    "name": "{{ gettext("Humidifier") }}"
+                }],
+            temperatureSeries: [
+                {
+                    "data": {{ temperature_data|tojson }},
+                    "name": "{{ gettext("Temperature") }}"
                 },
-                stroke: {
-                    dashArray: 4
+                {
+                    "data": {{ refrigerator_data|tojson }},
+                    "name": "{{ gettext("Refrigerator") }}"
                 },
-                labels: ['Humidity', 'Temperature'],
-            },
-
-
-        },
-        mounted: function () {
-            var me = this
-            window.setInterval(function () {
-
-                axios({
-                    method: 'GET',
-                    url: "/api/am2302/current.json",
-                }).then(function (response) {
-                    console.log(response)
-                    me.$refs.humidity.updateSeries([response.data["humidity"], response.data["temperature"]])
-                })
-            }, 60000)
-        },
-
-    });
-
-    var z = new Vue({
-        el: '#app2',
-        components: {
-            apexchart: VueApexCharts,
-        },
-        data: {
-
-            series: [67],
-            chartOptions: {
-                chart: {
-                    height: 350,
-                    type: 'radialBar',
-                    offsetY: -10
-                },
-                plotOptions: {
-                    radialBar: {
-                        startAngle: -135,
-                        endAngle: 135,
-                        dataLabels: {
-                            name: {
-                                fontSize: '16px',
-                                color: undefined,
-                                offsetY: 120
-                            },
-                            value: {
-                                offsetY: 76,
-                                fontSize: '22px',
-                                color: undefined,
-                                formatter: function (val) {
-                                    return val + "%";
-                                }
-                            }
-                        }
-                    }
-                },
-                fill: {
-                    type: 'gradient',
-                    gradient: {
-                        shade: 'dark',
-                        shadeIntensity: 0.15,
-                        inverseColors: false,
-                        opacityFrom: 1,
-                        opacityTo: 1,
-                        stops: [0, 50, 65, 91]
-                    },
-                },
-                stroke: {
-                    dashArray: 4
-                },
-                labels: ['Weight'],
-            },
-
-
-        },
-        mounted: function () {
-            var me = this
-            window.setInterval(function () {
-
-                axios({
-                    method: 'GET',
-                    url: "/api/am2302/current.json",
-                }).then(function (response) {
-                    console.log(response)
-                    me.$refs.humidity.updateSeries([response.data["humidity"], response.data["temperature"]])
-                })
-            }, 60000)
-        },
-
-    });
-
-    axios({
-        method: 'GET',
-        url: "/api/am2302/chart.json",
-    }).then(function (response) {
-        x.$refs.am2302.updateSeries(response.data)
-    });
-
-    axios({
-        method: 'GET',
-        url: "/api/am2302/current.json",
-    }).then(function (response) {
-        console.log(response)
-        y.$refs.humidity.updateSeries([response.data["humidity"], response.data["temperature"]])
-    })
-
-    var x = new Vue({
-        el: '#appl',
-        components: {
-            apexchart: VueApexCharts,
-        },
-        data: {
-            series: [],
-            noData: {
-                text: 'Loading...'
-            },
-            chartOptions: {
-                chart: {
-                    height: 350,
-                    type: 'line',
-                },
-                stroke: {
-                    curve: 'smooth'
-                },
-                fill: {
-                    type: 'solid',
-                    opacity: [0.35, 1],
-                },
-                markers: {
-                    size: 0
-                },
-                yaxis: [
-                    {
-                        title: {
-                            text: 'Temperature',
-                        },
-                        min: 5,
-                        max: 25,
-                    },
-                    {
-                        opposite: true,
-                        title: {
-                            text: 'Humidity',
-                        },
-                        min: 0,
-                        max: 100,
-                    },
-                ],
-                xaxis: {
-                    type: 'datetime'
-                },
-                tooltip: {
-                    shared: true,
-                    intersect: false,
-                    y: {
-                        formatter: function (y) {
-                            if (typeof y !== "undefined") {
-                                return y.toFixed(0) + " points";
-                            }
-                            return y;
-                        }
-                    }
+                {
+                    "data": {{ heater_data|tojson }},
+                    "name": "{{ gettext("Heater") }}"
                 }
-            },
+            ],
+            humidityChartOptions: graph("{{ gettext("Humidity") }}", {{ humidity_min }}, {{humidity_max}}),
+            temperatureChartOptions: graph("{{ gettext("Temperature") }}", {{ temperature_min }}, {{ temperature_max }}),
         },
-        mounted: function () {
-            var me = this
-            window.setInterval(function () {
-
+        watch: {
+            refrigerator: function (val) {
+                console.log("refrigerator")
                 axios({
+                    method: 'GET',
+                    url: "/api/relay/refrigerator/toggle",
+                }).then(function (response) {
+
+                })
+            },
+            humidifier: function (val) {
+
+                console.log("humidifier")
+                axios({
+                    method: 'GET',
+                    url: "/api/relay/humidifier/toggle",
+                }).then(function (response) {
+
+                })
+            },
+            dehumidifier: function (val) {
+
+                console.log("dehumidifier")
+                axios({
+                    method: 'GET',
+                    url: "/api/relay/dehumidifier/toggle",
+                })
+            },
+            heater: function (val) {
+
+                console.log("heater")
+                axios({
+                    method: 'GET',
+                    url: "/api/relay/heater/toggle",
+                })
+            }
+        },
+        {# beforeCreate: function () {
+                axios({
+                    method: 'GET',
+                    url: "/api/relay/current.json",
+                }).then(function (response) {
+
+                    app.refrigerator = response.data["relay_1"]
+                    app.dehumidifier = response.data["relay_2"]
+                    app.humidifier = response.data["relay_3"]
+                    app.heater = response.data["relay_4"]
+                    app.is_loaded = true
+
+                })
+            }, #}
+        {# mounted: function () {
+
+                 axios({
                     method: 'GET',
                     url: "/api/am2302/chart.json",
                 }).then(function (response) {
-                    me.$refs.am2302.updateSeries(response.data)
-                })
-            }, 10 * 1000)
-        },
-    });
+                    app.$refs.humidity.updateSeries([{name: "Humidity", data: response.data[1]["data"]}])
+                    app.$refs.temperature.updateSeries([{name: "Temperature", data: response.data[0]["data"]}])
+                });
+            },#}
 
+    });
 </script>
-<script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bulma-extensions@6.2.7/dist/js/bulma-extensions.min.js"
+        integrity="sha256-q4zsxO0fpPm6VhtL/9QkCFE5ZkNa0yeUxhmt1VO1ev0=" crossorigin="anonymous"></script>
 </body>
 </html>
