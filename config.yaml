@@ -2,21 +2,21 @@ name: raspcuterie
 devices:
   input:
     temperature:
-      type: sinus
+      type: AM2302
     weight:
-      type: sinus
+      type: HX711
   output:
     refrigerator:
-      type: dbrelay
+      type: relay
       gpio: 26
     heater:
-      type: dbrelay
+      type: relay
       gpio: 19
     humidifier:
-      type: dbrelay
+      type: relay
       gpio: 13
     dehumidifier:
-      type: dbrelay
+      type: relay
       gpio: 6
 control:
   refrigerator:

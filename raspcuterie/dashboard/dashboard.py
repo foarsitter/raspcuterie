@@ -1,6 +1,6 @@
 from flask import render_template, Blueprint
 
-from devices.input.am2302 import AM2302
+from raspcuterie.devices.input.am2302 import AM2302
 from raspcuterie.devices import OutputDevice, InputDevice
 
 bp = Blueprint("dashboard", __name__)
@@ -14,7 +14,7 @@ def dashboard():
     dehumidifier = OutputDevice.registry["dehumidifier"]
     humidifier = OutputDevice.registry["humidifier"]
 
-    am2302: AM2302 = InputDevice.registry["am2302"]
+    am2302: AM2302 = InputDevice.registry["temperature"]
 
     humidity, temperature = am2302.read_from_database()
 
