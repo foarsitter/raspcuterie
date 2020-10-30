@@ -20,7 +20,7 @@ class ControlRule:
 
         for device in InputDevice.registry.values():
             context.update(device.get_context())
-
+        print(context)
         return context
 
     def matches(self):

@@ -3,17 +3,21 @@ from raspcuterie.devices import InputDevice
 
 
 class AM2302(InputDevice):
-    type = "AM2303"
+    type = "AM2302"
 
     def read(self):
+        humidity, temperature = self.raw()
+        return round(humidity, 2), round(temperature, 2)
+
+    def raw(self):
+
         import Adafruit_DHT # noqa
 
         sensor = Adafruit_DHT.DHT22
 
         pin = 4
         humidity, temperature = Adafruit_DHT.read_retry(sensor, pin, delay_seconds=0.2)
-
-        return round(humidity, 2), round(temperature, 2)
+        return humidity, temperature
 
     def get_context(self):
 

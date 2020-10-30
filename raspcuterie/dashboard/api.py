@@ -12,9 +12,9 @@ def am2303_current():
     Returns the current values for the humidity and temperature
     :return:
     """
-    from raspcuterie.devices.input.am2302 import AM2302
+    from raspcuterie.devices import InputDevice
 
-    humidity, temperature = AM2302.read()
+    humidity, temperature = InputDevice.registry["temperature"].raw()
 
     return jsonify(dict(temperature=temperature, humidity=humidity))
 
@@ -120,16 +120,14 @@ ORDER BY time DESC;"""
 
 @bp.route("/relay/current.json")
 def relay_current():
-    from raspcuterie.devices.output.relay import manager
+    from raspcuterie.devices import OutputDevice
 
-    return jsonify(
-        dict(
-            relay_1=manager.is_on(1),
-            relay_2=manager.is_on(2),
-            relay_3=manager.is_on(3),
-            relay_4=manager.is_on(4),
-        )
-    )
+    data = {}
+
+    for key, device in OutputDevice.registry.items():
+        data[key] = device.value()
+
+    return jsonify(data)
 
 
 @bp.route("/relay/chart.json")
