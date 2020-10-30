@@ -17,21 +17,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-######################################################################
-README:
-
-This version runs in python 3.x. It will first prompt the user to 
-empty the scale. Then prompt user to place an item with a known weight
-on the scale and input weight as INT. 
-
-The offset and scale will be adjusted accordingly and displayed for
-convenience.
-
-The user can choose to [0] exit, [1] recalibrate, or [2] display the 
-current offset and scale values and weigh a new item to test the accuracy
-of the offset and scale values!
-#######################################################################
 """
 
 import sys

@@ -26,4 +26,3 @@ def create_app():
 @babel.localeselector
 def get_locale():
     return request.accept_languages.best_match(["nl", "en"])
-

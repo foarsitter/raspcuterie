@@ -2,7 +2,6 @@ import datetime
 from typing import List
 
 import click
-import random
 
 from raspcuterie import db, utils
 from raspcuterie.cli import cli
