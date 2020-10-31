@@ -11,8 +11,11 @@ You need a:
 - raspberry pi zero with header
 - am2302
 - relay board
+- fan
 - jumper cables
 - power adapter
+
+
 
 .. toctree::
    :maxdepth: 2
