@@ -23,7 +23,7 @@ class RelaySwitch(OutputDevice):
                 connection.execute(DBRelay.table_sql.format(self.table_name))
 
     def on(self):
-        if self.last_witch < datetime.datetime.now() - datetime.timedelta(seconds=60):
+        if True or self.last_witch < datetime.datetime.now() - datetime.timedelta(seconds=60):
             GPIO.output(self.pin_number, GPIO.HIGH)
             self.last_witch = datetime.datetime.now()
         else:
