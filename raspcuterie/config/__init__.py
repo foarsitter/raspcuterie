@@ -6,9 +6,9 @@ from raspcuterie.devices.control import ControlRule
 from raspcuterie.devices.output.relay import OutputDevice
 
 
-def parse_config():
+def parse_config(config_name="config.yaml"):
 
-    file = base_path / "config.yaml"
+    file = base_path / config_name
 
     from raspcuterie.devices.input.sinus import SinusInput  # noqa
     from raspcuterie.devices.input.am2302 import AM2302  # noqa
