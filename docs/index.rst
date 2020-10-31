@@ -6,6 +6,14 @@
 Welcome to raspcuterie's documentation!
 =======================================
 
+You need a:
+
+- raspberry pi zero with header
+- am2302
+- relay board
+- jumper cables
+- power adapter
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
