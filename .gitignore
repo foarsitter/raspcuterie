@@ -2,3 +2,4 @@
 .idea
 venv
 raspcuterie.db
+docs/_build
