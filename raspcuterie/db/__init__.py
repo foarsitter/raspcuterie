@@ -22,6 +22,12 @@ def insert_temperature(value: float, time_value=None):
     if time_value is None:
         time_value = datetime.now()
 
+    previous_value = connection.execute("SELECT value FROM temperature ORDER BY time DESC LIMIT 1").fetchone()
+
+    if previous_value and round(previous_value[0], 1) == round(value, 1):
+        print("No significant change in value for temperature")
+        return
+
     with connection:
         connection.execute(
             "INSERT INTO temperature(time,value) VALUES (?,?)", (time_value, value)
@@ -32,6 +38,12 @@ def insert_humidity(value: float, time_value=None):
 
     if time_value is None:
         time_value = datetime.now()
+
+    previous_value = connection.execute("SELECT value FROM humidity ORDER BY time DESC LIMIT 1").fetchone()
+
+    if previous_value and round(previous_value[0], 1) == round(value, 1):
+        print("No significant change in value for humidity")
+        return
 
     with connection:
         connection.execute(

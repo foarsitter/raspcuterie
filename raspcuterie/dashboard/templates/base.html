@@ -10,12 +10,13 @@
     <script src="https://kit.fontawesome.com/3409146a90.js" crossorigin="anonymous"></script>
 </head>
 <body class="has-background-danger">
-<div class="is-overlay is-relative">Test</div>
+
 
 <div id="app">
-    <router-link to="/foo">Go to Foo</router-link>
-    <router-link to="/bar">Go to Bar</router-link>
-
+    <div class="is-overlay is-relative is-pulled-right">
+        <button><router-link to="/foo"><i class="fas fa-tachometer"></i></router-link></button>
+        <button><router-link to="/bar"><i class="fas fa-cogs"></i></router-link></button>
+    </div>
     <router-view></router-view>
 </div>
 
@@ -204,41 +205,43 @@
             apexchart: VueApexCharts,
         },
 
-        data() { return {
-            refrigerator: {% if refrigerator %}true{% else %}false{% endif %},
-            dehumidifier: {% if dehumidifier %}true{% else %}false{% endif %},
-            humidifier: {% if humidifier %}true{% else %}false{% endif %},
-            heater: {% if heater %}true{% else %}false{% endif %},
-            humiditySeries: [
-                {
-                    "data": {{ humidity_data|tojson }},
-                    "name": "{{ gettext("Humidity") }}"
-                },
-                {
-                    "data": {{ dehumidifier_data|tojson }},
-                    "name": "{{ gettext("Dehumidifier") }}"
-                },
-                {
-                    "data": {{ humidifier_data|tojson }},
-                    "name": "{{ gettext("Humidifier") }}"
-                }],
-            temperatureSeries: [
-                {
-                    "data": {{ temperature_data|tojson }},
-                    "name": "{{ gettext("Temperature") }}"
-                },
-                {
-                    "data": {{ refrigerator_data|tojson }},
-                    "name": "{{ gettext("Refrigerator") }}"
-                },
-                {
-                    "data": {{ heater_data|tojson }},
-                    "name": "{{ gettext("Heater") }}"
-                }
-            ],
-            humidityChartOptions: graph("{{ gettext("Humidity") }}", {{ humidity_min }}, {{humidity_max}}),
-            temperatureChartOptions: graph("{{ gettext("Temperature") }}", {{ temperature_min }}, {{ temperature_max }}),
-        } },
+        data() {
+            return {
+                refrigerator: {% if refrigerator %}true{% else %}false{% endif %},
+                dehumidifier: {% if dehumidifier %}true{% else %}false{% endif %},
+                humidifier: {% if humidifier %}true{% else %}false{% endif %},
+                heater: {% if heater %}true{% else %}false{% endif %},
+                humiditySeries: [
+                    {
+                        "data": {{ humidity_data|tojson }},
+                        "name": "{{ gettext("Humidity") }}"
+                    },
+                    {
+                        "data": {{ dehumidifier_data|tojson }},
+                        "name": "{{ gettext("Dehumidifier") }}"
+                    },
+                    {
+                        "data": {{ humidifier_data|tojson }},
+                        "name": "{{ gettext("Humidifier") }}"
+                    }],
+                temperatureSeries: [
+                    {
+                        "data": {{ temperature_data|tojson }},
+                        "name": "{{ gettext("Temperature") }}"
+                    },
+                    {
+                        "data": {{ refrigerator_data|tojson }},
+                        "name": "{{ gettext("Refrigerator") }}"
+                    },
+                    {
+                        "data": {{ heater_data|tojson }},
+                        "name": "{{ gettext("Heater") }}"
+                    }
+                ],
+                humidityChartOptions: graph("{{ gettext("Humidity") }}", {{ humidity_min }}, {{humidity_max}}),
+                temperatureChartOptions: graph("{{ gettext("Temperature") }}", {{ temperature_min }}, {{ temperature_max }}),
+            }
+        },
         watch: {
             refrigerator: function (val) {
                 console.log("refrigerator")
@@ -302,7 +305,7 @@
             },#}
 
     });
-const Bar = { template: '<div>bar</div>' }
+    const Bar = {template: '<div>bar</div>'}
 
     const routes = [
         {path: '/foo', component: Foo},
