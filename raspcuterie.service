@@ -11,4 +11,4 @@ ExecStart=/home/pi/.virtualenvs/raspcuterie/bin/flask run --host 0.0.0.0 --port 
 Restart=always
 
 [Install]
-WantedBy=multi-user.targetq
+WantedBy=multi-user.target
