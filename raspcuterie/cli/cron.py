@@ -1,3 +1,5 @@
+from flask.cli import with_appcontext
+
 from raspcuterie.cli import cli
 from raspcuterie.config import setup
 from raspcuterie.devices import InputDevice, OutputDevice
@@ -10,6 +12,7 @@ def evaluate_config_rules():
 
 
 @cli.command()
+@with_appcontext
 def log_values():
     setup()
     evaluate_config_rules()

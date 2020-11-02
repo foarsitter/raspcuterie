@@ -2,6 +2,7 @@ import datetime
 from typing import List
 
 import click
+from flask.cli import with_appcontext
 
 from raspcuterie import db, utils
 from raspcuterie.cli import cli
@@ -19,16 +20,19 @@ def fake():
 
 
 @fake.command()
+@with_appcontext
 def temperature():
     insert_single_value_data(db.insert_temperature, 5, 25, 60)
 
 
 @fake.command()
+@with_appcontext
 def humidity():
     insert_single_value_data(db.insert_humidity, 60, 95)
 
 
 @fake.command()
+@with_appcontext
 def weight():
     insert_single_value_data(db.insert_weight, 300, 150)
 

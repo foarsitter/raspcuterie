@@ -1,8 +1,30 @@
 from abc import abstractmethod, ABC
 from typing import Dict, Type
 
+import pkg_resources
 
-class InputDevice(ABC):
+
+class DatabaseDevice:
+    def create_table(self, connection):
+        raise NotImplementedError
+
+
+class LogDevice:
+    def log(self):
+        raise NotImplementedError
+
+
+class EntryPointDiscoverable:
+    entry_point: str
+
+    @classmethod
+    def discover(cls):
+        for entry_point in pkg_resources.iter_entry_points(cls.entry_point):
+            entry_point.load()
+
+
+class InputDevice(ABC, EntryPointDiscoverable):
+    entry_point = "raspcuterie.devices.input"
     type: str
     registry: Dict[str, "InputDevice"] = {}
     types: Dict[str, Type["InputDevice"]] = {}
@@ -32,7 +54,8 @@ class InputDevice(ABC):
         return
 
 
-class OutputDevice(ABC):
+class OutputDevice(ABC, EntryPointDiscoverable):
+    entry_point = "raspcuterie.devices.input"
     type: str
     registry: Dict[str, "OutputDevice"] = {}
     types: Dict[str, Type["OutputDevice"]] = {}

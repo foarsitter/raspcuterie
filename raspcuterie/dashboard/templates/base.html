@@ -80,13 +80,13 @@
                     <div class="notification is-primary is-size-1">
                         <div class="level">
                             <div class="level-item"><i class="far fa-thermometer-half fa-2x"></i></div>
-                            <div class="level-item">{{ temperature|round }}&deg;</div>
+                            <div class="level-item">{% if temperature %}{{ temperature|round }}&deg;{% else %}n/a{% endif %}</div>
                         </div>
                     </div>
                     <div class="notification is-primary is-size-1">
                         <div class="level">
                             <div class="level-item"><i class="far fa-humidity fa-2x"></i></div>
-                            <div class="level-item">{{ humidity|round }}%</div>
+                            <div class="level-item">{% if humidity %}{{ humidity|round }}%{% else %}n/a{% endif %}</div>
                         </div>
                     </div>
                     <article class="tile is-child notification is-warning">
