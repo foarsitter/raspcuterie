@@ -56,15 +56,15 @@ def insert_temperature(value: float, time_value=None):
     )
 
     if previous_value and round(previous_value[0], 1) == round(value, 1):
-        print("No significant change in value for temperature")
-        return
+        current_app.logger.info("Humidity: mo significant change")
+    else:
+        current_app.logger.info(f"Temperature: logging {value} ")
+        db = get_db()
 
-    db = get_db()
-
-    with db:
-        db.execute(
-            "INSERT INTO temperature(time,value) VALUES (?,?)", (time_value, value)
-        )
+        with db:
+            db.execute(
+                "INSERT INTO temperature(time,value) VALUES (?,?)", (time_value, value)
+            )
 
 
 def insert_humidity(value: float, time_value=None):
@@ -79,13 +79,13 @@ def insert_humidity(value: float, time_value=None):
     )
 
     if previous_value and round(previous_value[0], 1) == round(value, 1):
-        print("No significant change in value for humidity")
-        return
+        current_app.logger.info("Humidity: no significant change")
+    else:
+        current_app.logger.info(f"Humidity: logging {value} ")
+        db = get_db()
 
-    db = get_db()
-
-    with db:
-        db.execute("INSERT INTO humidity(time,value) VALUES (?,?)", (time_value, value))
+        with db:
+            db.execute("INSERT INTO humidity(time,value) VALUES (?,?)", (time_value, value))
 
 
 def insert_relay(value_1, value_2, value_3, value_4):

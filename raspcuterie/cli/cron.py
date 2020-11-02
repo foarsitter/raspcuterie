@@ -1,3 +1,4 @@
+from flask import current_app
 from flask.cli import with_appcontext
 
 from raspcuterie.cli import cli
@@ -14,7 +15,7 @@ def evaluate_config_rules():
 @cli.command()
 @with_appcontext
 def log_values():
-    setup()
+    setup(current_app)
     evaluate_config_rules()
 
     for input_device in InputDevice.registry.values():

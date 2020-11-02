@@ -1,12 +1,8 @@
-Flask==1.1.2
-flake8==3.8.4
-Click==7.1.2
-gunicorn==20.0.4
-bump2version==1.0.1
-pytest==6.1.2
-pyyaml==5.3.1
-flask-babel==2.0.0
+-r requirements.txt
 coverage==5.3
-# allowed to fail
-rpi.gpio==0.7.0
-# Adafruit_DHT==1.4.0
+pytest==6.1.2
+flake8==3.8.4
+bump2version==1.0.1
+
+twine==3.2.0
+wheel==0.35.1

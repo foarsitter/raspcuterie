@@ -27,6 +27,7 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(),
     url="https://github.com/foarsitter/raspcuterie",
+    include_package_data=True,
     entry_points={
         "console_scripts": ["raspcuterie-cli=raspcuterie.cli:cli"],
         # "raspcuterie.devices.input": [

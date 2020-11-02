@@ -1,6 +1,8 @@
 import datetime
 from builtins import super
 
+from flask import current_app
+
 from raspcuterie.db import get_db
 from raspcuterie.devices import OutputDevice, DatabaseDevice, LogDevice
 from raspcuterie.gpio import GPIO
@@ -36,7 +38,7 @@ class RelaySwitch(OutputDevice, DatabaseDevice, LogDevice):
             GPIO.output(self.pin_number, GPIO.HIGH)
             self.last_witch = datetime.datetime.now()
         else:
-            print("timeout")
+            current_app.logger.debug("Timeout for relay")
         self.update_table(self.value())
 
     def off(self):

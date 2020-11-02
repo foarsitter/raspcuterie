@@ -1,5 +1,7 @@
 from typing import List
 
+from flask import current_app
+
 from raspcuterie.devices import InputDevice
 from raspcuterie.devices import OutputDevice
 
@@ -20,24 +22,21 @@ class ControlRule:
 
         for device in InputDevice.registry.values():
             context.update(device.get_context())
-        print(context)
         return context
 
     def matches(self):
         return eval(self.expression, self.context())
 
     def execute(self):
-        print(self.action)
         try:
             action = getattr(self.device, self.action)
             return action()
         except Exception as e:
-            print(e)
+            current_app.logger.exeception(e)
 
     def execute_if_matches(self):
         if self.matches():
-            print(f"Matches expression: {self.expression}")
-            print(f"Executing {self.name}.{self.action}")
+            current_app.logger.info(f"Matches expression {self.expression}, executing {self.name}.{self.action}")
             return self.execute()
         else:
-            print(f"Does not match expression: {self.expression}")
+            current_app.logger.info(f"Does not match expression: {self.expression}")

@@ -1,4 +1,5 @@
 import yaml
+from flask import current_app
 
 from raspcuterie import base_path
 from raspcuterie.devices import InputDevice
@@ -31,7 +32,7 @@ def register_input_devices(config):
             device_class = InputDevice.types[device_type]
             device_class(device_name)
         else:
-            print(f"Cloud not initiate {device}")
+            current_app.logger.error(f"Cloud not initiate {device}")
 
 
 def register_output_devices(config):
