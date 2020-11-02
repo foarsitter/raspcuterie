@@ -1,3 +1,5 @@
+import importlib
+import pkgutil
 from abc import abstractmethod, ABC
 from typing import Dict, Type
 
@@ -19,6 +21,14 @@ class EntryPointDiscoverable:
 
     @classmethod
     def discover(cls):
+        import raspcuterie.devices.input
+        import raspcuterie.devices.output
+
+        for finder, name, ispkg in pkgutil.iter_modules(
+            raspcuterie.devices.input.__path__, raspcuterie.devices.input.__name__ + "."
+        ):
+            importlib.import_module(name)
+
         for entry_point in pkg_resources.iter_entry_points(cls.entry_point):
             entry_point.load()
 

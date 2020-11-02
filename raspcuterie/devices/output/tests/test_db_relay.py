@@ -1,19 +1,22 @@
+from raspcuterie.db import get_db
 from raspcuterie.devices.output.relay import DBRelay
 
 
-def test_on():
+def test_on(app):
 
-    x = DBRelay("test")
+    with app.app_context():
+        x = DBRelay("test")
+        x.create_table(get_db())
+        x.on()
 
-    x.on()
-
-    assert x.value() is True
+        assert x.value() is True
 
 
-def test_off():
+def test_off(app):
 
-    x = DBRelay("test")
+    with app.app_context():
+        x = DBRelay("test")
 
-    x.off()
+        x.off()
 
-    assert x.value() is False
+        assert x.value() is False

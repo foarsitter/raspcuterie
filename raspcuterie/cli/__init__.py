@@ -1,6 +1,6 @@
 from flask.cli import FlaskGroup
 
-from raspcuterie.dashboard.app import create_app
+from raspcuterie.app import create_app
 
 cli = FlaskGroup(create_app=create_app)
 

@@ -11,6 +11,7 @@ from raspcuterie.devices import InputDevice
 
 
 def test_parse_config():
+    ControlRule.registry = []
 
     x = parse_config()
 

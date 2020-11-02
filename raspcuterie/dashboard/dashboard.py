@@ -3,7 +3,7 @@ from flask import render_template, Blueprint
 from raspcuterie.devices.input.am2302 import AM2302
 from raspcuterie.devices import OutputDevice, InputDevice
 
-bp = Blueprint("dashboard", __name__)
+bp = Blueprint("dashboard", __name__, template_folder="./templates")
 
 
 @bp.route("/")

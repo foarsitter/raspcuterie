@@ -70,7 +70,7 @@ def register_config_rules(config):
 
 
 def setup(app):
-    if app.debug:
+    if app.debug or app.testing:
         config = parse_config("config_dev.yaml")
     else:
         config = parse_config()

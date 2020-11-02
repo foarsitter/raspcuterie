@@ -1,7 +1,9 @@
 from flask import Blueprint, jsonify
 
 from raspcuterie.db import get_db
-from raspcuterie.devices.output.relay import OutputDevice
+from raspcuterie.devices import InputDevice
+from raspcuterie.devices.input.am2302 import AM2302
+from raspcuterie.devices.output.relay import OutputDevice, RelaySwitch
 
 bp = Blueprint("api", __name__, url_prefix="/api")
 
@@ -49,31 +51,19 @@ ORDER BY time DESC;"""
 @bp.route("/am2302/temperature.json")
 def am2303_temperature():
 
-    cursor = get_db().execute(
-        """SELECT time, value
-FROM temperature
-WHERE time >= date('now', '-3 hours')
-ORDER BY time DESC;"""
-    )
+    am2302: AM2302 = InputDevice.registry["temperature"]
 
-    data = cursor.fetchall()
-    cursor.close()
+    data = am2302.temperature_data()
 
     return jsonify(data)
 
 
 @bp.route("/am2302/humidity.json")
-def am2303_humidity():
-    cursor = get_db().execute(
-        """SELECT time, value
-FROM humidity
-WHERE time >= date('now', '-3 hours')
-ORDER BY time DESC;"""
-    )
+def am2302_humidity():
 
-    data = cursor.fetchall()
+    am2302: AM2302 = InputDevice.registry["temperature"]
 
-    cursor.close()
+    data = am2302.humidity_data()
 
     return jsonify(data)
 
@@ -81,37 +71,12 @@ ORDER BY time DESC;"""
 @bp.route("/am2302/chart.json")
 def am2303_chart():
 
-    cursor = get_db().execute(
-        """SELECT datetime(strftime('%s', t.time) - (strftime('%s', t.time) % (5 * 60)), 'unixepoch') time,
-   round(avg(value), 2)                                                                value
-FROM temperature t
-WHERE t.value is not null
-and time >= datetime('now', '-24 hours')
-GROUP BY strftime('%s', t.time) / (5 * 60)
-ORDER BY time DESC;"""
-    )
-
-    temperature = cursor.fetchall()
-    cursor.close()
-
-    cursor = get_db().execute(
-        """SELECT datetime(strftime('%s', t.time) - (strftime('%s', t.time) % (5 * 60)), 'unixepoch') time,
-   round(avg(value), 2)                                                                value
-FROM humidity t
-WHERE t.value is not null
-and time >= datetime('now', '-24 hours')
-GROUP BY strftime('%s', t.time) / (5 * 60)
-ORDER BY time DESC;"""
-    )
-
-    humidity = cursor.fetchall()
-
-    cursor.close()
+    am2302: AM2302 = InputDevice.registry["temperature"]
 
     return jsonify(
         [
-            dict(data=temperature, name="Temperature"),
-            dict(name="Humidity", data=humidity),
+            dict(data=am2302.temperature_data(), name="Temperature"),
+            dict(name="Humidity", data=am2302.humidity_data()),
         ]
     )
 
@@ -123,27 +88,13 @@ def relay_current():
     data = {}
 
     for key, device in OutputDevice.registry.items():
-        data[key] = device.value()
+        if isinstance(device, RelaySwitch):
+            data[key] = device.value()
 
     return jsonify(data)
 
 
-@bp.route("/relay/chart.json")
-def relay_chart():
-    cursor = get_db().execute(
-        """SELECT time, value_1, value_2, value_3, value_4
-FROM relay
-WHERE time >= date('now', '-3 hours')
-ORDER BY time DESC;"""
-    )
-
-    temperature = cursor.fetchall()
-    cursor.close()
-
-    return jsonify(temperature)
-
-
-@bp.route("/relay/<name>/toggle")
+@bp.route("/relay/<name>/toggle", methods=["POST"])
 def relay_toggle(name):
     device = OutputDevice.registry[name]
 
