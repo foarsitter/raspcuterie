@@ -16,6 +16,25 @@ You need a:
 - power adapter
 
 
+  Download en installeer "raspberry pi os". Hoe je dat doe staat veelvuldig op internet uitgegelegd, bijvoorbeeld hier: https://raspberrytips.nl/raspberry-pi-installeren/
+
+  Sluit vervolgens de AM2302 & relay board aan.
+
+  https://raspberrytips.nl/dht22-temperatuursensor-raspberry-pi/
+  https://www.youtube.com/watch?v=OQyntQLazMU
+
+  Installeerd raspcuterie: `pip install raspcuterie[pi]`
+
+  test of de installatie is gelukt:
+
+  raspcuterie-cli version
+
+  sudo raspcuterie-cli install
+
+
+  ga naar het ip van je raspberry pi met daarachter poort 5000: localhost:5000
+
+
 
 .. toctree::
    :maxdepth: 2
