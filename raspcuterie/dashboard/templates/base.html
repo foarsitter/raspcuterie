@@ -13,8 +13,12 @@
 
 <div id="app">
     <div class="is-overlay is-relative is-pulled-right">
-        <button><router-link to="/foo"><i class="fas fa-tachometer"></i></router-link></button>
-        <button><router-link to="/bar"><i class="fas fa-cogs"></i></router-link></button>
+        <button>
+            <router-link to="/"><i class="fas fa-tachometer"></i></router-link>
+        </button>
+        <button>
+            <router-link to="/bar"><i class="fas fa-cogs"></i></router-link>
+        </button>
     </div>
     <router-view></router-view>
 </div>
@@ -79,7 +83,8 @@
                     <div class="notification is-primary is-size-1">
                         <div class="level">
                             <div class="level-item"><i class="far fa-thermometer-half fa-2x"></i></div>
-                            <div class="level-item">{% if temperature %}{{ temperature|round }}&deg;{% else %}n/a{% endif %}</div>
+                            <div class="level-item">{% if temperature %}{{ temperature|round }}&deg;{% else %}
+                                n/a{% endif %}</div>
                         </div>
                     </div>
                     <div class="notification is-primary is-size-1">
@@ -92,26 +97,26 @@
                         <div class="field">
                             <input id="refrigerator-switch" type="checkbox"
                                    class="switch is-danger"
-                                   checked="checked" v-model="refrigerator">
+                                   checked="checked" v-model="refrigerator" @change="toggleRefrigerator()">
                             <label for="refrigerator-switch">{{ gettext("Refrigerator") }}</label>
                         </div>
                         <div class="field">
                             <input id="heater-switch" type="checkbox"
                                    class="switch is-danger"
-                                   checked="checked" v-model="heater">
+                                   checked="checked" v-model="heater"  @change="toggleHeater()">
                             <label for="heater-switch">{{ gettext("Heater") }}</label>
                         </div>
 
                         <div class="field">
                             <input id="dehumidifier-switch" type="checkbox"
                                    class="switch is-info"
-                                   checked="checked" v-model="dehumidifier">
+                                   checked="checked" v-model="dehumidifier" @change="toggleDehumidifier()">
                             <label for="dehumidifier-switch">{{ gettext("Dehumidifier") }}</label>
                         </div>
                         <div class="field">
                             <input id="humidifier-switch" type="checkbox"
                                    class="switch is-info"
-                                   checked="checked" v-model="humidifier">
+                                   checked="checked" v-model="humidifier"  @change="toggleHumidifier()">
                             <label for="humidifier-switch">{{ gettext("Humidifier") }}</label>
                         </div>
 
@@ -165,7 +170,8 @@
                         month: 'MMM \'yy',
                         day: 'dd MMM',
                         hour: 'HH:mm'
-                    }
+                    },
+                    datetimeUTC: false
                 }
             },
             yaxis: [
@@ -175,8 +181,6 @@
                         minWidth: 40
                     },
                     seriesName: name,
-                    min: _min,
-                    max: _max,
                 },
                 {
                     opposite: true,
@@ -199,86 +203,24 @@
     Vue.component('apexchart', VueApexCharts)
 
     const Foo = Vue.component('dashboard', {
-        template: '#dashboard',
-        components: {
-            apexchart: VueApexCharts,
-        },
-
-        data() {
-            return {
-                refrigerator: {% if refrigerator %}true{% else %}false{% endif %},
-                dehumidifier: {% if dehumidifier %}true{% else %}false{% endif %},
-                humidifier: {% if humidifier %}true{% else %}false{% endif %},
-                heater: {% if heater %}true{% else %}false{% endif %},
-                humiditySeries: [
-                    {
-                        "data": {{ humidity_data|tojson }},
-                        "name": "{{ gettext("Humidity") }}"
-                    },
-                    {
-                        "data": {{ dehumidifier_data|tojson }},
-                        "name": "{{ gettext("Dehumidifier") }}"
-                    },
-                    {
-                        "data": {{ humidifier_data|tojson }},
-                        "name": "{{ gettext("Humidifier") }}"
-                    }],
-                temperatureSeries: [
-                    {
-                        "data": {{ temperature_data|tojson }},
-                        "name": "{{ gettext("Temperature") }}"
-                    },
-                    {
-                        "data": {{ refrigerator_data|tojson }},
-                        "name": "{{ gettext("Refrigerator") }}"
-                    },
-                    {
-                        "data": {{ heater_data|tojson }},
-                        "name": "{{ gettext("Heater") }}"
-                    }
-                ],
-                humidityChartOptions: graph("{{ gettext("Humidity") }}", {{ humidity_min }}, {{humidity_max}}),
-                temperatureChartOptions: graph("{{ gettext("Temperature") }}", {{ temperature_min }}, {{ temperature_max }}),
-            }
-        },
-        watch: {
-            refrigerator: function (val) {
-                console.log("refrigerator")
-                axios({
-                    method: 'GET',
-                    url: "/api/relay/refrigerator/toggle",
-                }).then(function (response) {
-
-                })
+            template: '#dashboard',
+            components: {
+                apexchart: VueApexCharts,
             },
-            humidifier: function (val) {
 
-                console.log("humidifier")
-                axios({
-                    method: 'GET',
-                    url: "/api/relay/humidifier/toggle",
-                }).then(function (response) {
-
-                })
+            data() {
+                return {
+                    refrigerator: {% if refrigerator %}true{% else %}false{% endif %},
+                    dehumidifier: {% if dehumidifier %}true{% else %}false{% endif %},
+                    humidifier: {% if humidifier %}true{% else %}false{% endif %},
+                    heater: {% if heater %}true{% else %}false{% endif %},
+                    humiditySeries: [],
+                    temperatureSeries: [],
+                    humidityChartOptions: graph("{{ gettext("Humidity") }}", {{ humidity_min }}, {{humidity_max}}),
+                    temperatureChartOptions: graph("{{ gettext("Temperature") }}", {{ temperature_min }}, {{ temperature_max }}),
+                }
             },
-            dehumidifier: function (val) {
-
-                console.log("dehumidifier")
-                axios({
-                    method: 'GET',
-                    url: "/api/relay/dehumidifier/toggle",
-                })
-            },
-            heater: function (val) {
-
-                console.log("heater")
-                axios({
-                    method: 'GET',
-                    url: "/api/relay/heater/toggle",
-                })
-            }
-        },
-        {# beforeCreate: function () {
+            beforeCreate: function () {
                 axios({
                     method: 'GET',
                     url: "/api/relay/current.json",
@@ -291,19 +233,71 @@
                     app.is_loaded = true
 
                 })
-            }, #}
-        {# mounted: function () {
+            },
+            methods: {
+                toggleRefrigerator: function () {
+                    console.log("refrigerator")
 
-                 axios({
-                    method: 'GET',
-                    url: "/api/am2302/chart.json",
-                }).then(function (response) {
-                    app.$refs.humidity.updateSeries([{name: "Humidity", data: response.data[1]["data"]}])
-                    app.$refs.temperature.updateSeries([{name: "Temperature", data: response.data[0]["data"]}])
-                });
-            },#}
+                    const x = this
 
-    });
+                    axios({
+                        method: 'GET',
+                        url: "/api/relay/refrigerator/toggle",
+                    }).then(function (response) {
+                        console.log(response.data)
+                        x.refrigerator = response.data["state"]
+                    })
+                },
+                toggleHumidifier: function () {
+
+                    console.log("humidifier")
+                    axios({
+                        method: 'GET',
+                        url: "/api/relay/humidifier/toggle",
+                    }).then(function (response) {
+
+                    })
+                },
+                toggleDehumidifier: function () {
+
+                    console.log("dehumidifier")
+                    axios({
+                        method: 'GET',
+                        url: "/api/relay/dehumidifier/toggle",
+                    })
+                },
+                toggleHeater: function () {
+
+                    console.log("heater")
+                    axios({
+                        method: 'GET',
+                        url: "/api/relay/heater/toggle",
+                    })
+                },
+                updateChartInterval() {
+                    setInterval(() => {
+                        this.updateChart()
+                    }, 6000 * 60);
+                },
+                updateChart() {
+
+                    const me = this
+
+                    axios({
+                        method: 'GET',
+                        url: "/api/am2302/chart.json?period=-7 days&aggregate=3600",
+                    }).then(function (response) {
+                        me.humiditySeries = response.data["humidity"]
+                        me.temperatureSeries = response.data["temperature"]
+                    });
+                }
+            },
+            mounted: function () {
+                this.updateChart()
+                this.updateChartInterval()
+            },
+        })
+    ;
     const Bar = {template: '<div>bar</div>'}
 
     const routes = [

@@ -18,3 +18,6 @@ class SinusInput(AM2302):
         temperature = time_based_sinus(x.minute, 5, 25)
 
         return humidity, temperature
+
+    def raw(self):
+        return self.read()

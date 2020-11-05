@@ -1,4 +1,7 @@
-from flask import Blueprint, jsonify
+import datetime
+
+from flask import Blueprint, jsonify, request
+from flask_babel import gettext
 
 from raspcuterie.db import get_db
 from raspcuterie.devices import InputDevice
@@ -6,19 +9,6 @@ from raspcuterie.devices.input.am2302 import AM2302
 from raspcuterie.devices.output.relay import OutputDevice, RelaySwitch
 
 bp = Blueprint("api", __name__, url_prefix="/api")
-
-
-@bp.route("/am2302/current.json")
-def am2303_current():
-    """
-    Returns the current values for the humidity and temperature
-    :return:
-    """
-    from raspcuterie.devices import InputDevice
-
-    humidity, temperature = InputDevice.registry["temperature"].raw()
-
-    return jsonify(dict(temperature=temperature, humidity=humidity))
 
 
 @bp.route("/hx711/current.json")
@@ -48,24 +38,25 @@ ORDER BY time DESC;"""
     return jsonify(data)
 
 
-@bp.route("/am2302/temperature.json")
-def am2303_temperature():
+@bp.route("/am2302/current.json")
+def am2303_current():
+    """
+    Returns the current values for the humidity and temperature
+    :return:
+    """
+    from raspcuterie.devices import InputDevice
 
-    am2302: AM2302 = InputDevice.registry["temperature"]
+    humidity, temperature = InputDevice.registry["temperature"].raw()
 
-    data = am2302.temperature_data()
+    now = datetime.datetime.now()
 
-    return jsonify(data)
-
-
-@bp.route("/am2302/humidity.json")
-def am2302_humidity():
-
-    am2302: AM2302 = InputDevice.registry["temperature"]
-
-    data = am2302.humidity_data()
-
-    return jsonify(data)
+    return jsonify(
+        dict(
+            temperature=temperature,
+            humidity=humidity,
+            datetime=datetime.datetime.strftime(now, "%Y-%m-%d %H:%M:%S"),
+        )
+    )
 
 
 @bp.route("/am2302/chart.json")
@@ -73,11 +64,28 @@ def am2303_chart():
 
     am2302: AM2302 = InputDevice.registry["temperature"]
 
+    refrigerator: RelaySwitch = OutputDevice.registry["refrigerator"]
+    heater: RelaySwitch = OutputDevice.registry["heater"]
+
+    humidifier: RelaySwitch = OutputDevice.registry["humidifier"]
+    dehumidifier: RelaySwitch = OutputDevice.registry["dehumidifier"]
+
+    period = request.args.get("period", "-24 hours")
+    aggregate = request.args.get("aggregate", 5*60)
+
     return jsonify(
-        [
-            dict(data=am2302.temperature_data(), name="Temperature"),
-            dict(name="Humidity", data=am2302.humidity_data()),
-        ]
+        dict(
+            temperature=[
+                dict(name=gettext("Temperature"), data=am2302.temperature_data(period, aggregate)),
+                dict(name=gettext("Refrigerator"), data=refrigerator.chart()),
+                dict(name=gettext("Heater"), data=heater.chart()),
+            ],
+            humidity=[
+                dict(data=am2302.humidity_data(period, aggregate), name=gettext("Humidity")),
+                dict(data=humidifier.chart(), name=gettext("Humidifier")),
+                dict(data=dehumidifier.chart(), name=gettext("Dehumidifier")),
+            ],
+        )
     )
 
 
@@ -94,7 +102,7 @@ def relay_current():
     return jsonify(data)
 
 
-@bp.route("/relay/<name>/toggle", methods=["POST"])
+@bp.route("/relay/<name>/toggle", methods=["POST", "GET"])
 def relay_toggle(name):
     device = OutputDevice.registry[name]
 

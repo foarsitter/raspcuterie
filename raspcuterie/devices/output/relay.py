@@ -19,32 +19,50 @@ class RelaySwitch(OutputDevice, DatabaseDevice, LogDevice):
         value integer not null
     );"""
 
-    def __init__(self, name, gpio):
+    def __init__(self, name, gpio, timeout=10):
         super(RelaySwitch, self).__init__(name)
 
-        self.last_witch = datetime.datetime.now() - datetime.timedelta(seconds=60)
-
         self.pin_number = gpio
+        self.timeout_minutes = timeout
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.pin_number, GPIO.OUT)
 
     def create_table(self, connection):
         connection.execute(RelaySwitch.table_sql.format(self.table_name))
 
-    def on(self):
-        if True or self.last_witch < datetime.datetime.now() - datetime.timedelta(
-                seconds=60
-        ):
-            GPIO.output(self.pin_number, GPIO.HIGH)
-            self.last_witch = datetime.datetime.now()
+    def validate_timeout(self):
+
+        with get_db() as db:
+
+            cursor = db.execute("""SELECT time FROM {} ORDER BY time DESC LIMIT 1""".format(self.table_name))
+
+            result = cursor.fetchone()
+
+            if result and result[0]:
+                before = datetime.datetime.now() - datetime.timedelta(minutes=self.timeout_minutes)
+                last_seen = datetime.datetime.strptime(result[0], "%Y-%m-%d %H:%M:%S.%f")
+                current_app.logger.debug(f"{self.name} is last seen on {last_seen}")
+                return last_seen < before
+
+        return True
+
+    def _set_output(self, value):
+        GPIO.output(self.pin_number, value)
+
+    def _set_value(self, value):
+        if self.validate_timeout():
+            self._set_output(value)
+            self.update_table(self.value())
+            return True
         else:
             current_app.logger.debug("Timeout for relay")
-        self.update_table(self.value())
+            return False
+
+    def on(self):
+        self._set_value(GPIO.HIGH)
 
     def off(self):
-        GPIO.output(self.pin_number, GPIO.LOW)
-
-        self.update_table(self.value())
+        return self._set_value(GPIO.LOW)
 
     def value(self):
         return GPIO.input(self.pin_number)
@@ -80,18 +98,17 @@ ORDER BY time DESC;""".format(
 class DBRelay(RelaySwitch, DatabaseDevice, LogDevice):
     type = "dbrelay"
 
-    def __init__(self, name, **kwargs):
+    def __init__(self, name, timeout=10, **kwargs):
+
         super(RelaySwitch, self).__init__(name)
+        self.timeout_minutes = timeout
 
     @property
     def table_name(self):
         return "dbrelay_" + self.name
 
-    def on(self):
-        self.update_table(True)
-
-    def off(self):
-        self.update_table(False)
+    def _set_output(self, value):
+        self.update_table(value == GPIO.HIGH)
 
     def value(self):
         cursor = get_db().execute(

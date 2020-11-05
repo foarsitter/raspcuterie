@@ -59,32 +59,32 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
 
         return humidity, temperature
 
-    def temperature_data(self):
+    def temperature_data(self, period='-24 hours', aggregate=5*60):
 
         cursor = get_db().execute(
-            """SELECT datetime(strftime('%s', t.time) - (strftime('%s', t.time) % (5 * 60)), 'unixepoch') time,
+            """SELECT datetime(strftime('%s', t.time) - (strftime('%s', t.time) % :aggregate), 'unixepoch') time,
        round(avg(value), 2)                                                                value
 FROM temperature t
 WHERE t.value is not null
-  and time >= datetime('now', '-24 hours')
-GROUP BY strftime('%s', t.time) / (5 * 60)
-ORDER BY time DESC;"""
+  and time >= datetime('now', :period)
+GROUP BY strftime('%s', t.time) / :aggregate
+ORDER BY time DESC;""", dict(period=period, aggregate=aggregate)
         )
 
         temperature_data = cursor.fetchall()
         cursor.close()
         return temperature_data
 
-    def humidity_data(self):
+    def humidity_data(self, period='-24 hours', aggregate=5*60):
 
         cursor = get_db().execute(
             """SELECT datetime(strftime('%s', t.time) - (strftime('%s', t.time) % (5 * 60)), 'unixepoch') time,
        round(avg(value), 2)                                                                value
 FROM humidity t
 WHERE t.value is not null
-  and time >= datetime('now', '-24 hours')
-GROUP BY strftime('%s', t.time) / (5 * 60)
-ORDER BY time DESC;"""
+  and time >= datetime('now', :period)
+GROUP BY strftime('%s', t.time) / :aggregate
+ORDER BY time DESC;""", dict(period=period, aggregate=aggregate)
         )
 
         humidity_data = cursor.fetchall()
