@@ -38,7 +38,7 @@ def dashboard():
         humidity_max = 0
 
     return render_template(
-        "base.html",
+        "dashboard.html",
         refrigerator=refrigerator.value(),
         heater=heater.value(),
         dehumidifier=dehumidifier.value(),

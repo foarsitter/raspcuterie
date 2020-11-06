@@ -55,29 +55,19 @@ def test_relay_current(client, relay):
     assert data[relay.name] == relay.value()
 
 
-def test_am2303_temperature(app, monkeypatch, client, am2302):
+def test_am2303_chart(app, monkeypatch, client, am2302):
     temperature = 22
-    monkeypatch.setattr(AM2302, "read", lambda self: (0, temperature))
-
-    with app.app_context():
-        am2302.log()
-
-    response = client.get("api/am2302/temperature.json")
-
-    data = response.get_json()
-
-    assert data[0][1] == temperature
-
-
-def test_am2303_humidity(app, monkeypatch, client, am2302):
     humidity = 82
-    monkeypatch.setattr(AM2302, "read", lambda self: (humidity, 0))
+    monkeypatch.setattr(AM2302, "read", lambda self: (humidity, temperature))
 
     with app.app_context():
         am2302.log()
 
-    response = client.get("api/am2302/humidity.json")
+    response = client.get("api/am2302/chart.json")
+
+    assert response.status_code == 200
 
     data = response.get_json()
 
-    assert data[0][1] == humidity
+    assert data["temperature"][0]["data"][0][1] == temperature
+    assert data["humidity"][0]["data"][0][1] == humidity
