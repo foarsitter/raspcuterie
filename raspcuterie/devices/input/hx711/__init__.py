@@ -34,8 +34,8 @@ class HX711(InputDevice):
         """
 
         self.GAIN = 0
-        self.offset = 8447362.25
-        self.scale = 419.79834254143645
+        self.offset = 0
+        self.scale = 1
 
         # Setup the gpio pin numbering system
         GPIO.setmode(GPIO.BCM)

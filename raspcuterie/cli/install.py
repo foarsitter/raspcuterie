@@ -2,6 +2,7 @@ import subprocess
 from pathlib import Path
 
 import click
+from flask.cli import with_appcontext
 
 from raspcuterie import base_path
 from raspcuterie.cli import cli
@@ -42,3 +43,11 @@ def cron():
 
     with pi_cron_file.open("w") as f:
         f.write("1 * * * * raspcuterie-cli log-values")
+
+
+@cli.command()
+def config():
+
+    file = base_path / "config.yaml"
+    click.echo(f"editing {file} with your editor")
+    click.edit(filename=file)
