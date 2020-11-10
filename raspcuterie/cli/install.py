@@ -2,7 +2,6 @@ import subprocess
 from pathlib import Path
 
 import click
-from flask.cli import with_appcontext
 
 from raspcuterie import base_path
 from raspcuterie.cli import cli
@@ -18,36 +17,41 @@ def systemd():
 
     input_path = base_path / "raspcuterie.service"
 
-    click.echo(f"sudo cp {input_path} /etc/systemd/system")
-    subprocess.call(["sudo", "cp", str(input_path), "/etc/systemd/system"])
+    commands = [
+        f"sudo cp {input_path} /etc/systemd/system",
+        "sudo systemctl daemon-reload",
+        "sudo systemctl enable raspcuterie.service",
+        "sudo systemctl start raspcuterie",
+    ]
 
-    click.echo("sudo systemctl daemon-reload")
-    subprocess.call(["sudo", "systemctl", "daemon-reload"])
-
-    click.echo("sudo systemctl enable raspcuterie.service")
-    subprocess.call(["sudo", "systemctl", "enable", "raspcuterie.service"])
-
-    click.echo("sudo systemctl start raspcuterie")
-    subprocess.call(["sudo", "systemctl", "start", "raspcuterie"])
+    for command in commands:
+        click.echo(command)
+        print(subprocess.call(command.split(" ")))
 
 
 @install.command()
 def cron():
 
-    pi_cron_path = Path("/var/spool/cron/pi")
+    command = "* * * * * /usr/local/bin/raspcuterie log-values"
 
-    if not pi_cron_path.is_dir():
-        pi_cron_path.mkdir()
+    cron_in = subprocess.Popen(["crontab", "-l"], stdout=subprocess.PIPE)
+    cur_crontab, _ = cron_in.communicate()
 
-    pi_cron_file = pi_cron_path / "cron"
+    cur_crontab = cur_crontab.decode("utf-8")
 
-    with pi_cron_file.open("w") as f:
-        f.write("1 * * * * raspcuterie-cli log-values")
+    if command not in cur_crontab:
+        click.echo("Updating cronjob")
+        cur_crontab += "# raspcuterie every minute"
+        cur_crontab += command
+    else:
+        click.echo("Command already present")
+
+    cron_out = subprocess.Popen(["crontab", "-"], stdin=subprocess.PIPE)
+    cron_out.communicate(input=cur_crontab.encode("utf-8"))
 
 
 @cli.command()
 def config():
 
     file = base_path / "config.yaml"
-    click.echo(f"editing {file} with your editor")
     click.edit(filename=file)

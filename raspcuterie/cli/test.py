@@ -1,7 +1,6 @@
 import click
-from flask.cli import with_appcontext
 
-from raspcuterie.cli import cli
+from raspcuterie.cli import cli, with_appcontext
 from raspcuterie.devices import InputDevice, OutputDevice
 
 
@@ -13,7 +12,6 @@ def test():
 @test.command()
 @with_appcontext
 def devices():
-
     click.echo("Listing input devices:")
     click.echo("============================")
 

@@ -1,8 +1,8 @@
-from flask import current_app
-from flask.cli import with_appcontext
+import logging
 
-from raspcuterie.cli import cli
-from raspcuterie.config import setup
+from flask import current_app
+
+from raspcuterie.cli import cli, with_appcontext
 from raspcuterie.devices import InputDevice, OutputDevice
 from raspcuterie.devices.control import ControlRule
 
@@ -15,7 +15,7 @@ def evaluate_config_rules():
 @cli.command()
 @with_appcontext
 def log_values():
-    setup(current_app)
+    current_app.logger.setLevel(logging.DEBUG)
     evaluate_config_rules()
 
     for input_device in InputDevice.registry.values():
