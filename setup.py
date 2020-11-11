@@ -21,7 +21,7 @@ setup(
     description="Charcuterie dashboard and controller for the Raspberry PI",
     license="MIT",
     name="raspcuterie",
-    version="0.1.4",
+    version="0.1.5",
     py_modules=["raspcuterie"],
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
