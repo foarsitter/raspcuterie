@@ -54,4 +54,12 @@ def cron():
 def config():
 
     file = base_path / "config.yaml"
+
+    if not base_path.exists():
+        base_path.mkdir()
+
+    if not file.exists():
+        x = Path("./config.yaml")
+        file.write_bytes(x.read_bytes())
+
     click.edit(filename=file)
