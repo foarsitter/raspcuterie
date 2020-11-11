@@ -15,7 +15,7 @@ def install():
 @install.command()
 def systemd():
 
-    input_path = base_path / "raspcuterie.service"
+    input_path = Path(".raspcuterie.service")
 
     commands = [
         f"sudo cp {input_path} /etc/systemd/system",
@@ -56,10 +56,11 @@ def config():
     file = base_path / "config.yaml"
 
     if not base_path.exists():
-        base_path.mkdir()
+        base_path.mkdir(parents=True)
 
     if not file.exists():
         x = Path("./config.yaml")
-        file.write_bytes(x.read_bytes())
+        with file.open("w") as f:
+            f.write_bytes(x.read_bytes())
 
     click.edit(filename=file)

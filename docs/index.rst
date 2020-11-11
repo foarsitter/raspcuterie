@@ -48,3 +48,16 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+sudo apt  --assume-yes update
+sudo apt  --assume-yes install python3-pip
+
+sudo pip3 install --upgrade pip setuptools wheel
+
+sudo pip3 install raspcuterie[rpi]
+
+raspcuterie config
+raspcuterie log-values
+raspcuterie install cron
+raspcuterie install systemd
