@@ -1,11 +1,11 @@
 import logging
-import os
 
 from flask import current_app
 
 from raspcuterie.cli import cli, with_appcontext
 from raspcuterie.devices import InputDevice, OutputDevice
 from raspcuterie.devices.control import ControlRule
+
 
 def evaluate_config_rules():
     for rule in ControlRule.registry:

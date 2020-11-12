@@ -53,7 +53,7 @@ def install():
 
 
 @install.command()
-@click.option('-p', '--port', default="5000")
+@click.option("-p", "--port", default="5000")
 def systemd(port):
 
     template = Template(systemd_template)
@@ -111,4 +111,3 @@ def config():
             f.write(x.read_text())
 
     click.edit(filename=file)
-

@@ -11,7 +11,6 @@ from raspcuterie.devices.output.relay import OutputDevice
 
 def parse_config(file):
 
-
     InputDevice.discover()
     OutputDevice.discover()
 
