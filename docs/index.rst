@@ -53,11 +53,11 @@ Indices and tables
 sudo apt  --assume-yes update
 sudo apt  --assume-yes install python3-pip
 
-sudo pip3 install --upgrade pip setuptools wheel
+pip3 install --upgrade pip setuptools wheel
 
-sudo pip3 install raspcuterie[rpi]==0.1.7
+pip3 install raspcuterie[rpi]
 
 raspcuterie config
-raspcuterie log-values
+raspcuterie log
 raspcuterie install cron
 raspcuterie install systemd
