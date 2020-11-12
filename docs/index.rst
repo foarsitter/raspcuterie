@@ -55,7 +55,7 @@ sudo apt  --assume-yes install python3-pip
 
 sudo pip3 install --upgrade pip setuptools wheel
 
-sudo pip3 install raspcuterie[rpi]
+sudo pip3 install raspcuterie[rpi]==0.1.7
 
 raspcuterie config
 raspcuterie log-values
