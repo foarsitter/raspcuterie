@@ -21,6 +21,7 @@ def devices():
         except Exception as e:
             click.echo(click.style(f"{key}: {e}", fg="red"), err=True)
 
+    click.echo("")
     click.echo("Listing output devices:")
     click.echo("============================")
 

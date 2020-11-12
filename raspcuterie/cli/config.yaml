@@ -3,8 +3,6 @@ devices:
   input:
     temperature:
       type: AM2302
-    weight:
-      type: HX711
   output:
     refrigerator:
       type: relay
