@@ -6,3 +6,5 @@ gunicorn # for heroku
 # allowed to fail
 rpi.gpio==0.7.0
 # Adafruit_DHT==1.4.0
+
+Jinja2==2.11.2

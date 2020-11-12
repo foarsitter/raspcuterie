@@ -12,9 +12,9 @@ def evaluate_config_rules():
         rule.execute_if_matches()
 
 
-@cli.command()
+@cli.command(short_help="Log the input and output devices")
 @with_appcontext
-def log_values():
+def log():
     current_app.logger.setLevel(logging.DEBUG)
     evaluate_config_rules()
 
@@ -23,7 +23,3 @@ def log_values():
 
     for output_device in OutputDevice.registry.values():
         output_device.log()
-
-
-if __name__ == "__main__":
-    log_values()

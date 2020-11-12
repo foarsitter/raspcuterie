@@ -1,16 +1,11 @@
 import os
 import subprocess
-from pathlib import Path
 from typing import List
 
 import click
 from jinja2 import Template
 
-from raspcuterie import base_path
 from raspcuterie.cli import cli
-
-module_path = Path(__file__).parent
-
 
 systemd_template = """
 [Unit]
@@ -47,12 +42,12 @@ def whoami():
     return read_return(["whoami"])
 
 
-@cli.group()
+@cli.group(short_help="Install the cron or systemd component")
 def install():
     pass
 
 
-@install.command()
+@install.command(short_help="Register the service as daemon and run at boot")
 @click.option("-p", "--port", default="5000")
 def systemd(port):
 
@@ -72,12 +67,12 @@ def systemd(port):
         print(subprocess.call(command, shell=True))
 
 
-@install.command()
+@install.command(short_help="Install the cronjob (shortcut for crontab -e)")
 def cron():
 
     which_raspcuterie = which("raspcuterie")
 
-    command = f"* * * * * {which_raspcuterie} log-values"
+    command = f"* * * * * {which_raspcuterie} log"
 
     cron_in = subprocess.Popen(["crontab", "-l"], stdout=subprocess.PIPE)
     cur_crontab, _ = cron_in.communicate()
@@ -95,19 +90,3 @@ def cron():
 
     cron_out = subprocess.Popen(["crontab", "-"], stdin=subprocess.PIPE)
     cron_out.communicate(input=cur_crontab.encode("utf-8"))
-
-
-@cli.command()
-def config():
-
-    file = base_path / "config.yaml"
-
-    if not base_path.exists():
-        base_path.mkdir(parents=True)
-
-    if not file.exists():
-        x = module_path / "config.yaml"
-        with file.open("w") as f:
-            f.write(x.read_text())
-
-    click.edit(filename=file)

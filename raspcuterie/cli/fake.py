@@ -16,16 +16,16 @@ def date_generator(start, stop, **interval):
 
 @cli.group()
 def fake():
-    pass
+    """Fake values for your sensors"""
 
 
-@fake.command()
+@fake.command(short_help="Fake temperature series")
 @with_appcontext
 def temperature():
     insert_single_value_data(db.insert_temperature, 5, 25, 60)
 
 
-@fake.command()
+@fake.command(short_help="Fake humidity series")
 @with_appcontext
 def humidity():
     insert_single_value_data(db.insert_humidity, 60, 95)
