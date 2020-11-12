@@ -80,14 +80,17 @@ ORDER BY time DESC;""".format(
 
         return cursor.fetchall()
 
-    def update_table(self, value):
+    def update_table(self, value, time=None):
+
+        if not time:
+            time = datetime.datetime.now()
 
         db = get_db()
 
         with db:
             db.execute(
                 "INSERT INTO {0}(time,value) VALUES (?,?)".format(self.table_name),
-                (datetime.datetime.now(), value),
+                (time, value),
             )
 
     @property

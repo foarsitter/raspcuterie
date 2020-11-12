@@ -2,9 +2,9 @@ name: raspcuterie
 devices:
   input:
     temperature:
-      type: AM2302
+      type: sinus
     weight:
-      type: HX711
+      type: sinus
   output:
     refrigerator:
       type: relay

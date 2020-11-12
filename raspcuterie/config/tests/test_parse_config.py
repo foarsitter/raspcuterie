@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from raspcuterie.devices.control import ControlRule
 from raspcuterie.devices.output.relay import OutputDevice
 
@@ -11,9 +13,11 @@ from raspcuterie.devices import InputDevice
 
 
 def test_parse_config():
+    file = Path(__file__).parent.parent.parent.parent / "config_dev.yaml"
+
     ControlRule.registry = []
 
-    x = parse_config()
+    x = parse_config(file)
 
     assert x
 

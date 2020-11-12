@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import yaml
 from flask import current_app
 
@@ -7,9 +9,8 @@ from raspcuterie.devices.control import ControlRule
 from raspcuterie.devices.output.relay import OutputDevice
 
 
-def parse_config(config_name="config.yaml"):
+def parse_config(file):
 
-    file = base_path / config_name
 
     InputDevice.discover()
     OutputDevice.discover()
@@ -72,9 +73,14 @@ def register_config_rules(config):
 
 def setup(app):
     if app.debug or app.testing:
-        config = parse_config("config_dev.yaml")
+
+        file = Path(__file__).parent.parent.parent / "config_dev.yaml"
+
+        config = parse_config(file)
     else:
-        config = parse_config()
+
+        file = base_path / "config.yaml"
+        config = parse_config(file)
     register_input_devices(config)
     register_output_devices(config)
     register_config_rules(config)

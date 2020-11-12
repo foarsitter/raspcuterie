@@ -1,19 +1,10 @@
-import functools
+import os
 
 import click
 
-from raspcuterie.app import create_app
+from flask.cli import with_appcontext  # noqa
 
-
-def with_appcontext(func):
-    @functools.wraps(func)
-    def decorator(*args, **kwargs):
-        app = create_app()
-
-        with app.app_context():
-            return func(*args, **kwargs)
-
-    return decorator
+os.environ.setdefault("FLASK_APP", "raspcuterie.app")
 
 
 @click.group()

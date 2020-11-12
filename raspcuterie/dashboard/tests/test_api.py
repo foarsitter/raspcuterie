@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 
 from raspcuterie.db import get_db
@@ -18,7 +20,7 @@ def relay(app):
 
         device.create_table(get_db())
 
-        device.off()
+        device.update_table(False, datetime.datetime.now() - datetime.timedelta(days=100))
 
         assert device.value() is False
 
