@@ -21,6 +21,7 @@
             width: 8em;
             margin-top: -2.5em;
             text-align: right;
+            z-index: 1;
         }
 
         #menu button {
@@ -112,14 +113,13 @@
                     <div class="notification is-primary is-size-1">
                         <div class="level">
                             <div class="level-item"><i class="far fa-thermometer-half fa-2x"></i></div>
-                            <div class="level-item">{% if temperature %}{{ temperature|round }}&deg;{% else %}
-                                n/a{% endif %}</div>
+                            <div class="level-item">{% raw %}{{ temperature }}{% endraw %}&deg;</div>
                         </div>
                     </div>
                     <div class="notification is-primary is-size-1">
                         <div class="level">
                             <div class="level-item"><i class="far fa-humidity fa-2x"></i></div>
-                            <div class="level-item">{% if humidity %}{{ humidity|round }}%{% else %}n/a{% endif %}</div>
+                            <div class="level-item">{% raw %}{{ humidity }}%{% endraw %}</div>
                         </div>
                     </div>
                 </div>
@@ -131,6 +131,8 @@
                         <div class="control">
                             <div class="select">
                                 <select v-model="period">
+                                    <option value="-1 hours">Last hour</option>
+                                    <option value="-12 hours">Last 12 hours</option>
                                     <option value="-24 hours">Last day</option>
                                     <option value="-7 days">Last week</option>
                                     <option value="-14 days">Last 4 weeks</option>
@@ -146,6 +148,7 @@
                         <div class="control">
                             <div class="select">
                                 <select v-model="aggregate">
+                                    <option value="60">1 minute</option>
                                     <option value="300">5 minutes</option>
                                     <option value="600">10 minutes</option>
                                     <option value="900">15 minutes</option>
@@ -218,6 +221,9 @@
                 curve: ['smooth', 'stepline', 'stepline'],
                 width: 1,
             },
+            markers: {
+    size: [0, 2, 2],
+},
             tooltip: {
                 x: {
                     show: true,
@@ -237,8 +243,13 @@
                 }
             },
             yaxis: [
-                {
-                    tickAmount: 2,
+                { tickAmount: 4,
+                    min: function(min) {
+                        return Math.floor(min)
+                    },
+                    max: function(max) {
+                        return Math.ceil(max)
+                    },
                     labels: {
                         minWidth: 40
                     },
@@ -278,8 +289,10 @@
                 heater: false,
                 humiditySeries: [],
                 temperatureSeries: [],
-                humidityChartOptions: graph(),
-                temperatureChartOptions: graph(),
+                humidityChartOptions: graph("humidity"),
+                temperatureChartOptions: graph("temperature"),
+                temperature: 0,
+                humidity: 0,
             }
         },
         beforeCreate: function () {
@@ -329,6 +342,7 @@
             updateChartInterval() {
                 setInterval(() => {
                     this.updateChart()
+                    this.updateAM2302()
                 }, 1000 * 60);
             },
             updateChart() {
@@ -346,6 +360,19 @@
                     this.temperatureSeries = response.data["temperature"]
                 });
             },
+            updateAM2302() {
+                axios({
+                    method: 'GET',
+                    url: "/api/am2302/current.json",
+                    params: {
+                        period: this.period,
+                        aggregate: this.aggregate,
+                    }
+                }).then(response => {
+                    this.humidity = response.data["humidity"]
+                    this.temperature = response.data["temperature"]
+                });
+            },
             loadLocalStorage() {
                 if (localStorage.period) {
                     this.period = localStorage.period
@@ -359,6 +386,7 @@
         mounted: function () {
             this.loadLocalStorage()
             this.updateChart()
+            this.updateAM2302()
             this.updateChartInterval()
         },
         watch: {
