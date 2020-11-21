@@ -34,13 +34,21 @@ class RelaySwitch(OutputDevice, DatabaseDevice, LogDevice):
 
         with get_db() as db:
 
-            cursor = db.execute("""SELECT time FROM {} ORDER BY time DESC LIMIT 1""".format(self.table_name))
+            cursor = db.execute(
+                """SELECT time FROM {} ORDER BY time DESC LIMIT 1""".format(
+                    self.table_name
+                )
+            )
 
             result = cursor.fetchone()
 
             if result and result[0]:
-                before = datetime.datetime.now() - datetime.timedelta(minutes=self.timeout_minutes)
-                last_seen = datetime.datetime.strptime(result[0], "%Y-%m-%d %H:%M:%S.%f")
+                before = datetime.datetime.now() - datetime.timedelta(
+                    minutes=self.timeout_minutes
+                )
+                last_seen = datetime.datetime.strptime(
+                    result[0], "%Y-%m-%d %H:%M:%S.%f"
+                )
                 current_app.logger.debug(f"{self.name} is last seen on {last_seen}")
                 return last_seen < before
 
@@ -69,7 +77,7 @@ class RelaySwitch(OutputDevice, DatabaseDevice, LogDevice):
 
     def chart(self):
         cursor = get_db().execute(
-            """SELECT time,value
+            """SELECT time, value
 FROM {0} t
 WHERE t.value is not null
   and time >= datetime('now', '-24 hours')
@@ -78,7 +86,17 @@ ORDER BY time DESC;""".format(
             )
         )
 
-        return cursor.fetchall()
+        r = cursor.fetchall()
+        x = []
+        previous_time = None
+        for time, value in r:
+            if not previous_time:
+                previous_time = time
+            else:
+                x.append((previous_time, value))
+                previous_time = time
+
+        return x
 
     def update_table(self, value, time=None):
 
