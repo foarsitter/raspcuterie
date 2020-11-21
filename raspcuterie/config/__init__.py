@@ -29,8 +29,12 @@ def register_input_devices(config):
         device_type = device.get("type", device_name)
 
         if device_type in InputDevice.types:
+
+            kwargs = device.copy()
+            del kwargs["type"]
+
             device_class = InputDevice.types[device_type]
-            device_class(device_name)
+            device_class(device_name, **kwargs)
         else:
             current_app.logger.error(f"Cloud not initiate {device}")
 

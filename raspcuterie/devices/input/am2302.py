@@ -1,9 +1,14 @@
+from builtins import super
+
 from raspcuterie.db import get_db, insert_temperature, insert_humidity
 from raspcuterie.devices import InputDevice, LogDevice, DatabaseDevice
 
 
 class AM2302(InputDevice, LogDevice, DatabaseDevice):
     type = "AM2302"
+
+    DEGREE_CELSIUS = "celsius"
+    DEGREE_FAHRENHEIT = "fahrenheit"
 
     table_sql = """
         create table if not exists {0}
@@ -12,6 +17,11 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
             time  text not null,
             value integer not null
         );"""
+
+    def __init__(self, name, degree=DEGREE_CELSIUS, gpio=4):
+        super(AM2302, self).__init__(name)
+        self.pin = gpio
+        self.degree = degree
 
     def read(self):
         humidity, temperature = self.raw()
@@ -27,8 +37,11 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
 
         sensor = Adafruit_DHT.DHT22
 
-        pin = 4
-        humidity, temperature = Adafruit_DHT.read_retry(sensor, pin, delay_seconds=0.2)
+        humidity, temperature = Adafruit_DHT.read_retry(sensor, self.pin, delay_seconds=0.2)
+
+        if self.degree != "celsius":
+            temperature = temperature * 9/5 + 32
+
         return humidity, temperature
 
     def get_context(self):

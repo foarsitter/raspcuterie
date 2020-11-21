@@ -3,6 +3,8 @@ devices:
   input:
     temperature:
       type: AM2302
+      degree: celsius
+      gpio: 5
   output:
     refrigerator:
       type: relay
