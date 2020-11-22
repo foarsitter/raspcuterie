@@ -52,7 +52,7 @@ def am2303_current():
         dict(
             temperature=temperature,
             humidity=humidity,
-            datetime=datetime.datetime.strftime(time, "%Y-%m-%d %H:%M:%S"),
+            datetime=time,
         )
     )
 
