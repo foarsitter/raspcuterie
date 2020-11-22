@@ -16,8 +16,6 @@ def dashboard():
 
     am2302: AM2302 = InputDevice.registry["temperature"]
 
-    humidity, temperature = am2302.read_from_database()
-
     temperature_data = am2302.temperature_data()
     humidity_data = am2302.humidity_data()
 
@@ -47,8 +45,6 @@ def dashboard():
         dehumidifier_data=dehumidifier.chart(),
         refrigerator_data=refrigerator.chart(),
         heater_data=heater.chart(),
-        humidity=humidity,
-        temperature=temperature,
         temperature_min=temperature_min,
         temperature_max=temperature_max,
         temperature_data=temperature_data,

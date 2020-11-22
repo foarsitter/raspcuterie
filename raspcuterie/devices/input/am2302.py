@@ -52,6 +52,8 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
 
     def read_from_database(self):
 
+        time = None
+
         temperature = (
             get_db()
             .execute("SELECT value, time FROM temperature ORDER BY time DESC LIMIT 1")
@@ -59,6 +61,7 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
         )
 
         if temperature:
+            time = temperature[1]
             temperature = temperature[0]
 
         humidity = (
