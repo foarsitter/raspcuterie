@@ -54,7 +54,7 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
 
         temperature = (
             get_db()
-            .execute("SELECT value FROM temperature ORDER BY time DESC LIMIT 1")
+            .execute("SELECT value, time FROM temperature ORDER BY time DESC LIMIT 1")
             .fetchone()
         )
 
@@ -63,14 +63,15 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
 
         humidity = (
             get_db()
-            .execute("SELECT value FROM humidity ORDER BY time DESC LIMIT 1")
+            .execute("SELECT value, time FROM humidity ORDER BY time DESC LIMIT 1")
             .fetchone()
         )
 
         if humidity:
+            time = humidity[1]
             humidity = humidity[0]
 
-        return humidity, temperature
+        return humidity, temperature, time
 
     def temperature_data(self, period='-24 hours', aggregate=5*60):
 

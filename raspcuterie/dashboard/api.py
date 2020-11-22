@@ -46,15 +46,13 @@ def am2303_current():
     """
     from raspcuterie.devices import InputDevice
 
-    humidity, temperature = InputDevice.registry["temperature"].raw()
-
-    now = datetime.datetime.now()
+    humidity, temperature, time = InputDevice.registry["temperature"].read_from_database()
 
     return jsonify(
         dict(
             temperature=temperature,
             humidity=humidity,
-            datetime=datetime.datetime.strftime(now, "%Y-%m-%d %H:%M:%S"),
+            datetime=datetime.datetime.strftime(time, "%Y-%m-%d %H:%M:%S"),
         )
     )
 
