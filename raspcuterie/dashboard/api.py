@@ -1,41 +1,11 @@
-import datetime
-
 from flask import Blueprint, jsonify, request
 from flask_babel import gettext
 
-from raspcuterie.db import get_db
 from raspcuterie.devices import InputDevice
 from raspcuterie.devices.input.am2302 import AM2302
 from raspcuterie.devices.output.relay import OutputDevice, RelaySwitch
 
 bp = Blueprint("api", __name__, url_prefix="/api")
-
-
-@bp.route("/hx711/current.json")
-def hx711_current():
-    """
-    Returns the current values for the humidity and temperature
-    :return:
-    """
-    from raspcuterie.devices.input.hx711.calibration import hx
-
-    return jsonify(dict(weight=hx.get_grams()))
-
-
-@bp.route("/hx711/24.json")
-def hx711_last_24_hours():
-    cursor = get_db().execute(
-        """SELECT time, value
-FROM weight
-WHERE time >= date('now', '-3 hours')
-ORDER BY time DESC;"""
-    )
-
-    data = cursor.fetchall()
-
-    cursor.close()
-
-    return jsonify(data)
 
 
 @bp.route("/am2302/current.json")
@@ -75,8 +45,8 @@ def am2303_chart():
         dict(
             temperature=[
                 dict(name=gettext("Temperature"), data=am2302.temperature_data(period, aggregate)),
-                dict(name=gettext("Refrigerator"), data=refrigerator.chart()),
-                dict(name=gettext("Heater"), data=heater.chart()),
+                dict(name=gettext("Refrigerator"), data=refrigerator.chart(period)),
+                dict(name=gettext("Heater"), data=heater.chart(period)),
             ],
             humidity=[
                 dict(data=am2302.humidity_data(period, aggregate), name=gettext("Humidity")),

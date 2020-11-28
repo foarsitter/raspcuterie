@@ -132,6 +132,8 @@
                             <div class="select">
                                 <select v-model="period">
                                     <option value="-1 hours">Last hour</option>
+                                    <option value="-2 hours">Last 2 hour</option>
+                                    <option value="-3 hours">Last 3 hour</option>
                                     <option value="-12 hours">Last 12 hours</option>
                                     <option value="-24 hours">Last day</option>
                                     <option value="-7 days">Last week</option>
@@ -193,9 +195,10 @@
     </section>
 </div>
 
-
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"
-        integrity="sha256-FZ8KwMj1F6qnNgA7bhPryVm19xKduH5OVr8u7I1tAtc=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"
+        integrity="sha256-KSlsysqp7TXtFo/FHjb1T9b425x3hrvzjMWaJyKbpcI=" crossorigin="anonymous"></script>
+{#<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"#}
+{#        integrity="sha256-FZ8KwMj1F6qnNgA7bhPryVm19xKduH5OVr8u7I1tAtc=" crossorigin="anonymous"></script>#}
 <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.22.0/dist/apexcharts.js"
         integrity="sha256-4Lasz800h6YPi4MMNryQ1EUqRsW+PBE8g2pus4sK5Nw=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue-apexcharts@1.6.0/dist/vue-apexcharts.js"
@@ -222,8 +225,8 @@
                 width: 1,
             },
             markers: {
-    size: [0, 2, 2],
-},
+                size: [0, 2, 2],
+            },
             tooltip: {
                 x: {
                     show: true,
@@ -243,11 +246,12 @@
                 }
             },
             yaxis: [
-                { tickAmount: 4,
-                    min: function(min) {
+                {
+                    tickAmount: 4,
+                    min: function (min) {
                         return Math.floor(min)
                     },
-                    max: function(max) {
+                    max: function (max) {
                         return Math.ceil(max)
                     },
                     labels: {
@@ -354,9 +358,7 @@
                         aggregate: this.aggregate,
                     }
                 }).then(response => {
-                    this.humidityChartOptions = graph(response.data["humidity"][0]["name"])
                     this.humiditySeries = response.data["humidity"]
-                    this.temperatureChartOptions = graph(response.data["temperature"][0]["name"])
                     this.temperatureSeries = response.data["temperature"]
                 });
             },

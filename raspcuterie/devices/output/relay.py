@@ -75,15 +75,15 @@ class RelaySwitch(OutputDevice, DatabaseDevice, LogDevice):
     def value(self):
         return GPIO.input(self.pin_number)
 
-    def chart(self):
+    def chart(self, period='-24 hours'):
         cursor = get_db().execute(
             """SELECT time, value
 FROM {0} t
 WHERE t.value is not null
-  and time >= datetime('now', '-24 hours')
+  and time >= datetime('now', :period)
 ORDER BY time DESC;""".format(
                 self.table_name
-            )
+            ), dict(period=period)
         )
 
         r = cursor.fetchall()
