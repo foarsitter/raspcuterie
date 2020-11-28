@@ -50,8 +50,8 @@ def am2303_chart():
             ],
             humidity=[
                 dict(data=am2302.humidity_data(period, aggregate), name=gettext("Humidity")),
-                dict(data=humidifier.chart(), name=gettext("Humidifier")),
-                dict(data=dehumidifier.chart(), name=gettext("Dehumidifier")),
+                dict(data=humidifier.chart(period), name=gettext("Humidifier")),
+                dict(data=dehumidifier.chart(period), name=gettext("Dehumidifier")),
             ],
         )
     )
