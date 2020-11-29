@@ -95,7 +95,7 @@ ORDER BY time DESC;""", dict(period=period, aggregate=aggregate)
     def humidity_data(self, period='-24 hours', aggregate=5*60):
 
         cursor = get_db().execute(
-            """SELECT datetime(strftime('%s', t.time) - (strftime('%s', t.time) % (5 * 60)), 'unixepoch') time,
+            """SELECT datetime(strftime('%s', t.time) - (strftime('%s', t.time) % :aggregate), 'unixepoch') time,
        round(avg(value), 2)                                                                value
 FROM humidity t
 WHERE t.value is not null

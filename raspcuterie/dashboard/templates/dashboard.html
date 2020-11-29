@@ -110,18 +110,49 @@
                             </div>
                         </div>
                     </div>
-                    <div class="notification is-primary is-size-1">
-                        <div class="level">
-                            <div class="level-item"><i class="far fa-thermometer-half fa-2x"></i></div>
-                            <div class="level-item">{% raw %}{{ temperature }}{% endraw %}&deg;</div>
+
+                    <div class="card has-background-primary has-text-white mb-5">
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-left">
+                                    <i class="far fa-temperature-down fa-4x" v-if="temperature.slope < 0"></i>
+                                    <i class="far fa-temperature-down fa-4x" v-else></i>
+                                </div>
+                                <div class="media-content ">
+                                    <p class="title is-4 has-text-white">  {% raw %}{{ temperature.current }}{% endraw %}&deg;</p>
+                                    <p class="subtitle is-6 has-text-white"><i
+                                            class="far fa-thermometer-three-quarters mr-2"></i> {% raw %}{{
+                                        temperature.max
+                                        }}{% endraw %} <br/><i class="far fa-thermometer-empty  mr-2"></i> {% raw %}{{
+                                        temperature.min }}{% endraw %}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="notification is-primary is-size-1">
-                        <div class="level">
-                            <div class="level-item"><i class="far fa-humidity fa-2x"></i></div>
-                            <div class="level-item">{% raw %}{{ humidity }}%{% endraw %}</div>
+
+                    <div class="card has-background-primary has-text-white mb-5">
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-left">
+                                    <i class="far fa-humidity fa-4x"></i>
+                                    <i class="far fa-long-arrow-alt-down fa-4x" v-if="humidity.slope < 0"></i>
+                                    <i class="far fa-long-arrow-alt-up fa-4x" v-else></i>
+                                </div>
+                                <div class="media-content ">
+                                    <p class="title is-4 has-text-white">
+                                        {% raw %}{{ humidity.current }}{% endraw %}&deg;
+                                    </p>
+                                    <p class="subtitle is-6 has-text-white">
+                                        <i class="far fa-arrow-to-top mr-2"></i>
+                                        {% raw %}{{ humidity.max }}{% endraw %} <br/>
+                                        <i class="far fa-arrow-to-bottom  mr-2"></i>
+                                        {% raw %}{{ humidity.min }}{% endraw %}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </div>
             <div class="columns" v-else>
@@ -195,10 +226,10 @@
     </section>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"
-        integrity="sha256-KSlsysqp7TXtFo/FHjb1T9b425x3hrvzjMWaJyKbpcI=" crossorigin="anonymous"></script>
-{#<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"#}
-{#        integrity="sha256-FZ8KwMj1F6qnNgA7bhPryVm19xKduH5OVr8u7I1tAtc=" crossorigin="anonymous"></script>#}
+{#<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"#}
+{#        integrity="sha256-KSlsysqp7TXtFo/FHjb1T9b425x3hrvzjMWaJyKbpcI=" crossorigin="anonymous"></script>#}
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"
+        integrity="sha256-FZ8KwMj1F6qnNgA7bhPryVm19xKduH5OVr8u7I1tAtc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.22.0/dist/apexcharts.js"
         integrity="sha256-4Lasz800h6YPi4MMNryQ1EUqRsW+PBE8g2pus4sK5Nw=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue-apexcharts@1.6.0/dist/vue-apexcharts.js"
@@ -295,8 +326,18 @@
                 temperatureSeries: [],
                 humidityChartOptions: graph("humidity"),
                 temperatureChartOptions: graph("temperature"),
-                temperature: 0,
-                humidity: 0,
+                temperature: {
+                    current: 0,
+                    min: 0,
+                    max: 0,
+                    slope: 1
+                },
+                humidity: {
+                    current: 0,
+                    min: 0,
+                    max: 0,
+                    slope: 1
+                },
             }
         },
         beforeCreate: function () {
