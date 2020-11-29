@@ -11,15 +11,15 @@ bp = Blueprint("api", __name__, url_prefix="/api")
 
 def slope(table):
     x_series = range(1, 6)
-    x_average = sum(x_series) / len(x_series)
+    x_average = sum(x_series) / 5
 
     series = get_db().execute(
-        "SELECT value FROM {} ORDER BY time LIMIT 5".format(table)
+        "SELECT value FROM {} ORDER BY time DESC LIMIT 5".format(table)
     )
 
-    y_series = [x[0] for x in series.fetchall()]
+    y_series = list(reversed([x[0] for x in series.fetchall()]))
 
-    y_average = sum(y_series) / len(y_series)
+    y_average = sum(y_series) / 5
 
     average_delta = sum(
         [(x - x_average) * (y - y_average) for x, y in zip(x_series, y_series)]
