@@ -5,6 +5,8 @@ minimal_requirements = [
     "Click==7.1.2",
     "pyyaml==5.3.1",
     "flask-babel==2.0.0",
+    "adafruit-circuitpython-dht==3.5.1",
+    "rpi.gpio==0.7.0"
 ]
 
 
@@ -14,8 +16,6 @@ def get_long_description():
     """
     return open("README.md", "r", encoding="utf8").read()
 
-
-rpi_requirements = ["rpi.gpio==0.7.0", "Adafruit_DHT==1.4.0"]
 
 setup(
     description="Charcuterie dashboard and controller for the Raspberry PI",
@@ -32,5 +32,4 @@ setup(
         "console_scripts": ["raspcuterie=raspcuterie.cli:cli"],
     },
     install_requires=minimal_requirements,
-    extras_require={"rpi": rpi_requirements},
 )

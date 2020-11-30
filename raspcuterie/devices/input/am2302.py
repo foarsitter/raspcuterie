@@ -1,5 +1,7 @@
 from builtins import super
 
+import adafruit_dht  # noqa
+
 from raspcuterie.db import get_db, insert_temperature, insert_humidity
 from raspcuterie.devices import InputDevice, LogDevice, DatabaseDevice
 
@@ -33,14 +35,17 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
 
     def raw(self):
 
-        import Adafruit_DHT  # noqa
+        from board import pin
 
-        sensor = Adafruit_DHT.DHT22
+        gpio_pin = pin.Pin(self.pin)
 
-        humidity, temperature = Adafruit_DHT.read_retry(sensor, self.pin, delay_seconds=0.2)
+        sensor = adafruit_dht.DHT22(gpio_pin)
+
+        temperature = sensor.temperature
+        humidity = sensor.humidity
 
         if self.degree != "celsius":
-            temperature = temperature * 9/5 + 32
+            temperature = temperature * 9 / 5 + 32
 
         return humidity, temperature
 
@@ -76,7 +81,7 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
 
         return humidity, temperature, time
 
-    def temperature_data(self, period='-24 hours', aggregate=5*60):
+    def temperature_data(self, period="-24 hours", aggregate=5 * 60):
 
         cursor = get_db().execute(
             """SELECT datetime(strftime('%s', t.time) - (strftime('%s', t.time) % :aggregate), 'unixepoch') time,
@@ -85,14 +90,15 @@ FROM temperature t
 WHERE t.value is not null
   and time >= datetime('now', :period)
 GROUP BY strftime('%s', t.time) / :aggregate
-ORDER BY time DESC;""", dict(period=period, aggregate=aggregate)
+ORDER BY time DESC;""",
+            dict(period=period, aggregate=aggregate),
         )
 
         temperature_data = cursor.fetchall()
         cursor.close()
         return temperature_data
 
-    def humidity_data(self, period='-24 hours', aggregate=5*60):
+    def humidity_data(self, period="-24 hours", aggregate=5 * 60):
 
         cursor = get_db().execute(
             """SELECT datetime(strftime('%s', t.time) - (strftime('%s', t.time) % :aggregate), 'unixepoch') time,
@@ -101,7 +107,8 @@ FROM humidity t
 WHERE t.value is not null
   and time >= datetime('now', :period)
 GROUP BY strftime('%s', t.time) / :aggregate
-ORDER BY time DESC;""", dict(period=period, aggregate=aggregate)
+ORDER BY time DESC;""",
+            dict(period=period, aggregate=aggregate),
         )
 
         humidity_data = cursor.fetchall()
