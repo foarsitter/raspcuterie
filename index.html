@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Welcome to raspcuterie’s documentation! &#8212; raspcuterie 0.1.18 documentation</title>
+    <title>Welkom bij de documentatie van raspcuterie! &#8212; raspcuterie 0.1.18 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -30,43 +30,79 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="welcome-to-raspcuterie-s-documentation">
-<h1>Welcome to raspcuterie’s documentation!<a class="headerlink" href="#welcome-to-raspcuterie-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>You need a:</p>
-<ul>
-<li><p>raspberry pi zero with header</p></li>
-<li><p>am2302</p></li>
-<li><p>relay board</p></li>
-<li><p>fan</p></li>
-<li><p>jumper cables</p></li>
-<li><p>power adapter</p>
-<p>Download en installeer “raspberry pi os”. Hoe je dat doe staat veelvuldig op internet uitgegelegd, bijvoorbeeld hier: <a class="reference external" href="https://raspberrytips.nl/raspberry-pi-installeren/">https://raspberrytips.nl/raspberry-pi-installeren/</a></p>
-<p>Sluit vervolgens de AM2302 &amp; relay board aan.</p>
-<p><a class="reference external" href="https://raspberrytips.nl/dht22-temperatuursensor-raspberry-pi/">https://raspberrytips.nl/dht22-temperatuursensor-raspberry-pi/</a>
-<a class="reference external" href="https://www.youtube.com/watch?v=OQyntQLazMU">https://www.youtube.com/watch?v=OQyntQLazMU</a></p>
-<p>Installeerd raspcuterie: <cite>pip install raspcuterie[pi]</cite></p>
-<p>test of de installatie is gelukt:</p>
-<p>raspcuterie-cli version</p>
-<p>sudo raspcuterie-cli install</p>
-<p>ga naar het ip van je raspberry pi met daarachter poort 5000: localhost:5000</p>
-</li>
-</ul>
-<div class="toctree-wrapper compound">
-</div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="welkom-bij-de-documentatie-van-raspcuterie">
+<h1>Welkom bij de documentatie van raspcuterie!<a class="headerlink" href="#welkom-bij-de-documentatie-van-raspcuterie" title="Permalink to this headline">¶</a></h1>
+<p>Raspcuterie is een samenstelling van het woord raspberry-pi en charcuterie.
+Met dit project proberen we om een zo simpel mogelijke interface te bieden voor de charcuterie &amp; worst liefhebber.</p>
+<p>Momenteel bestaat het project uit een dashboard waaraan een relais, luchtvochtigheid en temperatuur sensor is gekoppeld.
+Op basis van een simpele configuratie kun je apparaten schakelen via het relais als er aan bepaalde condities worden voldaan.</p>
+<p>Als je nog nooit gewerkt hebt met elektronica en geen enkele ervaring hebt met programmeren zal er in het begin veel op je af komen.
+Echter is doorzettingsvermogen het enige wat je nodig hebt om het te leren!</p>
+<div class="section" id="hardware-vereisten">
+<h2>Hardware vereisten<a class="headerlink" href="#hardware-vereisten" title="Permalink to this headline">¶</a></h2>
+<p>Raspcuterie is met onderstaande hardware ontwikkeld:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+<li><p>Raspberry Pi zero with header [<a class="reference external" href="https://www.okaphone.com/artikel.asp?id=487575">Okaphone</a>]</p></li>
+<li><p>Micro-SDHC geheugenkaart [<a class="reference external" href="https://www.okaphone.com/artikel.asp?id=487575">Okaphone</a>]</p></li>
+<li><p>AM2302 Temperatuur en luchtvochtigheid sensor [<a class="reference external" href="https://www.okaphone.com/artikel.asp?id=480699">Okaphone</a>]</p></li>
+<li><p>Relais module [<a class="reference external" href="https://www.okaphone.com/artikel.asp?id=484452">Okaphone</a>]</p></li>
+<li><p>Ventilator [<a class="reference external" href="https://www.okaphone.com/artikel.asp?id=490326">Okaphone</a>]</p></li>
+<li><p>Jumper cables male-male [<a class="reference external" href="https://www.okaphone.com/artikel.asp?id=471086">Okaphone</a>]</p></li>
+<li><p>Power adapter [<a class="reference external" href="https://www.okaphone.com/artikel.asp?id=483040">Okaphone</a>]</p></li>
 </ul>
-<p>sudo apt  –assume-yes update
-sudo apt  –assume-yes install python3-pip</p>
-<p>sudo pip3 install raspcuterie[rpi]</p>
-<p>raspcuterie config
+<p>Als je zelf een goed idee hebt van waar je mee bezig bent kun je gekozen onderdelen natuurlijk ook uitwisselen voor anderen.
+Zo is de aangeschafte voeding wellicht een beetje overkill en kun je ook gerust een oude smartphone voeding gebruiken.
+Dit geldt eveneens voor de gebruikte geheugenkaart.
+We hebben echt geen 16gb nodig, eerder 2gb, maar een 8gb kaart is slechts 3 euro goedkoper.</p>
+<p>Het goedkoopste is natuurlijk om al de onderdelen online in het buitenland te bestellen. Echter heb je dan wel te maken met een lange levertijd. Als je snel aan de slag wilt kun je het beste bestellen bij een Nederlandse partij zoals het groningse Okaphone.</p>
+</div>
+<div class="section" id="software">
+<h2>Software<a class="headerlink" href="#software" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="raspberry-pi-os">
+<h3>Raspberry Pi os<a class="headerlink" href="#raspberry-pi-os" title="Permalink to this headline">¶</a></h3>
+<p>De eerste stap is om de geheugenkaart voor te bereiden op het draaien van het “raspberry pi os”.
+Hoe je dat doe staat veelvuldig op internet uitgelegd, bijvoorbeeld hier: <a class="reference external" href="https://raspberrytips.nl/raspberry-pi-installeren/">https://raspberrytips.nl/raspberry-pi-installeren/</a></p>
+<p>Om de kosten te drukken ben ik voor een headless setup gegaan (zonder toetsenbord, muis en monitor).
+De uitleg om direct SSH aan te zetten en met WIFI te verbinden is hier te lezen <a class="reference external" href="https://raspberrytips.nl/wifi-instellingen-raspbian-image/">https://raspberrytips.nl/wifi-instellingen-raspbian-image/</a>.</p>
+<p>Als je je door bovenstaande stappen hebt weten te worstelen heb je nu een werkend Raspberry Pi.</p>
+<p>Vergeet niet om direct bij de eerste keer inloggen je wachtwoord aan te passen.</p>
+</div>
+<div class="section" id="am2302">
+<h3>AM2302<a class="headerlink" href="#am2302" title="Permalink to this headline">¶</a></h3>
+<p>In de onderstaande link staat uitgelegd hoe je de sensor koppeld met je RPi.
+Kinderspel zeg je over 3 maanden. Voor nu zijn die nummertjes van die pinnetjes lastig te onderscheiden.
+Het wil helpen om een overzicht te printen en naast je bordje te leggen. Dan heb je een goed overzicht.</p>
+<p>Het software gedeelte kun je overslaan.</p>
+<p>In de standaard configuratie gaan we er vanuit dat je <cite>gpio 5</cite> gebruikt als data pin.
+Maar dit kun je makkelijk wijzigen in de configuratie.</p>
+<p><a class="reference external" href="https://raspberrytips.nl/dht22-temperatuursensor-raspberry-pi/">https://raspberrytips.nl/dht22-temperatuursensor-raspberry-pi/</a></p>
+</div>
+<div class="section" id="relais-module">
+<h3>Relais module<a class="headerlink" href="#relais-module" title="Permalink to this headline">¶</a></h3>
+<p>De relais module is ook geen rocket science.
+Kies 4 gpio pinnen, 1 voor de stroom (5v) en 1 voor de aarde.</p>
+<p><a class="reference external" href="https://www.youtube.com/watch?v=OQyntQLazMU">https://www.youtube.com/watch?v=OQyntQLazMU</a></p>
+</div>
+<div class="section" id="raspcuterie">
+<h3>Raspcuterie<a class="headerlink" href="#raspcuterie" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo apt  --assume-yes update
+sudo apt  --assume-yes install python3-pip
+
+pip3 install raspcuterie
+
+raspcuterie config
 raspcuterie install cron
-raspcuterie install systemd</p>
+raspcuterie install systemd
+</pre></div>
+</div>
+<p>test of de installatie is gelukt:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>raspcuterie --help
+sudo systemctl status raspcuterie
+</pre></div>
+</div>
+<p>Ga naar het ip van je raspberry pi met daarachter poort 5000: localhost:5000. Het ip-adres van je raspberry pi kun je vinden in je router.</p>
+</div>
+</div>
 </div>
 
 
