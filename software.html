@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Software &#8212; raspcuterie 0.1.18 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Hardware vereisten" href="hardware.html" />
+    <link rel="prev" title="Welkom bij de documentatie van raspcuterie!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="software">
+<h1>Software<a class="headerlink" href="#software" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="raspberry-pi-os">
+<h2>Raspberry Pi os<a class="headerlink" href="#raspberry-pi-os" title="Permalink to this headline">¶</a></h2>
+<p>De eerste stap is om de geheugenkaart voor te bereiden op het draaien van het “raspberry pi os”.
+Hoe je dat doe staat veelvuldig op internet uitgelegd, bijvoorbeeld hier: <a class="reference external" href="https://raspberrytips.nl/raspberry-pi-installeren/">https://raspberrytips.nl/raspberry-pi-installeren/</a></p>
+<div class="section" id="headless-setup">
+<h3>Headless setup<a class="headerlink" href="#headless-setup" title="Permalink to this headline">¶</a></h3>
+<p>Om de kosten te drukken kun je voor een headless setup gaan.
+Dit betekend dat je geen toetsenbord, muis en monitor koppeld aan je Raspberry Pi.
+Je logt dan via SSH in op de Raspberry Pi.
+De uitleg om direct SSH aan te zetten en met WIFI te verbinden is hier te lezen <a class="reference external" href="https://raspberrytips.nl/wifi-instellingen-raspbian-image/">https://raspberrytips.nl/wifi-instellingen-raspbian-image/</a>.</p>
+</div>
+<div class="section" id="belangrijk">
+<h3>Belangrijk<a class="headerlink" href="#belangrijk" title="Permalink to this headline">¶</a></h3>
+<p>Vergeet niet om direct bij de eerste keer inloggen je wachtwoord aan te passen.</p>
+</div>
+</div>
+<div class="section" id="raspcuterie">
+<h2>Raspcuterie<a class="headerlink" href="#raspcuterie" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo apt  --assume-yes update
+sudo apt  --assume-yes install python3-pip
+
+pip3 install raspcuterie
+
+raspcuterie config
+raspcuterie install cron
+raspcuterie install systemd
+</pre></div>
+</div>
+<p>test of de installatie is gelukt:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>raspcuterie --help
+sudo systemctl status raspcuterie
+</pre></div>
+</div>
+<p>Open je browser en ga naar <a class="reference external" href="http://localhost:5000">http://localhost:5000</a></p>
+<p>Heb je een headless setup? Ga dan in de browser naar het ipadres van je Raspberry Pi met daarachter :5000.</p>
+<p>Ga naar het ip van je raspberry pi met daarachter poort 5000: localhost:5000. Het ip-adres van je raspberry pi kun je vinden in je router.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">raspcuterie</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#raspberry-pi-os">Raspberry Pi os</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#raspcuterie">Raspcuterie</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware vereisten</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welkom bij de documentatie van raspcuterie!</a></li>
+      <li>Next: <a href="hardware.html" title="next chapter">Hardware vereisten</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Jelmer Draaijer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/software.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Hardware vereisten &#8212; raspcuterie 0.1.18 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Software" href="software.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="hardware-vereisten">
+<h1>Hardware vereisten<a class="headerlink" href="#hardware-vereisten" title="Permalink to this headline">¶</a></h1>
+<p>Raspcuterie is met onderstaande hardware ontwikkeld:</p>
+<ul class="simple">
+<li><p>Raspberry Pi zero with header [<a class="reference external" href="https://www.okaphone.com/artikel.asp?id=487575">Okaphone</a>]</p></li>
+<li><p>Micro-SDHC geheugenkaart [<a class="reference external" href="https://www.okaphone.com/artikel.asp?id=487575">Okaphone</a>]</p></li>
+<li><p>AM2302 Temperatuur en luchtvochtigheid sensor [<a class="reference external" href="https://www.okaphone.com/artikel.asp?id=480699">Okaphone</a>]</p></li>
+<li><p>Relais module [<a class="reference external" href="https://www.okaphone.com/artikel.asp?id=484452">Okaphone</a>]</p></li>
+<li><p>Ventilator [<a class="reference external" href="https://www.okaphone.com/artikel.asp?id=490326">Okaphone</a>]</p></li>
+<li><p>Jumper cables male-male [<a class="reference external" href="https://www.okaphone.com/artikel.asp?id=471086">Okaphone</a>]</p></li>
+<li><p>Power adapter [<a class="reference external" href="https://www.okaphone.com/artikel.asp?id=483040">Okaphone</a>]</p></li>
+</ul>
+<div class="section" id="andere-hardware">
+<h2>Andere hardware<a class="headerlink" href="#andere-hardware" title="Permalink to this headline">¶</a></h2>
+<p>Als je zelf een goed idee hebt van waar je mee bezig bent kun je gekozen onderdelen natuurlijk ook uitwisselen voor anderen.
+Zo is de aangeschafte voeding wellicht een beetje overkill en kun je ook gerust een oude smartphone voeding gebruiken.
+Dit geldt eveneens voor de gebruikte geheugenkaart.
+We hebben echt geen 16gb nodig, eerder 2gb, maar een 8gb kaart is slechts 3 euro goedkoper.</p>
+</div>
+<div class="section" id="goedkoopste">
+<h2>Goedkoopste<a class="headerlink" href="#goedkoopste" title="Permalink to this headline">¶</a></h2>
+<p>Het goedkoopste is natuurlijk om al de onderdelen online in het buitenland te bestellen. Echter heb je dan wel te maken met een lange levertijd. Als je snel aan de slag wilt kun je het beste bestellen bij een Nederlandse partij zoals het groningse Okaphone.</p>
+</div>
+<div class="section" id="devices">
+<h2>Devices<a class="headerlink" href="#devices" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="am2302">
+<h3>AM2302<a class="headerlink" href="#am2302" title="Permalink to this headline">¶</a></h3>
+<p>In de onderstaande link staat uitgelegd hoe je de sensor koppeld met je RPi.
+Kinderspel zeg je over 3 maanden. Voor nu zijn die nummertjes van die pinnetjes lastig te onderscheiden.
+Het wil helpen om een overzicht te printen en naast je bordje te leggen. Dan heb je een goed overzicht.</p>
+<p>Het software gedeelte kun je overslaan.</p>
+<p>In de standaard configuratie gaan we er vanuit dat je <cite>gpio 5</cite> gebruikt als data pin.
+Maar dit kun je makkelijk wijzigen in de configuratie.</p>
+<p><a class="reference external" href="https://raspberrytips.nl/dht22-temperatuursensor-raspberry-pi/">https://raspberrytips.nl/dht22-temperatuursensor-raspberry-pi/</a></p>
+</div>
+<div class="section" id="relais-module">
+<h3>Relais module<a class="headerlink" href="#relais-module" title="Permalink to this headline">¶</a></h3>
+<p>De relais module is ook geen rocket science.
+Kies 4 gpio pinnen, 1 voor de stroom (5v) en 1 voor de aarde.</p>
+<p><a class="reference external" href="https://www.youtube.com/watch?v=OQyntQLazMU">https://www.youtube.com/watch?v=OQyntQLazMU</a></p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">raspcuterie</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="software.html">Software</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Hardware vereisten</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#andere-hardware">Andere hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#goedkoopste">Goedkoopste</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#devices">Devices</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="software.html" title="previous chapter">Software</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Jelmer Draaijer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/hardware.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
