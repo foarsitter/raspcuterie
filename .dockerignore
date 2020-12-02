@@ -1,0 +1,12 @@
+.*
+!.coveragerc
+!.env
+!.pylintrc
+!raspcuterie.db
+!raspcuterie.egg-info
+!docs
+!*.pyc
+.git/
+
+**/*.pyc
+**/__pycache__
