@@ -3,8 +3,6 @@ devices:
   input:
     temperature:
       type: sinus
-    weight:
-      type: sinus
   output:
     refrigerator:
       type: dbrelay

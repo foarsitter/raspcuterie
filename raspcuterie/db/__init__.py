@@ -56,7 +56,7 @@ def insert_temperature(value: float, time_value=None):
     )
 
     if previous_value and round(previous_value[0], 1) == round(value, 1):
-        current_app.logger.info("Humidity: mo significant change")
+        current_app.logger.info("Temperature: no significant change")
     else:
         current_app.logger.info(f"Temperature: logging {value} ")
         db = get_db()
