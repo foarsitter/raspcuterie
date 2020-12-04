@@ -41,8 +41,15 @@ WHERE t.value is not null
         ),
         dict(period=period),
     )
+    min_value, max_value = result.fetchone()
 
-    return result.fetchone()
+    if not min_value:
+        min_value = 0
+
+    if not max_value:
+        max_value = 0
+
+    return min_value, max_value
 
 
 @bp.route("/am2302/current.json")
@@ -79,13 +86,7 @@ def am2303_current():
         slope=humidity_slope,
     )
 
-    return jsonify(
-        dict(
-            temperature=temperature,
-            humidity=humidity,
-            datetime=time,
-        )
-    )
+    return jsonify(dict(temperature=temperature, humidity=humidity, time=time))
 
 
 @bp.route("/am2302/chart.json")

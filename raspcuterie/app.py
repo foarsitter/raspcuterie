@@ -1,7 +1,7 @@
 from flask import Flask, request
 from flask_babel import Babel
 
-from raspcuterie import base_path
+from raspcuterie import base_path, version
 from raspcuterie.config import setup
 from raspcuterie.dashboard import api, dashboard
 from raspcuterie.db import close_db, init_db, raw_connection
@@ -29,6 +29,8 @@ def create_app(test_config=None):
 
     setup(app)
     init_db(raw_connection(app))
+
+    app.jinja_env.globals['version'] = version
     return app
 
 

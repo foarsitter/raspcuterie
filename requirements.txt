@@ -5,5 +5,4 @@ flask-babel==2.0.0
 gunicorn==20.0.4
 rpi.gpio==0.7.0
 Jinja2==2.11.2
-pytest==6.1.2
 adafruit-circuitpython-dht==3.5.1

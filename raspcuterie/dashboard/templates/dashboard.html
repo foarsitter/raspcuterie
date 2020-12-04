@@ -2,7 +2,7 @@
 <html lang="en" class="has-background-danger">
 <head>
     <meta charset="UTF-8">
-    <title>Raspcuterie</title>
+    <title>Raspcuterie v{{ version }}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-switch@2.0.0/dist/css/bulma-switch.min.css"
           integrity="sha256-jCV/cXwP13w0GNHLgFx6SFgTNAvJPvS5MIhuE30Ng08=" crossorigin="anonymous">
@@ -115,25 +115,6 @@
                         <div class="card-content">
                             <div class="media">
                                 <div class="media-left">
-                                    <i class="far fa-temperature-down fa-4x" v-if="temperature.slope < 0"></i>
-                                    <i class="far fa-temperature-down fa-4x" v-else></i>
-                                </div>
-                                <div class="media-content ">
-                                    <p class="title is-4 has-text-white">  {% raw %}{{ temperature.current }}{% endraw %}&deg;</p>
-                                    <p class="subtitle is-6 has-text-white"><i
-                                            class="far fa-thermometer-three-quarters mr-2"></i> {% raw %}{{
-                                        temperature.max
-                                        }}{% endraw %} <br/><i class="far fa-thermometer-empty  mr-2"></i> {% raw %}{{
-                                        temperature.min }}{% endraw %}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card has-background-primary has-text-white mb-5">
-                        <div class="card-content">
-                            <div class="media">
-                                <div class="media-left">
                                     <i class="far fa-humidity fa-4x"></i>
                                     <i class="far fa-long-arrow-alt-down fa-4x" v-if="humidity.slope < 0"></i>
                                     <i class="far fa-long-arrow-alt-up fa-4x" v-else></i>
@@ -152,6 +133,26 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="card has-background-primary has-text-white mb-5">
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-left">
+                                    <i class="far fa-temperature-down fa-4x" v-if="temperature.slope < 0"></i>
+                                    <i class="far fa-temperature-down fa-4x" v-else></i>
+                                </div>
+                                <div class="media-content ">
+                                    <p class="title is-4 has-text-white">  {% raw %}{{ temperature.current }}{% endraw %}&deg;</p>
+                                    <p class="subtitle is-6 has-text-white"><i
+                                            class="far fa-thermometer-three-quarters mr-2"></i> {% raw %}{{
+                                        temperature.max
+                                        }}{% endraw %} <br/><i class="far fa-thermometer-empty  mr-2"></i> {% raw %}{{
+                                        temperature.min }}{% endraw %}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% raw %}{{ lastRequestTime }}{% endraw %}
 
                 </div>
             </div>
@@ -332,6 +333,7 @@
                     max: 0,
                     slope: 1
                 },
+                lastRequestTime: "n/a",
                 humidity: {
                     current: 0,
                     min: 0,
@@ -414,6 +416,7 @@
                 }).then(response => {
                     this.humidity = response.data["humidity"]
                     this.temperature = response.data["temperature"]
+                    this.lastRequestTime = response.data["time"]
                 });
             },
             loadLocalStorage() {

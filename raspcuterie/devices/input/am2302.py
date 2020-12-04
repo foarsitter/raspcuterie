@@ -1,7 +1,5 @@
 from builtins import super
 
-import adafruit_dht  # noqa
-
 from raspcuterie.db import get_db, insert_temperature, insert_humidity
 from raspcuterie.devices import InputDevice, LogDevice, DatabaseDevice
 
@@ -36,6 +34,7 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
     def raw(self):
 
         from board import pin
+        import adafruit_dht  # noqa
 
         gpio_pin = pin.Pin(self.pin)
 
