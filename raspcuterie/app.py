@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, request
 from flask_babel import Babel
 
@@ -11,7 +13,10 @@ babel = Babel()
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True, template_folder="./templates")
-    app.config.from_mapping(DATABASE=str(base_path / "raspcuterie.db"))
+
+    app.config.from_mapping(
+        DATABASE=os.environ.get("DATABASE", str(base_path / "raspcuterie.db"))
+    )
 
     if test_config is None:
         app.config.from_pyfile("config.py", silent=True)
