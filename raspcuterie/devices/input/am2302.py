@@ -1,5 +1,7 @@
 from builtins import super
 
+from flask import current_app
+
 from raspcuterie.db import get_db, insert_temperature, insert_humidity
 from raspcuterie.devices import InputDevice, LogDevice, DatabaseDevice
 
@@ -42,12 +44,14 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
         try:
             temperature = sensor.temperature
             humidity = sensor.humidity
-        except RuntimeError:
-            pass
+        except RuntimeError as e:
+            current_app.logger.error(e)
+            temperature = None
+            humidity = None
         finally:
             sensor.exit()
 
-        if self.degree != "celsius":
+        if self.degree != "celsius" and temperature:
             temperature = temperature * 9 / 5 + 32
 
         return humidity, temperature
