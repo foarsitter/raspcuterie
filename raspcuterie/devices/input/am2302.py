@@ -39,11 +39,13 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
         gpio_pin = pin.Pin(self.pin)
 
         sensor = adafruit_dht.DHT22(gpio_pin)
-
-        temperature = sensor.temperature
-        humidity = sensor.humidity
-
-        sensor.exit()
+        try:
+            temperature = sensor.temperature
+            humidity = sensor.humidity
+        except RuntimeError:
+            pass
+        finally:
+            sensor.exit()
 
         if self.degree != "celsius":
             temperature = temperature * 9 / 5 + 32
