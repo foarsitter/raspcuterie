@@ -16,10 +16,19 @@ def evaluate_config_rules():
 @with_appcontext
 def log():
     current_app.logger.setLevel(logging.DEBUG)
-    evaluate_config_rules()
+    try:
+        evaluate_config_rules()
+    except Exception as e:
+        current_app.logger.error(e)
 
     for input_device in InputDevice.registry.values():
-        input_device.log()
+        try:
+            input_device.log()
+        except Exception as e:
+            current_app.logger.error(e)
 
     for output_device in OutputDevice.registry.values():
-        output_device.log()
+        try:
+            output_device.log()
+        except Exception as e:
+            current_app.logger.error(e)

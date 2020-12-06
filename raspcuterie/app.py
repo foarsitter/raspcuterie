@@ -45,12 +45,8 @@ def get_locale():
     return request.accept_languages.best_match(["nl", "en"])
 
 
-def close_pulseio():
+def close_pulseio(e=None):
     sensor = g.pop("am2302", None)
 
     if sensor:
         sensor.exit()
-
-
-def get_am2302():
-    pass
