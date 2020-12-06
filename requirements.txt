@@ -7,3 +7,4 @@ rpi.gpio==0.7.0
 Jinja2==2.11.2
 Pygments==2.7.2
 adafruit-circuitpython-dht==3.5.1
+Adafruit_DHT==1.4.0

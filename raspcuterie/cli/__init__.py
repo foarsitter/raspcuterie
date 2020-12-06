@@ -4,7 +4,7 @@ from pathlib import Path
 import click
 from flask.cli import with_appcontext  # noqa
 
-from .. import base_path
+from .. import base_path, version
 from ..devices import InputDevice, OutputDevice
 
 os.environ.setdefault("FLASK_APP", "raspcuterie.app")
@@ -58,3 +58,8 @@ def config():
 
     click.echo(f"Editing {file} ")
     click.edit(filename=file)
+
+
+@cli.command(short_help="Version number")
+def version():
+    click.echo(version)
