@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, request
+from flask import Flask, request, g
 from flask_babel import Babel
 
 from raspcuterie import base_path, version
@@ -29,6 +29,7 @@ def create_app(test_config=None):
     app.register_blueprint(dashboard.bp)
 
     app.teardown_appcontext(close_db)
+    app.teardown_appcontext(close_pulseio)
 
     babel.init_app(app)
 
@@ -42,3 +43,14 @@ def create_app(test_config=None):
 @babel.localeselector
 def get_locale():
     return request.accept_languages.best_match(["nl", "en"])
+
+
+def close_pulseio():
+    sensor = g.pop("am2302", None)
+
+    if sensor:
+        sensor.exit()
+
+
+def get_am2302():
+    pass

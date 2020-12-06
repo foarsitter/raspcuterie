@@ -4,7 +4,7 @@ from pathlib import Path
 import click
 from flask.cli import with_appcontext  # noqa
 
-from .. import base_path, version
+import raspcuterie
 from ..devices import InputDevice, OutputDevice
 
 os.environ.setdefault("FLASK_APP", "raspcuterie.app")
@@ -46,10 +46,10 @@ def devices():
 @cli.command(short_help="Edit the configuration file")
 def config():
 
-    file = base_path / "config.yaml"
+    file = raspcuterie.base_path / "config.yaml"
 
-    if not base_path.exists():
-        base_path.mkdir(parents=True)
+    if not raspcuterie.base_path.exists():
+        raspcuterie.base_path.mkdir(parents=True)
 
     if not file.exists():
         x = module_path / "config.yaml"
@@ -62,4 +62,4 @@ def config():
 
 @cli.command(short_help="Version number")
 def version():
-    click.echo(version)
+    click.echo(raspcuterie.version)

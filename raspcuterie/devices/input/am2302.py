@@ -1,3 +1,5 @@
+from flask import current_app, g
+
 from raspcuterie.db import get_db, insert_temperature, insert_humidity
 from raspcuterie.devices import InputDevice, LogDevice, DatabaseDevice
 
@@ -29,15 +31,34 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
         connection.execute(AM2302.table_sql.format("humidity"))
         connection.execute(AM2302.table_sql.format("temperature"))
 
+    @staticmethod
+    def get_sensor(gpio_pin):
+
+        if "am2302" not in g:
+
+            from board import pin
+            from adafruit_dht import DHT22  # noqa
+
+            gpio_pin = pin.Pin(gpio_pin)
+
+            g.am2302 = DHT22(gpio_pin)
+
+        return g.am2302
+
     def raw(self):
+        sensor = AM2302.get_sensor(self.pin)
 
-        import Adafruit_DHT  # noqa
+        try:
+            temperature = sensor.temperature
+            humidity = sensor.humidity
+        except RuntimeError as e:
+            current_app.logger.error(e)
+            temperature = None
+            humidity = None
+        finally:
+            sensor.exit()
 
-        sensor = Adafruit_DHT.DHT22
-
-        humidity, temperature = Adafruit_DHT.read_retry(sensor, self.pin, delay_seconds=0.2)
-
-        if temperature and self.degree != "celsius":
+        if self.degree != "celsius" and temperature:
             temperature = temperature * 9 / 5 + 32
 
         return humidity, temperature
