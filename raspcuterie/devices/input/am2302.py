@@ -43,6 +43,8 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
         temperature = sensor.temperature
         humidity = sensor.humidity
 
+        sensor.exit()
+
         if self.degree != "celsius":
             temperature = temperature * 9 / 5 + 32
 

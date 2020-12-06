@@ -2,11 +2,9 @@ from flask import render_template, Blueprint, current_app
 from pygments import highlight
 from pygments.formatters.html import HtmlFormatter
 from pygments.lexers.data import YamlLexer
-from pygments.lexers.templates import YamlJinjaLexer
 
-from raspcuterie.config import get_config_file
-from raspcuterie.devices.input.am2302 import AM2302
 from raspcuterie.devices import OutputDevice, InputDevice
+from raspcuterie.devices.input.am2302 import AM2302
 
 bp = Blueprint("dashboard", __name__, template_folder="./templates")
 
