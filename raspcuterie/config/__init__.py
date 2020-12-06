@@ -9,15 +9,16 @@ from raspcuterie.devices.control import ControlRule
 from raspcuterie.devices.output.relay import OutputDevice
 
 
-def parse_config(file):
+def parse_config(file: Path):
 
     InputDevice.discover()
     OutputDevice.discover()
 
-    with file.open() as f:
-        data_loaded = yaml.safe_load(f)
+    data = file.read_text()
 
-        return data_loaded
+    data_loaded = yaml.safe_load(data)
+    data_loaded["raw"] = data
+    return data_loaded
 
 
 def register_input_devices(config):
@@ -74,16 +75,20 @@ def register_config_rules(config):
             )
 
 
-def setup(app):
+def get_config_file(app):
     if app.debug or app.testing:
-
         file = Path(__file__).parent.parent.parent / "config_dev.yaml"
-
-        config = parse_config(file)
     else:
-
         file = base_path / "config.yaml"
-        config = parse_config(file)
+
+    return file
+
+
+def setup(app):
+    config = parse_config(get_config_file(app))
+
+    app.config["config"] = config["raw"]
+
     register_input_devices(config)
     register_output_devices(config)
     register_config_rules(config)

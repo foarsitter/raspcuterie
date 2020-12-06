@@ -36,6 +36,10 @@
             border-bottom-left-radius: 6px;
         }
 
+        .linenodiv pre {
+            line-height: 1.25;
+        }
+
     </style>
 </head>
 <body class="has-background-danger">
@@ -156,73 +160,86 @@
 
                 </div>
             </div>
-            <div class="columns" v-else>
-                <div class="column">
-                    <div class="notification is-white">
-                        <label class="label">Period, since</label>
-                        <div class="control">
-                            <div class="select">
-                                <select v-model="period">
-                                    <option value="-1 hours">Last hour</option>
-                                    <option value="-2 hours">Last 2 hour</option>
-                                    <option value="-3 hours">Last 3 hour</option>
-                                    <option value="-12 hours">Last 12 hours</option>
-                                    <option value="-24 hours">Last day</option>
-                                    <option value="-7 days">Last week</option>
-                                    <option value="-14 days">Last 4 weeks</option>
-                                    <option value="-28 days">Last 8 weeks</option>
-                                </select>
-                            </div>
+            <div class="tile is-ancestor" v-else>
+                <div class="tile is-vertical">
+                    <div class="tile">
+                        <div class="tile is-parent">
+                            <article class="tile is-child notification is-white">
+                                <label class="label">Period, since</label>
+                                <div class="control">
+                                    <div class="select">
+                                        <select v-model="period">
+                                            <option value="-1 hours">Last hour</option>
+                                            <option value="-2 hours">Last 2 hour</option>
+                                            <option value="-3 hours">Last 3 hour</option>
+                                            <option value="-12 hours">Last 12 hours</option>
+                                            <option value="-24 hours">Last day</option>
+                                            <option value="-7 days">Last week</option>
+                                            <option value="-14 days">Last 4 weeks</option>
+                                            <option value="-28 days">Last 8 weeks</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </article>
                         </div>
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="notification is-white">
-                        <label class="label">Aggregate data by</label>
-                        <div class="control">
-                            <div class="select">
-                                <select v-model="aggregate">
-                                    <option value="60">1 minute</option>
-                                    <option value="300">5 minutes</option>
-                                    <option value="600">10 minutes</option>
-                                    <option value="900">15 minutes</option>
-                                    <option value="3600">Hour</option>
-                                    <option value="86400">Day</option>
-                                </select>
-                            </div>
+                        <div class="tile is-parent">
+                            <article class="tile is-child notification is-white">
+                                <label class="label">Aggregate data by</label>
+                                <div class="control">
+                                    <div class="select">
+                                        <select v-model="aggregate">
+                                            <option value="60">1 minute</option>
+                                            <option value="300">5 minutes</option>
+                                            <option value="600">10 minutes</option>
+                                            <option value="900">15 minutes</option>
+                                            <option value="3600">Hour</option>
+                                            <option value="86400">Day</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </article>
                         </div>
-                    </div>
-                </div>
-                <div class="column">
-                    <article class="tile is-child notification is-warning">
-                        <div class="field">
-                            <input id="refrigerator-switch" type="checkbox"
-                                   class="switch is-danger"
-                                   checked="checked" v-model="refrigerator" @change="toggleRefrigerator()">
-                            <label for="refrigerator-switch">{{ gettext("Refrigerator") }}</label>
-                        </div>
-                        <div class="field">
-                            <input id="heater-switch" type="checkbox"
-                                   class="switch is-danger"
-                                   checked="checked" v-model="heater" @change="toggleHeater()">
-                            <label for="heater-switch">{{ gettext("Heater") }}</label>
-                        </div>
+                        <div class="tile is-parent">
+                            <article class="tile is-child notification is-warning">
+                                <div class="field">
+                                    <input id="refrigerator-switch" type="checkbox"
+                                           class="switch is-danger"
+                                           checked="checked" v-model="refrigerator" @change="toggleRefrigerator()">
+                                    <label for="refrigerator-switch">{{ gettext("Refrigerator") }}</label>
+                                </div>
+                                <div class="field">
+                                    <input id="heater-switch" type="checkbox"
+                                           class="switch is-danger"
+                                           checked="checked" v-model="heater" @change="toggleHeater()">
+                                    <label for="heater-switch">{{ gettext("Heater") }}</label>
+                                </div>
 
-                        <div class="field">
-                            <input id="dehumidifier-switch" type="checkbox"
-                                   class="switch is-info"
-                                   checked="checked" v-model="dehumidifier" @change="toggleDehumidifier()">
-                            <label for="dehumidifier-switch">{{ gettext("Dehumidifier") }}</label>
+                                <div class="field">
+                                    <input id="dehumidifier-switch" type="checkbox"
+                                           class="switch is-info"
+                                           checked="checked" v-model="dehumidifier" @change="toggleDehumidifier()">
+                                    <label for="dehumidifier-switch">{{ gettext("Dehumidifier") }}</label>
+                                </div>
+                                <div class="field">
+                                    <input id="humidifier-switch" type="checkbox"
+                                           class="switch is-info"
+                                           checked="checked" v-model="humidifier" @change="toggleHumidifier()">
+                                    <label for="humidifier-switch">{{ gettext("Humidifier") }}</label>
+                                </div>
+                            </article>
                         </div>
-                        <div class="field">
-                            <input id="humidifier-switch" type="checkbox"
-                                   class="switch is-info"
-                                   checked="checked" v-model="humidifier" @change="toggleHumidifier()">
-                            <label for="humidifier-switch">{{ gettext("Humidifier") }}</label>
+                    </div>
+                    <div class="tile">
+                        <div class="tile is-parent">
+                            <div class="tile is-child notification is-white">
+                                <h1 class="h1">Config</h1>
+                                {{ config_text|safe }}
+                            </div>
                         </div>
-                    </article>
+                    </div>
                 </div>
             </div>
+
         </div>
     </section>
 </div>

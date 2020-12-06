@@ -1,5 +1,10 @@
-from flask import render_template, Blueprint
+from flask import render_template, Blueprint, current_app
+from pygments import highlight
+from pygments.formatters.html import HtmlFormatter
+from pygments.lexers.data import YamlLexer
+from pygments.lexers.templates import YamlJinjaLexer
 
+from raspcuterie.config import get_config_file
 from raspcuterie.devices.input.am2302 import AM2302
 from raspcuterie.devices import OutputDevice, InputDevice
 
@@ -35,6 +40,10 @@ def dashboard():
         humidity_min = 0
         humidity_max = 0
 
+    config = current_app.config["config"]
+    formatter = HtmlFormatter(linenos=True, style="friendly", noclasses=True)
+    config_text = highlight(config, YamlLexer(), formatter)
+
     return render_template(
         "dashboard.html",
         refrigerator=refrigerator.value(),
@@ -51,4 +60,5 @@ def dashboard():
         humidity_data=humidity_data,
         humidity_min=humidity_min,
         humidity_max=humidity_max,
+        config_text=config_text,
     )
