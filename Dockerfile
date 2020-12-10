@@ -15,4 +15,4 @@ WORKDIR /app
 
 ENV FLASK_APP=raspcuterie.app
 
-CMD ["gunicorn", "raspcuterie.wsgi:app", "--bind", "0.0.0.0:5000", "--chdir=/app"]
+CMD ["gunicorn", "raspcuterie.wsgi:app", "--bind", "0.0.0.0:5000", "--chdir=/app", "--access-log", "-"]

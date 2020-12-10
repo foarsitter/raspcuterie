@@ -55,8 +55,6 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
             current_app.logger.error(e)
             temperature = None
             humidity = None
-        finally:
-            sensor.exit()
 
         if self.degree != "celsius" and temperature:
             temperature = temperature * 9 / 5 + 32
