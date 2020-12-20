@@ -31,9 +31,9 @@ def slope(table):
     return round(average_delta / x_constant, 2)
 
 
-def min_max_over_period(table: str, period="-24 hours"):
+def min_max_avg_over_period(table: str, period="-24 hours"):
     result = get_db().execute(
-        """SELECT min(value), max(value)
+        """SELECT min(value), max(value), avg(value)
 FROM {} as t
 WHERE t.value is not null
   and t.time >= datetime('now', :period)""".format(
@@ -41,7 +41,7 @@ WHERE t.value is not null
         ),
         dict(period=period),
     )
-    min_value, max_value = result.fetchone()
+    min_value, max_value, avg_value = result.fetchone()
 
     if not min_value:
         min_value = 0
@@ -49,7 +49,10 @@ WHERE t.value is not null
     if not max_value:
         max_value = 0
 
-    return min_value, max_value
+    if not avg_value:
+        avg_value = 0
+
+    return min_value, max_value, avg_value
 
 
 @bp.route("/am2302/current.json")
@@ -69,8 +72,8 @@ def am2303_current():
 
     period = request.args.get("period", "-24 hours")
 
-    temperature_min_max = min_max_over_period("temperature", period)
-    humidity_min_max = min_max_over_period("humidity", period)
+    temperature_min_max = min_max_avg_over_period("temperature", period)
+    humidity_min_max = min_max_avg_over_period("humidity", period)
 
     temperature = dict(
         current=temperature,

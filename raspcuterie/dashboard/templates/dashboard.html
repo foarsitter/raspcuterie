@@ -132,6 +132,8 @@
                                         {% raw %}{{ humidity.max }}{% endraw %} <br/>
                                         <i class="far fa-arrow-to-bottom  mr-2"></i>
                                         {% raw %}{{ humidity.min }}{% endraw %}
+                                        <i class="far tachometer-average  mr-2"></i>
+                                        {% raw %}{{ humidity.avg }}{% endraw %}
                                     </p>
                                 </div>
                             </div>
@@ -151,7 +153,9 @@
                                             class="far fa-thermometer-three-quarters mr-2"></i> {% raw %}{{
                                         temperature.max
                                         }}{% endraw %} <br/><i class="far fa-thermometer-empty  mr-2"></i> {% raw %}{{
-                                        temperature.min }}{% endraw %}</p>
+                                        temperature.min }}{% endraw %}
+                                    <i class="far tachometer-average  mr-2"></i> {% raw %}{{
+                                        temperature.avg }}{% endraw %}</p>
                                 </div>
                             </div>
                         </div>
