@@ -3,4 +3,4 @@ import click
 
 base_path = pathlib.Path(click.get_app_dir('raspcuterie'))
 
-version = "0.1.31"
+version = "0.1.32"
