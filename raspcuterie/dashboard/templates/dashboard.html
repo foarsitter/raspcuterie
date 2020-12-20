@@ -131,8 +131,8 @@
                                         <i class="far fa-arrow-to-top mr-2"></i>
                                         {% raw %}{{ humidity.max }}{% endraw %} <br/>
                                         <i class="far fa-arrow-to-bottom  mr-2"></i>
-                                        {% raw %}{{ humidity.min }}{% endraw %}
-                                        <i class="far tachometer-average  mr-2"></i>
+                                        {% raw %}{{ humidity.min }}{% endraw %} <br/>
+                                        <i class="far fa-tachometer-average  mr-2"></i>
                                         {% raw %}{{ humidity.avg }}{% endraw %}
                                     </p>
                                 </div>
@@ -153,8 +153,8 @@
                                             class="far fa-thermometer-three-quarters mr-2"></i> {% raw %}{{
                                         temperature.max
                                         }}{% endraw %} <br/><i class="far fa-thermometer-empty  mr-2"></i> {% raw %}{{
-                                        temperature.min }}{% endraw %}
-                                    <i class="far tachometer-average  mr-2"></i> {% raw %}{{
+                                        temperature.min }}{% endraw %}<br/>
+                                        <i class="far fa-tachometer-average  mr-2"></i> {% raw %}{{
                                         temperature.avg }}{% endraw %}</p>
                                 </div>
                             </div>
@@ -260,7 +260,7 @@
         integrity="sha256-n7FNwoYsyZMMiu5/NHArDRUq4JFdaZNPz8mE+OMC5VM=" crossorigin="anonymous"></script>
 <script>
 
-    function graph(name, _min, _max) {
+    function graph(name, goal) {
 
         return {
             chart: {
@@ -274,7 +274,7 @@
                 align: 'left'
             },
             stroke: {
-                curve: ['smooth', 'stepline', 'stepline'],
+                curve: ['smooth', 'stepline', 'stepline', 'smooth'],
                 width: 1,
             },
             markers: {
@@ -326,7 +326,15 @@
                     min: 0,
                     max: 3,
                 }
-            ]
+            ],
+            annotations: {
+                yaxis: [
+                    {
+                        y: goal,
+                        borderColor: '#00E396',
+                    }
+                ]
+            }
         }
     }
 
@@ -346,8 +354,8 @@
                 heater: false,
                 humiditySeries: [],
                 temperatureSeries: [],
-                humidityChartOptions: graph("humidity"),
-                temperatureChartOptions: graph("temperature"),
+                humidityChartOptions: graph("humidity", 75),
+                temperatureChartOptions: graph("temperature", 12.5),
                 temperature: {
                     current: 0,
                     min: 0,

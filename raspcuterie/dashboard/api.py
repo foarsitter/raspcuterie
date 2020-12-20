@@ -79,6 +79,7 @@ def am2303_current():
         current=temperature,
         min=round(temperature_min_max[0], 2),
         max=round(temperature_min_max[1], 2),
+        avg=round(temperature_min_max[2], 2),
         slope=temperature_slope,
     )
 
@@ -86,6 +87,7 @@ def am2303_current():
         current=humidity,
         min=humidity_min_max[0],
         max=humidity_min_max[1],
+        avg=round(humidity_min_max[2], 2),
         slope=humidity_slope,
     )
 
