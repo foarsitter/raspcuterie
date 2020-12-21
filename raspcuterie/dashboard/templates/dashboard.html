@@ -145,7 +145,7 @@
                             <div class="media">
                                 <div class="media-left">
                                     <i class="far fa-temperature-down fa-4x" v-if="temperature.slope < 0"></i>
-                                    <i class="far fa-temperature-down fa-4x" v-else></i>
+                                    <i class="far fa-temperature-up fa-4x" v-else></i>
                                 </div>
                                 <div class="media-content ">
                                     <p class="title is-4 has-text-white">  {% raw %}{{ temperature.current }}{% endraw %}&deg;</p>
@@ -360,6 +360,7 @@
                     current: 0,
                     min: 0,
                     max: 0,
+                    avg: 0,
                     slope: 1
                 },
                 lastRequestTime: "n/a",
@@ -367,6 +368,7 @@
                     current: 0,
                     min: 0,
                     max: 0,
+                    avg: 0,
                     slope: 1
                 },
             }
