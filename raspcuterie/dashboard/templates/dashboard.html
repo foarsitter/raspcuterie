@@ -133,7 +133,7 @@
                                         <i class="far fa-arrow-to-bottom  mr-2"></i>
                                         {% raw %}{{ humidity.min }}{% endraw %} <br/>
                                         <i class="far fa-tachometer-average  mr-2"></i>
-                                        {% raw %}{{ humidity.avg }}{% endraw %}
+                                        {% raw %}{{ humidity.avg }}{% endraw %} <br />
                                     </p>
                                 </div>
                             </div>
@@ -149,19 +149,19 @@
                                 </div>
                                 <div class="media-content ">
                                     <p class="title is-4 has-text-white">  {% raw %}{{ temperature.current }}{% endraw %}&deg;</p>
-                                    <p class="subtitle is-6 has-text-white"><i
-                                            class="far fa-thermometer-three-quarters mr-2"></i> {% raw %}{{
-                                        temperature.max
-                                        }}{% endraw %} <br/><i class="far fa-thermometer-empty  mr-2"></i> {% raw %}{{
-                                        temperature.min }}{% endraw %}<br/>
-                                        <i class="far fa-tachometer-average  mr-2"></i> {% raw %}{{
-                                        temperature.avg }}{% endraw %}</p>
+                                    <p class="subtitle is-6 has-text-white">
+                                        <i class="far fa-thermometer-three-quarters mr-2"></i>
+                                        {% raw %}{{ temperature.max }}{% endraw %} <br/>
+                                        <i class="far fa-thermometer-empty  mr-2"></i>
+                                        {% raw %}{{ temperature.min }}{% endraw %} <br/>
+                                        <i class="far fa-tachometer-average  mr-2"></i>
+                                        {% raw %}{{ temperature.avg }}{% endraw %} <br />
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     {% raw %}{{ lastRequestTime }}{% endraw %}
-
                 </div>
             </div>
             <div class="tile is-ancestor" v-else>
