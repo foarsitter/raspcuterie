@@ -96,7 +96,7 @@ ORDER BY time DESC;""".format(
                 x.append((previous_time, value))
                 previous_time = time
 
-        x.append((datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S"), int(self.value())))
+        x = [(datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S"), int(self.value()))] + x
 
         return x
 
