@@ -30,27 +30,31 @@ class RelaySwitch(OutputDevice, DatabaseDevice, LogDevice):
     def create_table(self, connection):
         connection.execute(RelaySwitch.table_sql.format(self.table_name))
 
-    def validate_timeout(self):
+    def last_db_value(self):
 
         with get_db() as db:
 
             cursor = db.execute(
-                """SELECT time FROM {} ORDER BY time DESC LIMIT 1""".format(
+                """SELECT time, value FROM {} ORDER BY time DESC LIMIT 1""".format(
                     self.table_name
                 )
             )
 
-            result = cursor.fetchone()
+            return cursor.fetchone()
 
-            if result and result[0]:
-                before = datetime.datetime.now() - datetime.timedelta(
-                    minutes=self.timeout_minutes
-                )
-                last_seen = datetime.datetime.strptime(
-                    result[0], "%Y-%m-%d %H:%M:%S.%f"
-                )
-                current_app.logger.debug(f"{self.name} is last seen on {last_seen}")
-                return last_seen < before
+    def validate_timeout(self):
+
+        result = self.last_db_value()
+
+        if result and result[0]:
+            before = datetime.datetime.now() - datetime.timedelta(
+                minutes=self.timeout_minutes
+            )
+            last_seen = datetime.datetime.strptime(
+                result[0], "%Y-%m-%d %H:%M:%S.%f"
+            )
+            current_app.logger.debug(f"{self.name} is last seen on {last_seen}")
+            return last_seen < before
 
         return True
 
@@ -96,11 +100,21 @@ ORDER BY time DESC;""".format(
                 x.append((previous_time, value))
                 previous_time = time
 
-        x = [(datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S"), int(self.value()))] + x
+        if len(x) > 0:
+            # close the gap by extending the last value to now
+            first = x[0]
+
+            x = [(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), first[1])] + x
 
         return x
 
     def update_table(self, value, time=None):
+
+        last_value = self.last_db_value()
+
+        if last_value and value == last_value[1]:
+            current_app.logger.debug(f"No change in value ({value}) for relay {self.name}")
+            return
 
         if not time:
             time = datetime.datetime.now()

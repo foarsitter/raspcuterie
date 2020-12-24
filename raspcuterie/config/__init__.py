@@ -76,10 +76,11 @@ def register_config_rules(config):
 
 
 def get_config_file(app):
-    if app.debug or app.testing:
-        file = Path(__file__).parent.parent.parent / "config_dev.yaml"
-    else:
-        file = base_path / "config.yaml"
+    # if app.debug or app.testing:
+    #     file = Path(__file__).parent.parent.parent / "config_dev.yaml"
+    # else:
+
+    file = base_path / "config.yaml"
 
     return file
 

@@ -62,10 +62,25 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
         return humidity, temperature
 
     def get_context(self):
+        from raspcuterie.dashboard.api import min_max_avg_over_period
 
         humidity, temperature = self.read()
 
-        return dict(humidity=humidity, temperature=temperature)
+        temperature_min, temperature_max, temperature_avg = min_max_avg_over_period(
+            "temperature"
+        )
+        humidity_min, humidity_max, humidity_avg = min_max_avg_over_period("humidity")
+
+        return dict(
+            humidity=humidity,
+            temperature=temperature,
+            temperature_min=temperature_min,
+            temperature_max=temperature_max,
+            temperature_avg=temperature_avg,
+            humidity_min=humidity_min,
+            humidity_max=humidity_max,
+            humidity_avg=humidity_avg,
+        )
 
     def read_from_database(self):
 

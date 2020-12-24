@@ -91,7 +91,7 @@ def am2303_current():
         slope=humidity_slope,
     )
 
-    return jsonify(dict(temperature=temperature, humidity=humidity, time=time))
+    return jsonify(dict(temperature=temperature, humidity=humidity, time=time[:len("2020-12-22 11:08:10")]))
 
 
 @bp.route("/am2302/chart.json")

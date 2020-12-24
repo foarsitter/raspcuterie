@@ -32,3 +32,7 @@ def log():
             output_device.log()
         except Exception as e:
             current_app.logger.error(e)
+
+
+if __name__ == "__main__":
+    log()
