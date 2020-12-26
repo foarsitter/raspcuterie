@@ -69,7 +69,10 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
         temperature_min, temperature_max, temperature_avg = min_max_avg_over_period(
             "temperature"
         )
+
         humidity_min, humidity_max, humidity_avg = min_max_avg_over_period("humidity")
+
+        humidity_min_3h, humidity_max_3h, humidity_avg_3h = min_max_avg_over_period("humidity", "-3 hours")
 
         return dict(
             humidity=humidity,
@@ -80,6 +83,9 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
             humidity_min=humidity_min,
             humidity_max=humidity_max,
             humidity_avg=humidity_avg,
+            humidity_min_3h=humidity_min_3h,
+            humidity_max_3h=humidity_max_3h,
+            humidity_avg_3h=humidity_avg_3h,
         )
 
     def read_from_database(self):
