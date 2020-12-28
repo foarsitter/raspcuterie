@@ -20,7 +20,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 """
 import time
 
-from raspcuterie.db import insert_weight
+from raspcuterie.db import insert_weight, get_db
 from raspcuterie.devices import InputDevice, DatabaseDevice, LogDevice
 from raspcuterie.gpio import GPIO
 
@@ -176,3 +176,20 @@ class HX711(InputDevice, DatabaseDevice, LogDevice):
 
     def create_table(self, connection):
         connection.execute(self.table_sql.format("weight"))
+
+    def weight_data(self, period="-24 hours", aggregate=5 * 60):
+
+        cursor = get_db().execute(
+            """SELECT datetime(strftime('%s', t.time) - (strftime('%s', t.time) % :aggregate), 'unixepoch') time,
+       round(avg(value), 2)                                                                value
+FROM weight t
+WHERE t.value is not null
+  and time >= datetime('now', :period)
+GROUP BY strftime('%s', t.time) / :aggregate
+ORDER BY time DESC;""",
+            dict(period=period, aggregate=aggregate),
+        )
+
+        temperature_data = cursor.fetchall()
+        cursor.close()
+        return temperature_data

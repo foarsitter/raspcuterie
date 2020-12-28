@@ -77,6 +77,10 @@
                             <apexchart type="line" height="230" ref="temperature" :options="temperatureChartOptions"
                                        :series="temperatureSeries"></apexchart>
                         </div>
+                        <div id="weight">
+                            <apexchart type="line" height="230" ref="temperature" :options="weightChartOptions"
+                                       :series="weightSeries"></apexchart>
+                        </div>
                     </div>
                 </div>
                 <div class="column">
@@ -133,7 +137,7 @@
                                         <i class="far fa-arrow-to-bottom  mr-2"></i>
                                         {% raw %}{{ humidity.min }}{% endraw %} <br/>
                                         <i class="far fa-tachometer-average  mr-2"></i>
-                                        {% raw %}{{ humidity.avg }}{% endraw %} <br />
+                                        {% raw %}{{ humidity.avg }}{% endraw %} <br/>
                                     </p>
                                 </div>
                             </div>
@@ -155,7 +159,7 @@
                                         <i class="far fa-thermometer-empty  mr-2"></i>
                                         {% raw %}{{ temperature.min }}{% endraw %} <br/>
                                         <i class="far fa-tachometer-average  mr-2"></i>
-                                        {% raw %}{{ temperature.avg }}{% endraw %} <br />
+                                        {% raw %}{{ temperature.avg }}{% endraw %} <br/>
                                     </p>
                                 </div>
                             </div>
@@ -354,8 +358,10 @@
                 heater: false,
                 humiditySeries: [],
                 temperatureSeries: [],
+                weightSeries: [],
                 humidityChartOptions: graph("humidity", 75),
                 temperatureChartOptions: graph("temperature", 12.5),
+                weightChartOptions: graph("weight", 12.5),
                 temperature: {
                     current: 0,
                     min: 0,
@@ -372,17 +378,6 @@
                     slope: 1
                 },
             }
-        },
-        beforeCreate: function () {
-            axios({
-                method: 'GET',
-                url: "/api/relay/current.json",
-            }).then(response => {
-                this.refrigerator = response.data["refrigerator"]
-                this.dehumidifier = response.data["dehumidifier"]
-                this.humidifier = response.data["humidifier"]
-                this.heater = response.data["heater"]
-            })
         },
         methods: {
             toggleRefrigerator: function () {
@@ -419,11 +414,35 @@
             },
             updateChartInterval() {
                 setInterval(() => {
-                    this.updateChart()
+                    this.updateAM2302Chart()
                     this.updateAM2302()
+                    this.updateRelayValues()
                 }, 1000 * 60);
             },
-            updateChart() {
+            updateRelayValues() {
+                axios({
+                    method: 'GET',
+                    url: "/api/relay/current.json",
+                }).then(response => {
+                    this.refrigerator = response.data["refrigerator"]
+                    this.dehumidifier = response.data["dehumidifier"]
+                    this.humidifier = response.data["humidifier"]
+                    this.heater = response.data["heater"]
+                });
+            },
+            updateWeightChart() {
+                axios({
+                    method: 'GET',
+                    url: "/api/hx711/chart.json",
+                    params: {
+                        period: this.period,
+                        aggregate: this.aggregate,
+                    }
+                }).then(response => {
+                    this.weightSeries = response.data
+                });
+            },
+            updateAM2302Chart() {
                 axios({
                     method: 'GET',
                     url: "/api/am2302/chart.json",
@@ -462,18 +481,20 @@
         },
         mounted: function () {
             this.loadLocalStorage()
-            this.updateChart()
+            this.updateRelayValues()
+            this.updateAM2302Chart()
             this.updateAM2302()
             this.updateChartInterval()
+            this.updateWeightChart()
         },
         watch: {
             period(value) {
                 localStorage.period = value;
-                this.updateChart()
+                this.updateAM2302Chart()
             },
             aggregate(value) {
                 localStorage.aggregate = value;
-                this.updateChart()
+                this.updateAM2302Chart()
             }
         }
     });

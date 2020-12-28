@@ -4,6 +4,7 @@ from flask_babel import gettext
 from raspcuterie.db import get_db
 from raspcuterie.devices import InputDevice
 from raspcuterie.devices.input.am2302 import AM2302
+from raspcuterie.devices.input.hx711 import HX711
 from raspcuterie.devices.output.relay import OutputDevice, RelaySwitch
 
 bp = Blueprint("api", __name__, url_prefix="/api")
@@ -91,7 +92,13 @@ def am2303_current():
         slope=humidity_slope,
     )
 
-    return jsonify(dict(temperature=temperature, humidity=humidity, time=time[:len("2020-12-22 11:08:10")]))
+    return jsonify(
+        dict(
+            temperature=temperature,
+            humidity=humidity,
+            time=time[: len("2020-12-22 11:08:10")],
+        )
+    )
 
 
 @bp.route("/am2302/chart.json")
@@ -152,3 +159,15 @@ def relay_toggle(name):
         device.off()
 
     return jsonify(dict(state=device.value()))
+
+
+@bp.route("/hx711/chart.json")
+def hx711_chart():
+    hx711: HX711 = InputDevice.registry["weight"]
+
+    period = request.args.get("period", "-24 hours")
+    aggregate = request.args.get("aggregate", 5 * 60)
+
+    data = hx711.weight_data(period, aggregate)
+
+    return jsonify([dict(data=data, name=gettext("Weight"))])
