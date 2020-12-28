@@ -361,7 +361,55 @@
                 weightSeries: [],
                 humidityChartOptions: graph("humidity", 75),
                 temperatureChartOptions: graph("temperature", 12.5),
-                weightChartOptions: graph("weight", 12.5),
+                weightChartOptions: {
+                    chart: {
+                        id: "Weight",
+                        type: 'line',
+                        group: 'social',
+                        height: 230,
+                    },
+                    title: {
+                        text: name,
+                        align: 'left'
+                    },
+                    stroke: {
+                        curve: 'smooth',
+                        width: 1,
+                    },
+
+                    tooltip: {
+                        x: {
+                            show: true,
+                            format: 'HH:mm',
+                        },
+                    },
+                    xaxis: {
+                        type: 'datetime',
+                        labels: {
+                            datetimeFormatter: {
+                                year: 'yyyy',
+                                month: 'MMM \'yy',
+                                day: 'dd MMM',
+                                hour: 'HH:mm'
+                            },
+                            datetimeUTC: false
+                        }
+                    },
+                    yaxis:
+                        {
+                            tickAmount: 4,
+                            min: function (min) {
+                                return Math.floor(min)
+                            },
+                            max: function (max) {
+                                return Math.ceil(max)
+                            },
+                            labels: {
+                                minWidth: 40
+                            },
+                            seriesName: name,
+                        },
+                },
                 temperature: {
                     current: 0,
                     min: 0,

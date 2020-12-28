@@ -1,3 +1,5 @@
+import statistics
+
 from flask import Blueprint, jsonify, request
 from flask_babel import gettext
 
@@ -169,5 +171,21 @@ def hx711_chart():
     aggregate = request.args.get("aggregate", 5 * 60)
 
     data = hx711.weight_data(period, aggregate)
+    results = [dict(data=data, name=gettext("Weight"))]
 
-    return jsonify([dict(data=data, name=gettext("Weight"))])
+    if data and len(data) > 1:
+        values = dict(data).values()
+
+        stdev = statistics.stdev(values)
+        mean = statistics.mean(values)
+
+        filtered = []
+
+        for time, value in data:
+
+            if mean - stdev < value < mean + stdev:
+                filtered.append([time, value])
+
+        results.append(dict(data=filtered, name=gettext("Filtered")))
+
+    return jsonify(results)
