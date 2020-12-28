@@ -22,7 +22,7 @@ copyright = "2020, Jelmer Draaijer"
 author = "Jelmer Draaijer"
 
 # The full version, including alpha/beta/rc tags
-release = "0.1.38"
+release = "0.1.39"
 
 
 # -- General configuration ---------------------------------------------------
