@@ -18,13 +18,14 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 """
+from raspcuterie.db import insert_weight
 from raspcuterie.devices import InputDevice
 from raspcuterie.gpio import GPIO
 
 
 class HX711(InputDevice):
 
-    def __init__(self, name, dout=23, pd_sck=24, gain=128):
+    def __init__(self, name, dout=12, pd_sck=16, gain=128):
         super(HX711, self).__init__(name)
         """
         Set GPIO Mode, and pin for communication with HX711
@@ -34,8 +35,8 @@ class HX711(InputDevice):
         """
 
         self.GAIN = 0
-        self.offset = 0
-        self.scale = 1
+        self.offset = 8444931.8125
+        self.scale = 413.9508982035928
 
         # Setup the gpio pin numbering system
         GPIO.setmode(GPIO.BCM)
@@ -84,7 +85,7 @@ class HX711(InputDevice):
         # Control if the chip is ready
         while not (GPIO.input(self.DOUT) == 0):
             # Uncommenting the print below results in noisy output
-            # print("No input from HX711.")
+            print("No input from HX711.")
             pass
 
         # Original C source code ported to Python as described in datasheet
@@ -157,3 +158,19 @@ class HX711(InputDevice):
 
     def get_context(self):
         return dict(weight=self.get_grams())
+
+    table_sql = """
+        create table if not exists {0}
+        (
+            id    integer primary key,
+            time  text not null,
+            value integer not null
+        );"""
+
+    def log(self):
+        grams = self.get_grams()
+
+        insert_weight(grams)
+
+    def create_table(self, connection):
+        connection.execute(self.table_sql.format("weight"))
