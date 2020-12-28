@@ -18,12 +18,14 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 """
+import time
+
 from raspcuterie.db import insert_weight
-from raspcuterie.devices import InputDevice
+from raspcuterie.devices import InputDevice, DatabaseDevice, LogDevice
 from raspcuterie.gpio import GPIO
 
 
-class HX711(InputDevice):
+class HX711(InputDevice, DatabaseDevice, LogDevice):
 
     def __init__(self, name, dout=12, pd_sck=16, gain=128):
         super(HX711, self).__init__(name)
@@ -85,7 +87,7 @@ class HX711(InputDevice):
         # Control if the chip is ready
         while not (GPIO.input(self.DOUT) == 0):
             # Uncommenting the print below results in noisy output
-            print("No input from HX711.")
+            time.sleep(.001)
             pass
 
         # Original C source code ported to Python as described in datasheet
