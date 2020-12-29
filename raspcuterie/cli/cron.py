@@ -2,7 +2,8 @@ import logging
 
 from flask import current_app
 
-from raspcuterie.cli import cli, with_appcontext, version
+from raspcuterie import version
+from raspcuterie.cli import cli, with_appcontext
 from raspcuterie.devices import InputDevice, OutputDevice
 from raspcuterie.devices.control import ControlRule
 
