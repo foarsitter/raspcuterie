@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 import statistics
 
 from flask import g
-from hx711 import HX711 as Sensor
+import hx711
 
 from raspcuterie.db import insert_weight, get_db
 from raspcuterie.devices import InputDevice, DatabaseDevice, LogDevice
@@ -80,7 +80,7 @@ class HX711(InputDevice, DatabaseDevice, LogDevice):
     def get_sensor(dout_pin, pd_sck_pin, gain, channel):
 
         if "hx711" not in g:
-            g.hx711 = Sensor(dout_pin, pd_sck_pin, gain, channel)
+            g.hx711 = hx711.HX711(dout_pin, pd_sck_pin, gain, channel)
 
         return g.hx711
 
@@ -97,7 +97,7 @@ class HX711(InputDevice, DatabaseDevice, LogDevice):
         return grams
 
     def get_context(self):
-        return dict(weight=self.get_grams())
+        return dict()
 
     def log(self):
         grams = self.get_grams()
