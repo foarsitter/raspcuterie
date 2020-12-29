@@ -3,7 +3,7 @@ import random
 try:
     import RPi.GPIO as GPIO
 
-    GPIO.setwarnings(True)
+    GPIO.setwarnings(False)
 except Exception:
 
     class GPIO:

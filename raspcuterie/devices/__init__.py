@@ -7,6 +7,15 @@ import pkg_resources
 
 
 class DatabaseDevice:
+
+    single_value_table_sql = """
+        create table if not exists {0}
+        (
+            id    integer primary key,
+            time  text not null,
+            value integer not null
+        );"""
+
     def create_table(self, connection):
         raise NotImplementedError
 

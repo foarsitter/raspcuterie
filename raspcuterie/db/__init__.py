@@ -105,4 +105,5 @@ def insert_weight(value: float, time_value=None):
     db = get_db()
 
     with db:
+        current_app.logger.info(f"Weight: logging {value} ")
         db.execute("INSERT INTO weight(time,value) VALUES (?,?)", (time_value, value))
