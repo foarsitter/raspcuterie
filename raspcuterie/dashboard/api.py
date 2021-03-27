@@ -1,13 +1,11 @@
-import statistics
-
 from flask import Blueprint, jsonify, request
-from flask_babel import gettext
+
 
 from raspcuterie.db import get_db
 from raspcuterie.devices import InputDevice
 from raspcuterie.devices.input.am2302 import AM2302
-from raspcuterie.devices.input.hx711 import HX711
 from raspcuterie.devices.output.relay import OutputDevice, RelaySwitch
+from raspcuterie.utils import gettext
 
 bp = Blueprint("api", __name__, url_prefix="/api")
 
@@ -64,6 +62,7 @@ def am2303_current():
     Returns the current values for the humidity and temperature
     :return:
     """
+
     from raspcuterie.devices import InputDevice
 
     humidity, temperature, time = InputDevice.registry[
@@ -161,31 +160,3 @@ def relay_toggle(name):
         device.off()
 
     return jsonify(dict(state=device.value()))
-
-
-@bp.route("/hx711/chart.json")
-def hx711_chart():
-    hx711: HX711 = InputDevice.registry["weight"]
-
-    period = request.args.get("period", "-24 hours")
-    aggregate = request.args.get("aggregate", 5 * 60)
-
-    data = hx711.weight_data(period, aggregate)
-    results = [dict(data=data, name=gettext("Weight"))]
-
-    if data and len(data) > 1:
-        values = dict(data).values()
-
-        stdev = statistics.stdev(values)
-        mean = statistics.mean(values)
-
-        filtered = []
-
-        for time, value in data:
-
-            if mean - stdev < value < mean + stdev:
-                filtered.append([time, value])
-
-        results.append(dict(data=filtered, name=gettext("Filtered")))
-
-    return jsonify(results)

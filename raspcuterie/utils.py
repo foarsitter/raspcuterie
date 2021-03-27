@@ -6,3 +6,7 @@ def time_based_sinus(minute, lower, upper, multiplier=6):
     middle = lower + delta / 2
 
     return round(middle + math.sin(math.radians(minute * multiplier)) * (delta / 2), 2)
+
+
+def gettext(value: str):
+    return value

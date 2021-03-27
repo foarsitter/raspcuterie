@@ -21,7 +21,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 import statistics
 
 from flask import g
-import hx711
+
+# import hx711
 
 from raspcuterie.db import insert_weight, get_db
 from raspcuterie.devices import InputDevice, DatabaseDevice, LogDevice

@@ -63,3 +63,7 @@ def config():
 @cli.command(short_help="Version number")
 def version():
     click.echo(raspcuterie.version)
+
+    file = raspcuterie.base_path / "config.yaml"
+
+    click.echo(f"Config: {file} ")

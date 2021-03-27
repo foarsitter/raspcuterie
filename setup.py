@@ -4,10 +4,8 @@ minimal_requirements = [
     "Flask==1.1.2",
     "Click==7.1.2",
     "pyyaml==5.3.1",
-    "flask-babel==2.0.0",
     "adafruit-circuitpython-dht==3.5.1",
     "rpi.gpio==0.7.0",
-    "hx711==1.1.2.3",
 ]
 
 

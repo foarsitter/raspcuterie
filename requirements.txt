@@ -1,14 +1,11 @@
 Flask==1.1.2
 Click==7.1.2
 pyyaml==5.3.1
-flask-babel==2.0.0
 gunicorn==20.0.4
-rpi.gpio==0.7.0
+# rpi.gpio==0.7.0
 Jinja2==2.11.3
 Pygments==2.7.2
 adafruit-circuitpython-dht==3.5.1
-# Adafruit_DHT==1.4.0
-setuptools~=50.3.0
-raspcuterie~=0.1.10
-pytest~=6.1.1
-hx711==1.1.2.3
+
+
+
