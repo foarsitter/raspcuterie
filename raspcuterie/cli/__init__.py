@@ -1,11 +1,14 @@
 import os
+import time
 from pathlib import Path
 
 import click
+from flask import current_app
 from flask.cli import with_appcontext  # noqa
 
 import raspcuterie
 from ..devices import InputDevice, OutputDevice
+from ..gpio import GPIO
 
 os.environ.setdefault("FLASK_APP", "raspcuterie.app")
 
@@ -23,6 +26,15 @@ from . import cron, fake, install  # noqa
 @cli.command(short_help="Echo the current value of the input and output devices")
 @with_appcontext
 def devices():
+    secure_pin = 24
+
+    GPIO.setup(secure_pin, GPIO.OUT)
+    GPIO.output(secure_pin, GPIO.HIGH)
+
+    click.echo(f"Setting {secure_pin} to HIGH to activate the AM2302")
+
+    time.sleep(1)
+
     click.echo("Listing input devices:")
     click.echo("============================")
 
@@ -41,6 +53,8 @@ def devices():
             click.echo(f"{key}: {device.value()}")
         except Exception as e:
             click.echo(click.style(f"{key}: {e}", fg="red"), err=True)
+
+    click.echo(f"Setting {secure_pin} to LOW to disable the AM2302")
 
 
 @cli.command(short_help="Edit the configuration file")

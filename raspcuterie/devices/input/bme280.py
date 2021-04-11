@@ -1,11 +1,13 @@
+import bme280
 from flask import current_app, g
+from smbus2 import smbus2
 
 from raspcuterie.db import get_db, insert_temperature, insert_humidity
 from raspcuterie.devices import InputDevice, LogDevice, DatabaseDevice
 
 
-class AM2302(InputDevice, LogDevice, DatabaseDevice):
-    type = "AM2302"
+class BME280(InputDevice, LogDevice, DatabaseDevice):
+    type = "BME280"
 
     DEGREE_CELSIUS = "celsius"
     DEGREE_FAHRENHEIT = "fahrenheit"
@@ -18,9 +20,10 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
             value integer not null
         );"""
 
-    def __init__(self, name, degree=DEGREE_CELSIUS, gpio=4, table_prefix=""):
-        super(AM2302, self).__init__(name)
-        self.pin = gpio
+    def __init__(self, name, degree=DEGREE_CELSIUS, table_prefix=""):
+        super().__init__(name)
+        self.port = 1
+        self.address = 0x76
         self.degree = degree
         self.table_prefix = table_prefix
 
@@ -47,25 +50,25 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
         return self.get_table_name("temperature")
 
     def create_table(self, connection):
-        connection.execute(AM2302.table_sql.format(self.table_humidity))
-        connection.execute(AM2302.table_sql.format(self.table_temperature))
-
-    @staticmethod
-    def get_sensor(gpio_pin):
-        sensor = f"am2302_{gpio_pin}"
-        if sensor not in g:
-
-            from board import pin
-            from adafruit_dht import DHT22  # noqa
-
-            gpio_pin = pin.Pin(gpio_pin)
-
-            setattr(g, sensor, DHT22(gpio_pin))
-
-        return getattr(g, sensor)
+        connection.execute(BME280.table_sql.format(self.table_humidity))
+        connection.execute(BME280.table_sql.format(self.table_temperature))
 
     def raw(self):
-        sensor = AM2302.get_sensor(self.pin)
+        port = 1
+        address = 0x76
+        bus = smbus2.SMBus(port)
+
+        calibration_params = bme280.load_calibration_params(bus, address)
+
+        # the sample method will take a single reading and return a
+        # compensated_reading object
+        sensor = bme280.sample(bus, address, calibration_params)
+
+        # the compensated_reading class has the following attributes
+
+        print(sensor.temperature)
+
+        print(sensor.humidity)
 
         try:
             temperature = sensor.temperature
