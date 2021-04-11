@@ -8,4 +8,4 @@ Pygments==2.7.2
 adafruit-circuitpython-dht==3.5.8
 timeout-decorator
 
-
+-e git://github.com/PrettyWood/pydantic.git@f/discriminated-union#egg=pydantic
