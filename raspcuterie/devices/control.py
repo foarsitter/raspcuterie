@@ -9,7 +9,9 @@ from raspcuterie.devices import OutputDevice
 class ControlRule:
     registry: List["ControlRule"] = []
 
-    def __init__(self, device: OutputDevice, expression: str, action: str, name: str = None):
+    def __init__(
+        self, device: OutputDevice, expression: str, action: str, name: str = None
+    ):
         ControlRule.registry.append(self)
         self.name = name
         self.device: OutputDevice = device
@@ -21,11 +23,20 @@ class ControlRule:
         context = {}
 
         for device in InputDevice.registry.values():
-            context.update(device.get_context())
+            for key, value in device.get_context().items():
+                if key in context:
+                    if hasattr(device, "table_prefix") and device.table_prefix:
+                        context[device.table_prefix + "" + key] = value
+                    elif hasattr(device, "pin") and device.pin:
+                        context[str(device.pin) + "" + key] = value
+                    else:
+                        print(f"Duplicated key {key} in context")
+                else:
+                    context[key] = value
         return context
 
-    def matches(self):
-        return eval(self.expression, self.context())
+    def matches(self, context):
+        return eval(self.expression, context)
 
     def execute(self):
         try:
@@ -34,9 +45,11 @@ class ControlRule:
         except Exception as e:
             current_app.logger.exeception(e)
 
-    def execute_if_matches(self):
-        if self.matches():
-            current_app.logger.info(f"Matches expression {self.expression}, executing {self.name}.{self.action}")
+    def execute_if_matches(self, context):
+        if self.matches(context):
+            current_app.logger.info(
+                f"Matches expression {self.expression}, executing {self.name}.{self.action}"
+            )
             return self.execute()
         else:
             current_app.logger.info(f"Does not match expression: {self.expression}")

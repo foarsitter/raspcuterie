@@ -44,14 +44,14 @@ def init_db(connection=None):
             device.create_table(connection)
 
 
-def insert_temperature(value: float, time_value=None):
+def insert_temperature(value: float, table_name, time_value=None):
 
     if time_value is None:
         time_value = datetime.now()
 
     previous_value = (
         get_db()
-        .execute("SELECT value FROM temperature ORDER BY time DESC LIMIT 1")
+        .execute(f"SELECT value FROM {table_name} ORDER BY time DESC LIMIT 1")
         .fetchone()
     )
 
@@ -63,18 +63,19 @@ def insert_temperature(value: float, time_value=None):
 
         with db:
             db.execute(
-                "INSERT INTO temperature(time,value) VALUES (?,?)", (time_value, value)
+                f"INSERT INTO {table_name}(time,value) VALUES (?,?)",
+                (time_value, value),
             )
 
 
-def insert_humidity(value: float, time_value=None):
+def insert_humidity(value: float, table_name, time_value=None):
 
     if time_value is None:
         time_value = datetime.now()
 
     previous_value = (
         get_db()
-        .execute("SELECT value FROM humidity ORDER BY time DESC LIMIT 1")
+        .execute(f"SELECT value FROM {table_name} ORDER BY time DESC LIMIT 1")
         .fetchone()
     )
 
@@ -85,7 +86,10 @@ def insert_humidity(value: float, time_value=None):
         db = get_db()
 
         with db:
-            db.execute("INSERT INTO humidity(time,value) VALUES (?,?)", (time_value, value))
+            db.execute(
+                f"INSERT INTO {table_name}(time,value) VALUES (?,?)",
+                (time_value, value),
+            )
 
 
 def insert_relay(value_1, value_2, value_3, value_4):
