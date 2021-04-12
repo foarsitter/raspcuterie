@@ -4,20 +4,13 @@ from builtins import super
 from flask import current_app
 
 from raspcuterie.db import get_db
-from raspcuterie.devices import OutputDevice, DatabaseDevice, LogDevice
+from raspcuterie.devices import OutputDevice, LogDevice
+from raspcuterie.devices.series import BooleanSeries
 from raspcuterie.gpio import GPIO
 
 
-class RelaySwitch(OutputDevice, DatabaseDevice, LogDevice):
+class RelaySwitch(OutputDevice, LogDevice):
     type = "relay"
-
-    table_sql = """
-    create table if not exists {0}
-    (
-        id    integer primary key,
-        time  text not null,
-        value integer not null
-    );"""
 
     def __init__(self, name, gpio, timeout=10):
         super(RelaySwitch, self).__init__(name)
@@ -27,8 +20,7 @@ class RelaySwitch(OutputDevice, DatabaseDevice, LogDevice):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.pin_number, GPIO.OUT)
 
-    def create_table(self, connection):
-        connection.execute(RelaySwitch.table_sql.format(self.table_name))
+        self.series = BooleanSeries(self.name)
 
     def last_db_value(self):
 
@@ -36,7 +28,7 @@ class RelaySwitch(OutputDevice, DatabaseDevice, LogDevice):
 
             cursor = db.execute(
                 """SELECT time, value FROM {} ORDER BY time DESC LIMIT 1""".format(
-                    self.table_name
+                    self.series.name
                 )
             )
 
@@ -50,9 +42,7 @@ class RelaySwitch(OutputDevice, DatabaseDevice, LogDevice):
             before = datetime.datetime.now() - datetime.timedelta(
                 minutes=self.timeout_minutes
             )
-            last_seen = datetime.datetime.strptime(
-                result[0], "%Y-%m-%d %H:%M:%S.%f"
-            )
+            last_seen = datetime.datetime.strptime(result[0], "%Y-%m-%d %H:%M:%S.%f")
             current_app.logger.debug(f"{self.name} is last seen on {last_seen}")
             return last_seen < before
 
@@ -79,7 +69,7 @@ class RelaySwitch(OutputDevice, DatabaseDevice, LogDevice):
     def value(self):
         return GPIO.input(self.pin_number)
 
-    def chart(self, period='-24 hours'):
+    def chart(self, period="-24 hours"):
         cursor = get_db().execute(
             """SELECT time, value
 FROM {0} t
@@ -87,7 +77,8 @@ WHERE t.value is not null
   and time >= datetime('now', :period)
 ORDER BY time DESC;""".format(
                 self.table_name
-            ), dict(period=period)
+            ),
+            dict(period=period),
         )
 
         r = cursor.fetchall()
@@ -113,7 +104,9 @@ ORDER BY time DESC;""".format(
         last_value = self.last_db_value()
 
         if last_value and value == last_value[1]:
-            current_app.logger.debug(f"No change in value ({value}) for relay {self.name}")
+            current_app.logger.debug(
+                f"No change in value ({value}) for relay {self.name}"
+            )
             return
 
         if not time:
@@ -132,7 +125,7 @@ ORDER BY time DESC;""".format(
         return "relay_" + self.name
 
 
-class DBRelay(RelaySwitch, DatabaseDevice, LogDevice):
+class DBRelay(RelaySwitch, LogDevice):
     type = "dbrelay"
 
     def __init__(self, name, timeout=10, **kwargs):

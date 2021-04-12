@@ -4,5 +4,5 @@ from pydantic import BaseModel
 
 
 class ChartSchema(BaseModel):
-    name: str
+    title: str
     series: List[str]

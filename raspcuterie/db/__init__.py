@@ -3,8 +3,6 @@ from datetime import datetime
 
 from flask import g, current_app
 
-from raspcuterie.devices import InputDevice, OutputDevice, DatabaseDevice
-
 
 def raw_connection(app):
 
@@ -35,13 +33,10 @@ def init_db(connection=None):
     if not connection:
         connection = get_db()
 
-    for device in InputDevice.registry.values():
-        if isinstance(device, DatabaseDevice):
-            device.create_table(connection)
+    from raspcuterie.devices.series import Series
 
-    for device in OutputDevice.registry.values():
-        if isinstance(device, DatabaseDevice):
-            device.create_table(connection)
+    for series in Series.registry.values():
+        series.create_table(connection)
 
 
 def insert_temperature(value: float, table_name, time_value=None):

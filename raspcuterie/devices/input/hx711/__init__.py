@@ -25,10 +25,10 @@ from flask import g
 # import hx711
 
 from raspcuterie.db import insert_weight, get_db
-from raspcuterie.devices import InputDevice, DatabaseDevice, LogDevice
+from raspcuterie.devices import InputDevice, LogDevice
 
 
-class HX711(InputDevice, DatabaseDevice, LogDevice):
+class HX711(InputDevice, LogDevice):
     def __init__(
         self, name, dout=12, pd_sck=16, gain=128, channel="A", offset=0, scale=1
     ):

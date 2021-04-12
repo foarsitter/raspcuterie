@@ -1,5 +1,6 @@
 import logging
 import time
+from pprint import pprint
 
 from flask import current_app
 from timeout_decorator import timeout
@@ -36,6 +37,8 @@ def log():
     time.sleep(1)
 
     context = ControlRule.context()
+
+    pprint(context)
 
     evaluate_config_rules(context)
 

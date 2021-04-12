@@ -38,14 +38,15 @@ control:
       - rule: "Stop"
         expression: "humidity < 70"
         action: "off"
-
 charts:
-  - name: Humidity
+  Humidity:
+    title: "Luchtvochtigheid %"
     series:
       - am1_humidity
       - refrigerator
       - fan
-  - name: Temperature
+  Temperature:
+    title: Temperatuur
     series:
       - am1_temperature
       - am2_temperature

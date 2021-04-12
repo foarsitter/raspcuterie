@@ -5,6 +5,7 @@ from flask_babel import Babel
 
 from raspcuterie import base_path, version
 from raspcuterie.config import setup
+
 from raspcuterie.dashboard import api, dashboard
 from raspcuterie.db import close_db, init_db, raw_connection
 from raspcuterie.utils import gettext
@@ -43,3 +44,10 @@ def close_pulseio(e=None):
 
     if sensor:
         sensor.exit()
+
+
+def get_config():
+
+    config = getattr(g, "config", None)
+
+    return config

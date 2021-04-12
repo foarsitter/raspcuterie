@@ -1,9 +1,11 @@
 from pathlib import Path
 
 import yaml
-from flask import current_app
+from flask import current_app, g
 
 from raspcuterie import base_path
+
+# from raspcuterie.config.schema import RaspcuterieConfigSchema
 from raspcuterie.devices import InputDevice
 from raspcuterie.devices.control import ControlRule
 from raspcuterie.devices.output.relay import OutputDevice
@@ -21,40 +23,24 @@ def parse_config(file: Path):
     return data_loaded
 
 
-def register_input_devices(config):
+def register_input_devices(config: RaspcuterieConfigSchema):
 
-    input_devices = config["devices"]["input"]
+    for device in config.devices:
+        if device.type in InputDevice.types:
 
-    for device_name, device in input_devices.items():
+            device_class = InputDevice.types[device.type]
+        elif device.type in OutputDevice.types:
+            device_class = InputDevice.types[device.type]
+        else:
+            device_class = None
 
-        device_type = device.get("type", device_name)
-
-        if device_type in InputDevice.types:
-
-            kwargs = device.copy()
+        if not device_class:
+            current_app.logger.error(f"Cloud not initiate {device}")
+        else:
+            kwargs = device.dict()
             del kwargs["type"]
 
-            device_class = InputDevice.types[device_type]
-            device_class(device_name, **kwargs)
-        else:
-            current_app.logger.error(f"Cloud not initiate {device}")
-
-
-def register_output_devices(config):
-
-    input_devices = config["devices"]["output"]
-
-    for device_name, device in input_devices.items():
-
-        device_type = device.get("type", device_name)
-
-        device_class = OutputDevice.types[device_type]
-
-        kwargs = device.copy()
-
-        del kwargs["type"]
-
-        device_class(device_name, **kwargs)
+            device_class(device.name, **kwargs)
 
 
 def register_config_rules(config):
@@ -75,7 +61,7 @@ def register_config_rules(config):
             )
 
 
-def get_config_file(app):
+def get_config_file(app) -> Path:
     if app.debug or app.testing:
         file = Path(__file__).parent.parent.parent / "config_dev.yaml"
     else:
@@ -86,10 +72,12 @@ def get_config_file(app):
 
 
 def setup(app):
-    config = parse_config(get_config_file(app))
+    file = get_config_file(app)
+    config = parse_config(file)
+
+    # g.config = RaspcuterieConfigSchema.parse_raw(config)
 
     app.config["config"] = config["raw"]
 
     register_input_devices(config)
-    register_output_devices(config)
     register_config_rules(config)

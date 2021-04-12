@@ -11,7 +11,7 @@ minimal_requirements = [
 
 def get_long_description():
     """
-    Return the README.
+    Return the README...
     """
     return open("README.md", "r", encoding="utf8").read()
 

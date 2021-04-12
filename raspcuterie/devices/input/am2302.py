@@ -1,54 +1,24 @@
 from flask import current_app, g
 
-from raspcuterie.db import get_db, insert_temperature, insert_humidity
-from raspcuterie.devices import InputDevice, LogDevice, DatabaseDevice
+from raspcuterie.devices import InputDevice, LogDevice
+from raspcuterie.devices.series import IntegerSeries
+from raspcuterie.utils import min_max_avg_over_period
 
 
-class AM2302(InputDevice, LogDevice, DatabaseDevice):
+class AM2302(InputDevice, LogDevice):
     type = "AM2302"
 
     DEGREE_CELSIUS = "celsius"
     DEGREE_FAHRENHEIT = "fahrenheit"
 
-    table_sql = """
-        create table if not exists {0}
-        (
-            id    integer primary key,
-            time  text not null,
-            value integer not null
-        );"""
-
-    def __init__(self, name, degree=DEGREE_CELSIUS, gpio=4, table_prefix=""):
+    def __init__(self, name, degree=DEGREE_CELSIUS, gpio=4, prefix=""):
         super(AM2302, self).__init__(name)
         self.pin = gpio
         self.degree = degree
-        self.table_prefix = table_prefix
+        self.prefix = prefix
 
-    def read(self):
-        humidity, temperature = self.raw()
-
-        if humidity:
-            humidity = round(humidity, 1)
-
-        if temperature:
-            temperature = round(temperature, 1)
-
-        return humidity, temperature
-
-    def get_table_name(self, name):
-        return f"{self.table_prefix}{name}"
-
-    @property
-    def table_humidity(self):
-        return self.get_table_name("humidity")
-
-    @property
-    def table_temperature(self):
-        return self.get_table_name("temperature")
-
-    def create_table(self, connection):
-        connection.execute(AM2302.table_sql.format(self.table_humidity))
-        connection.execute(AM2302.table_sql.format(self.table_temperature))
+        self.h_series = IntegerSeries(f"{prefix}_humidity")
+        self.t_series = IntegerSeries(f"{prefix}_temperature")
 
     @staticmethod
     def get_sensor(gpio_pin):
@@ -63,6 +33,17 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
             setattr(g, sensor, DHT22(gpio_pin))
 
         return getattr(g, sensor)
+
+    def read(self):
+        humidity, temperature = self.raw()
+
+        if humidity:
+            humidity = round(humidity, 1)
+
+        if temperature:
+            temperature = round(temperature, 1)
+
+        return humidity, temperature
 
     def raw(self):
         sensor = AM2302.get_sensor(self.pin)
@@ -81,115 +62,35 @@ class AM2302(InputDevice, LogDevice, DatabaseDevice):
         return humidity, temperature
 
     def get_context(self):
-        from raspcuterie.dashboard.api import min_max_avg_over_period
 
         humidity, temperature = self.read()
 
-        temperature_min, temperature_max, temperature_avg = min_max_avg_over_period(
-            self.table_temperature
-        )
-
-        humidity_min, humidity_max, humidity_avg = min_max_avg_over_period(
-            self.table_humidity
-        )
-
         humidity_min_3h, humidity_max_3h, humidity_avg_3h = min_max_avg_over_period(
-            self.table_humidity, "-3 hours"
+            self.h_series.name, "-3 hours"
         )
 
         values = dict(
             humidity=humidity,
             temperature=temperature,
-            temperature_min=temperature_min,
-            temperature_max=temperature_max,
-            temperature_avg=temperature_avg,
-            humidity_min=humidity_min,
-            humidity_max=humidity_max,
-            humidity_avg=humidity_avg,
             humidity_min_3h=humidity_min_3h,
             humidity_max_3h=humidity_max_3h,
             humidity_avg_3h=humidity_avg_3h,
         )
 
-        values[self.table_temperature] = temperature
-        values[self.table_humidity] = humidity
+        values[self.t_series.name] = temperature
+        values[self.h_series.name] = humidity
 
         return values
 
-    def read_from_database(self):
-
-        time = None
-
-        table_name = self.table_temperature
-
-        temperature = (
-            get_db()
-            .execute(f"SELECT value, time FROM {table_name} ORDER BY time DESC LIMIT 1")
-            .fetchone()
-        )
-
-        if temperature:
-            time = temperature[1]
-            temperature = temperature[0]
-
-        table_name = self.table_temperature
-
-        humidity = (
-            get_db()
-            .execute(f"SELECT value, time FROM {table_name} ORDER BY time DESC LIMIT 1")
-            .fetchone()
-        )
-
-        if humidity:
-            time = humidity[1]
-            humidity = humidity[0]
-
-        return humidity, temperature, time
-
     def temperature_data(self, period="-24 hours", aggregate=5 * 60):
-
-        table_name = self.table_temperature
-
-        cursor = get_db().execute(
-            f"""SELECT datetime(strftime('%s', t.time) - (strftime('%s', t.time) % :aggregate), 'unixepoch') time,
-       round(avg(value), 2)                                                                value
-FROM {table_name} t
-WHERE t.value is not null
-  and time >= datetime('now', :period)
-GROUP BY strftime('%s', t.time) / :aggregate
-ORDER BY time DESC;""",
-            dict(period=period, aggregate=aggregate),
-        )
-
-        temperature_data = cursor.fetchall()
-        cursor.close()
-        return temperature_data
+        return self.t_series.data(period, aggregate)
 
     def humidity_data(self, period="-24 hours", aggregate=5 * 60):
-
-        table_name = self.table_humidity
-
-        cursor = get_db().execute(
-            f"""SELECT datetime(strftime('%s', t.time) - (strftime('%s', t.time) % :aggregate), 'unixepoch') time,
-       round(avg(value), 2)                                                                value
-FROM {table_name} t
-WHERE t.value is not null
-  and time >= datetime('now', :period)
-GROUP BY strftime('%s', t.time) / :aggregate
-ORDER BY time DESC;""",
-            dict(period=period, aggregate=aggregate),
-        )
-
-        humidity_data = cursor.fetchall()
-
-        cursor.close()
-
-        return humidity_data
+        return self.h_series.data(period, aggregate)
 
     def log(self):
+
         humidity, temperature = self.read()
 
-        if humidity:
-            insert_humidity(humidity, self.table_humidity)
-        if temperature:
-            insert_temperature(temperature, self.table_temperature)
+        self.h_series.log(humidity)
+        self.t_series.log(temperature)

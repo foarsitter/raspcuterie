@@ -1,59 +1,50 @@
+from typing import List
+
 from flask import Blueprint, jsonify, request
+from werkzeug.exceptions import NotFound
 
-
-from raspcuterie.db import get_db
 from raspcuterie.devices import InputDevice
 from raspcuterie.devices.input.am2302 import AM2302
 from raspcuterie.devices.output.relay import OutputDevice, RelaySwitch
-from raspcuterie.utils import gettext
+from raspcuterie.devices.series import Series
+from raspcuterie.utils import gettext, slope, min_max_avg_over_period
 
 bp = Blueprint("api", __name__, url_prefix="/api")
 
 
-def slope(table):
-    x_series = range(1, 6)
-    x_average = sum(x_series) / 5
+@bp.route("<series>/current.json")
+def current(series: str):
 
-    series = get_db().execute(
-        "SELECT value FROM {} ORDER BY time DESC LIMIT 5".format(table)
-    )
+    series = Series.registry.get(series, None)
 
-    y_series = list(reversed([x[0] for x in series.fetchall()]))
+    if series is None:
+        raise NotFound
 
-    y_average = sum(y_series) / 5
-
-    average_delta = sum(
-        [(x - x_average) * (y - y_average) for x, y in zip(x_series, y_series)]
-    )
-
-    # we have a series of 5
-    x_constant = 10
-
-    return round(average_delta / x_constant, 2)
+    return series.last_observation()
 
 
-def min_max_avg_over_period(table: str, period="-24 hours"):
-    result = get_db().execute(
-        """SELECT min(value), max(value), avg(value)
-FROM {} as t
-WHERE t.value is not null
-  and t.time >= datetime('now', :period)""".format(
-            table
-        ),
-        dict(period=period),
-    )
-    min_value, max_value, avg_value = result.fetchone()
+@bp.route("chart/<chart_name>/series.json")
+def chart_series(chart_name: str):
 
-    if not min_value:
-        min_value = 0
+    period = request.args.get("period", "-24 hours")
 
-    if not max_value:
-        max_value = 0
+    aggregate = request.args.get("aggregate", 5 * 60)
 
-    if not avg_value:
-        avg_value = 0
+    from raspcuterie.app import get_config
 
-    return min_value, max_value, avg_value
+    config = get_config()
+
+    chart = config.charts[chart_name]
+
+    result = []
+
+    for series_name in chart.series:
+
+        series = Series.registry.get(series_name, None)
+        if series:
+            result.append(dict(name=chart.title, data=series.data(period, aggregate)))
+
+    return result
 
 
 @bp.route("/am2302/current.json")
