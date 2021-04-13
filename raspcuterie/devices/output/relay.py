@@ -8,19 +8,37 @@ from raspcuterie.devices import OutputDevice, LogDevice
 from raspcuterie.devices.series import BooleanSeries
 from raspcuterie.gpio import GPIO
 
+ICON_PRESETS = {
+    "refrigerator": "fa-refrigerator",
+    "heater": "fa-heat",
+    "humidifier": "fa-shower",
+    "dehumidifier": "fa-air-conditioner",
+    "fan": "fa-fan",
+}
+
 
 class RelaySwitch(OutputDevice, LogDevice):
     type = "relay"
 
-    def __init__(self, name, gpio, timeout=10):
+    def __init__(self, name, gpio, timeout=10, icon=""):
         super(RelaySwitch, self).__init__(name)
 
         self.pin_number = gpio
         self.timeout_minutes = timeout
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.pin_number, GPIO.OUT)
-
+        if gpio:
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(self.pin_number, GPIO.OUT)
+        self._icon = icon
         self.series = BooleanSeries(self.name)
+
+    @property
+    def icon(self):
+        if self._icon:
+            return self._icon
+
+        name_lower = self.name.lower()
+
+        return ICON_PRESETS.get(name_lower, "")
 
     def last_db_value(self):
 
@@ -128,21 +146,16 @@ ORDER BY time DESC;""".format(
 class DBRelay(RelaySwitch, LogDevice):
     type = "dbrelay"
 
-    def __init__(self, name, timeout=10, **kwargs):
-
-        super(RelaySwitch, self).__init__(name)
-        self.timeout_minutes = timeout
-
-    @property
-    def table_name(self):
-        return "dbrelay_" + self.name
-
     def _set_output(self, value):
         self.update_table(value == GPIO.HIGH)
 
+    @property
+    def table_name(self):
+        return self.series.name
+
     def value(self):
         cursor = get_db().execute(
-            "SELECT value FROM {0} ORDER BY time DESC LIMIT 1".format(self.table_name)
+            "SELECT value FROM {0} ORDER BY time DESC LIMIT 1".format(self.series.name)
         )
 
         row = cursor.fetchone()

@@ -39,7 +39,7 @@ def init_db(connection=None):
         series.create_table(connection)
 
 
-def insert_temperature(value: float, table_name, time_value=None):
+def insert_temperature(table_name, value: float, time_value=None):
 
     if time_value is None:
         time_value = datetime.now()
@@ -63,7 +63,7 @@ def insert_temperature(value: float, table_name, time_value=None):
             )
 
 
-def insert_humidity(value: float, table_name, time_value=None):
+def insert_humidity(table_name, value: float, time_value=None):
 
     if time_value is None:
         time_value = datetime.now()
@@ -87,16 +87,16 @@ def insert_humidity(value: float, table_name, time_value=None):
             )
 
 
-def insert_relay(value_1, value_2, value_3, value_4):
+def insert_relay(table: str, value_1, value_2, value_3, value_4):
     db = get_db()
     with db:
         db.execute(
-            "INSERT INTO relay(time,value_1, value_2, value_3, value_4) VALUES (?, ?, ?, ?, ?)",
+            f"INSERT INTO {table}(time,value_1, value_2, value_3, value_4) VALUES (?, ?, ?, ?, ?)",
             (datetime.now(), value_1, value_2, value_3, value_4),
         )
 
 
-def insert_weight(value: float, time_value=None):
+def insert_weight(table: str, value: float, time_value=None):
 
     if time_value is None:
         time_value = datetime.now()
@@ -105,4 +105,4 @@ def insert_weight(value: float, time_value=None):
 
     with db:
         current_app.logger.info(f"Weight: logging {value} ")
-        db.execute("INSERT INTO weight(time,value) VALUES (?,?)", (time_value, value))
+        db.execute(f"INSERT INTO {table}(time,value) VALUES (?,?)", (time_value, value))

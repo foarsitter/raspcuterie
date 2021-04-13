@@ -81,3 +81,13 @@ def version():
     file = raspcuterie.base_path / "config.yaml"
 
     click.echo(f"Config: {file} ")
+
+
+@cli.command(short_help="Write schema to raspcuterie.json")
+def schema():
+
+    output_file = Path("raspcuterie.schema.json")
+
+    from ..config import RaspcuterieConfigSchema
+
+    output_file.write_text(RaspcuterieConfigSchema.schema_json())

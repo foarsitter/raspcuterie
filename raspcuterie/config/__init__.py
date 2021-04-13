@@ -4,15 +4,13 @@ import yaml
 from flask import current_app, g
 
 from raspcuterie import base_path
-
-# from raspcuterie.config.schema import RaspcuterieConfigSchema
+from raspcuterie.config.schema import RaspcuterieConfigSchema
 from raspcuterie.devices import InputDevice
 from raspcuterie.devices.control import ControlRule
 from raspcuterie.devices.output.relay import OutputDevice
 
 
 def parse_config(file: Path):
-
     InputDevice.discover()
     OutputDevice.discover()
 
@@ -23,28 +21,26 @@ def parse_config(file: Path):
     return data_loaded
 
 
-def register_input_devices(config: RaspcuterieConfigSchema):
-
+def register_input_devices(config: RaspcuterieConfigSchema, logger):
     for device in config.devices:
         if device.type in InputDevice.types:
-
             device_class = InputDevice.types[device.type]
         elif device.type in OutputDevice.types:
-            device_class = InputDevice.types[device.type]
+            device_class = OutputDevice.types[device.type]
         else:
             device_class = None
 
         if not device_class:
-            current_app.logger.error(f"Cloud not initiate {device}")
+            logger.error(f"Cloud not initiate {device}")
         else:
             kwargs = device.dict()
             del kwargs["type"]
+            del kwargs["name"]
 
             device_class(device.name, **kwargs)
 
 
 def register_config_rules(config):
-
     control_rules = config["control"]
 
     for device, rules in control_rules.items():
@@ -52,7 +48,6 @@ def register_config_rules(config):
         device = OutputDevice.registry[device]
 
         for rule in rules:
-
             ControlRule(
                 device,
                 expression=rule["expression"],
@@ -75,9 +70,7 @@ def setup(app):
     file = get_config_file(app)
     config = parse_config(file)
 
-    # g.config = RaspcuterieConfigSchema.parse_raw(config)
-
+    app.schema = RaspcuterieConfigSchema.parse_obj(config)
     app.config["config"] = config["raw"]
-
-    register_input_devices(config)
-    register_config_rules(config)
+    register_input_devices(app.schema, app.logger)
+    # register_config_rules(config)

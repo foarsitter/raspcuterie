@@ -2,7 +2,7 @@ import abc
 from enum import Enum
 from typing import Literal, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Extra
 
 
 class DegreeSchema(str, Enum):
@@ -10,27 +10,32 @@ class DegreeSchema(str, Enum):
     fahrenheit = "fahrenheit"
 
 
-class InputDeviceSchema(BaseModel, abc.ABC):
-    pass
+class DeviceSchema(BaseModel, abc.ABC):
+    name: str
 
 
-class OutputDeviceSchema(BaseModel, abc.ABC):
-    pass
+class InputDeviceSchema(DeviceSchema, abc.ABC):
+    class Config:
+        extra = Extra.forbid
+
+
+class OutputDeviceSchema(DeviceSchema, abc.ABC):
+    class Config:
+        extra = Extra.forbid
 
 
 class AM2302Schema(InputDeviceSchema):
-    type: Literal["am2302"]
+    type: Literal["AM2302"]
     degree: Optional[DegreeSchema] = DegreeSchema.celsius
-    table_prefix: Optional[str]
+    prefix: Optional[str]
     gpio: int
 
 
-class SinusSchema(InputDeviceSchema):
+class SinusSchema(AM2302Schema):
     type: Literal["sinus"]
-    degree: Optional[DegreeSchema]
 
 
-class BME280Schema(InputDeviceSchema):
+class BME280Schema(AM2302Schema):
     type: Literal["bme280"]
 
 
@@ -39,3 +44,8 @@ class RelaySwitchSchema(OutputDeviceSchema):
     name: str
     gpio: int
     timeout: Optional[int] = 10
+    icon: Optional[str]
+
+
+class DBRelaySwitchSchema(RelaySwitchSchema):
+    type: Literal["dbrelay"]

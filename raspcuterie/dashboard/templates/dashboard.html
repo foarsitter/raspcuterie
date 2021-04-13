@@ -69,58 +69,26 @@
             <div class="columns" v-if="page == 'dashboard'">
                 <div class="column is-9">
                     <div class="notification is-white">
-                        <div id="humidity">
-                            <apexchart type="line" height="230" ref="humidity" :options="humidityChartOptions"
-                                       :series="humiditySeries"></apexchart>
-                        </div>
-                        <div id="temperature">
-                            <apexchart type="line" height="230" ref="temperature" :options="temperatureChartOptions"
-                                       :series="temperatureSeries"></apexchart>
-                        </div>
+                        {% for name,chart in charts.items() %}
+                            <div id="{{ name }}">
+                                <apexchart type="line" height="230" ref="{{ name }}" :options="{{ name }}ChartOptions"
+                                           :series="{{ name }}Series"></apexchart>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
                 <div class="column">
                     <div class="notification is-white has-text-justified">
-                        <div class="level" title="Refrigerator">
-                            <div class="level-item">
+                        <div class="level">
+                            {% for name, device in output_devices.items() %}
+                                <div class="level-item" title="{{ device.name }}">
                                 <span class="fa-stack fa-md">
-                                    <i class="fas fa-refrigerator fa-lg  fa-stack-1x"></i>
-                                    <i v-if="refrigerator" class="fas fa-stack-2x fa-check has-text-success"></i>
+                                    <i class="fas {{ device.icon }} fa-lg  fa-stack-1x"></i>
+                                    <i v-if="{{ device.name }}" class="fas fa-stack-2x fa-check has-text-success"></i>
                                     <i v-else class="fas fa-stack-2x fa-ban has-text-danger"></i>
                                 </span>
-                            </div>
-                            <div class="level-item" title="Heater">
-                                <span class="fa-stack fa-md">
-                                    <i class="fas fa-heat fa-lg  fa-stack-1x"></i>
-                                    <i v-if="heater" class="fas fa-stack-2x fa-check has-text-success"></i>
-                                    <i v-else class="fas fa-stack-2x fa-ban has-text-danger"></i>
-                                </span>
-                            </div>
-                            <div class="level-item" title="Humidifier">
-                                <span class="fa-stack fa-md">
-                                    <i class="fas fa-shower fa-lg  fa-stack-1x"></i>
-                                    <i v-if="humidifier" class="fas fa-stack-2x fa-check has-text-success"></i>
-                                    <i v-else class="fas fa-stack-2x fa-ban has-text-danger"></i>
-                                </span>
-                            </div>
-                            <div class="level-item" title="Dehumidifier">
-                                <div class="level-item">
-                                    <span class="fa-stack fa-md">
-                                        <i class="fas fa-air-conditioner fa-lg  fa-stack-1x"></i>
-                                        <i v-if="dehumidifier" class="fas fa-stack-2x fa-check has-text-success"></i>
-                                        <i v-else class="fas fa-stack-2x fa-ban has-text-danger"></i>
-                                    </span>
                                 </div>
-                            </div>
-                            <div class="level-item" title="fan">
-                                <div class="level-item">
-                                    <span class="fa-stack fa-md">
-                                        <i class="fas fa-fan fa-lg  fa-stack-1x"></i>
-                                        <i v-if="fan" class="fas fa-stack-2x fa-check has-text-success"></i>
-                                        <i v-else class="fas fa-stack-2x fa-ban has-text-danger"></i>
-                                    </span>
-                                </div>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -227,37 +195,15 @@
                         </div>
                         <div class="tile is-parent">
                             <article class="tile is-child notification is-warning">
-                                <div class="field">
-                                    <input id="refrigerator-switch" type="checkbox"
-                                           class="switch is-danger"
-                                           checked="checked" v-model="refrigerator" @change="toggleRefrigerator()">
-                                    <label for="refrigerator-switch">{{ gettext("Refrigerator") }}</label>
-                                </div>
-                                <div class="field">
-                                    <input id="heater-switch" type="checkbox"
-                                           class="switch is-danger"
-                                           checked="checked" v-model="heater" @change="toggleHeater()">
-                                    <label for="heater-switch">{{ gettext("Heater") }}</label>
-                                </div>
-
-                                <div class="field">
-                                    <input id="dehumidifier-switch" type="checkbox"
-                                           class="switch is-info"
-                                           checked="checked" v-model="dehumidifier" @change="toggleDehumidifier()">
-                                    <label for="dehumidifier-switch">{{ gettext("Dehumidifier") }}</label>
-                                </div>
-                                <div class="field">
-                                    <input id="humidifier-switch" type="checkbox"
-                                           class="switch is-info"
-                                           checked="checked" v-model="humidifier" @change="toggleHumidifier()">
-                                    <label for="humidifier-switch">{{ gettext("Humidifier") }}</label>
-                                </div>
-                                <div class="field">
-                                    <input id="fan-switch" type="checkbox"
-                                           class="switch is-info"
-                                           checked="checked" v-model="fan" @change="toggleFan()">
-                                    <label for="fan-switch">{{ gettext("Fan") }}</label>
-                                </div>
+                                {% for name, device in output_devices.items() %}
+                                    <div class="field">
+                                        <input id="{{ name }}-switch" type="checkbox"
+                                               class="switch is-danger"
+                                               checked="checked" v-model="{{ name }}"
+                                               @change="toggle{{ name|title }}()">
+                                        <label for="{{ name }}-switch">{{ name }}</label>
+                                    </div>
+                                {% endfor %}
                             </article>
                         </div>
                     </div>
@@ -377,109 +323,109 @@
                 page: "dashboard",
                 period: "-24 hours",
                 aggregate: 300,
-                refrigerator: false,
-                dehumidifier: false,
-                humidifier: false,
-                heater: false,
-                fan: false,
-                humiditySeries: [],
-                temperatureSeries: [],
-                humidityChartOptions: graph("humidity", 75),
-                temperatureChartOptions: graph("temperature", 12.5),
-                temperature: {
-                    current: 0,
-                    min: 0,
-                    max: 0,
-                    avg: 0,
-                    slope: 1,
-                    loading: true,
-                },
-                lastRequestTime: "n/a",
-                humidity: {
-                    current: 0,
-                    min: 0,
-                    max: 0,
-                    avg: 0,
-                    slope: 1,
-                    loading: true,
-                },
+            {% for name, device in output_devices.items() %}
+                {{ name }}: false,
+            {% endfor %}
+        {% for name, chart in charts.items() %}
+            {{ name }}ChartOptions: graph("{{ chart.title }}", 75),
+            {{ name }}Series: [],
+        {% endfor %}
+        {#temperatureSeries: [],#}
+        {#temperatureChartOptions: graph("temperature", 12.5),#}
+        temperature:
+            {
+                current: 0,
+                    min
+            :
+                0,
+                    max
+            :
+                0,
+                    avg
+            :
+                0,
+                    slope
+            :
+                1,
+                    loading
+            :
+                true,
             }
+        ,
+            lastRequestTime: "n/a",
+                humidity
+        :
+            {
+                current: 0,
+                    min
+            :
+                0,
+                    max
+            :
+                0,
+                    avg
+            :
+                0,
+                    slope
+            :
+                1,
+                    loading
+            :
+                true,
+            }
+        ,
+        }
         },
         methods: {
-            toggleRefrigerator: function () {
-                axios({
-                    method: 'GET',
-                    url: "/api/relay/refrigerator/toggle",
-                }).then(response => {
-                    this.refrigerator = response.data["state"]
-                })
-            },
-            toggleHumidifier: function () {
-                axios({
-                    method: 'GET',
-                    url: "/api/relay/humidifier/toggle",
-                }).then(function (response) {
-                    this.humidifier = response.data["state"]
-                })
-            },
-            toggleFan: function () {
-                axios({
-                    method: 'GET',
-                    url: "/api/relay/fan/toggle",
-                }).then(function (response) {
-                    this.fan = response.data["state"]
-                })
-            },
-            toggleDehumidifier: function () {
-                axios({
-                    method: 'GET',
-                    url: "/api/relay/dehumidifier/toggle",
-                }).then(response => {
-                    this.dehumidifier = response.data["state"]
-                })
-            },
-            toggleHeater: function () {
-                axios({
-                    method: 'GET',
-                    url: "/api/relay/heater/toggle",
-                }).then(response => {
-                    this.heater = response.data["state"]
-                })
-            },
+            {% for name, device in output_devices.items() %}
+                toggle{{ name|title }}: function () {
+                    axios({
+                        method: 'GET',
+                        url: "/api/relay/{{ name }}/toggle",
+                    }).then(response => {
+                        this.{{ name }} = response.data["state"]
+                    })
+                }
+                ,
+            {% endfor %}
             updateChartInterval() {
                 setInterval(() => {
-                    this.updateAM2302Chart()
-                    this.updateAM2302()
+                    {% for name, chart in charts.items() %}
+                        this.update{{ name|title }}Chart()
+                    {% endfor %}
+                    {#this.updateAM2302()#}
                     this.updateRelayValues()
                 }, 1000 * 60);
+
+                {% for name, chart in charts.items() %}
+                    this.update{{ name|title }}Chart()
+                {% endfor %}
             },
             updateRelayValues() {
                 axios({
                     method: 'GET',
                     url: "/api/relay/current.json",
                 }).then(response => {
-                    this.refrigerator = response.data["refrigerator"]
-                    this.dehumidifier = response.data["dehumidifier"]
-                    this.humidifier = response.data["humidifier"]
-                    this.heater = response.data["heater"]
-                    this.fan = response.data["fan"]
+                    {% for name, device in output_devices.items() %}
+                        this.{{ name }} = response.data["{{ name }}"]
+                    {% endfor %}
                 });
             },
-            updateAM2302Chart() {
-                axios({
-                    method: 'GET',
-                    url: "/api/am2302/chart.json",
-                    params: {
-                        period: this.period,
-                        aggregate: this.aggregate,
-                    }
-                }).then(response => {
-                    this.humiditySeries = response.data["humidity"]
-                    this.temperatureSeries = response.data["temperature"]
-                });
-            },
+            {% for name, chart in charts.items() %}
+                update{{ name|title }}Chart() {
+                    axios({
+                        method: 'GET',
+                        url: "/api/chart/{{ name }}/series.json",
+                        params: {
+                            period: this.period,
+                            aggregate: this.aggregate,
+                        }
+                    }).then(response => {
+                        this.{{ name }}Series = response.data
+                    });
+                },
+            {% endfor %}
             updateAM2302() {
-
                 this.humidity.loading = true
                 this.temperature.loading = true
 
@@ -514,21 +460,25 @@
         mounted: function () {
             this.loadLocalStorage()
             this.updateRelayValues()
-            this.updateAM2302Chart()
-            this.updateAM2302()
+            {#this.updateAM2302Chart()#}
+            {#this.updateAM2302()#}
             this.updateChartInterval()
-        },
+        }
+
+        ,
         watch: {
             period(value) {
                 localStorage.period = value;
                 this.updateAM2302Chart()
-            },
+            }
+            ,
             aggregate(value) {
                 localStorage.aggregate = value;
                 this.updateAM2302Chart()
             }
         }
-    });
+    })
+    ;
 
 
 </script>

@@ -1,8 +1,9 @@
 from typing import List
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from werkzeug.exceptions import NotFound
 
+from raspcuterie.config import RaspcuterieConfigSchema
 from raspcuterie.devices import InputDevice
 from raspcuterie.devices.input.am2302 import AM2302
 from raspcuterie.devices.output.relay import OutputDevice, RelaySwitch
@@ -30,9 +31,7 @@ def chart_series(chart_name: str):
 
     aggregate = request.args.get("aggregate", 5 * 60)
 
-    from raspcuterie.app import get_config
-
-    config = get_config()
+    config: RaspcuterieConfigSchema = current_app.schema
 
     chart = config.charts[chart_name]
 
@@ -42,9 +41,9 @@ def chart_series(chart_name: str):
 
         series = Series.registry.get(series_name, None)
         if series:
-            result.append(dict(name=chart.title, data=series.data(period, aggregate)))
+            result.append(dict(name=series.name, data=series.data(period, aggregate)))
 
-    return result
+    return jsonify(result)
 
 
 @bp.route("/am2302/current.json")

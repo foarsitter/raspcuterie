@@ -37,3 +37,10 @@ def test_schema():
     assert len(default_control.rules.keys()) == 2
 
     assert default_control.expires.year == 2020
+
+
+def test_jsonschema():
+
+    jsonschema = schema.RaspcuterieConfigSchema.schema_json()
+
+    print(jsonschema)
