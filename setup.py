@@ -3,15 +3,15 @@ from setuptools import setup, find_packages
 minimal_requirements = [
     "Flask==1.1.2",
     "Click==7.1.2",
-    "pyyaml==5.3.1",
-    # "adafruit-circuitpython-dht==3.5.8",
-    # "rpi.gpio==0.7.0",
+    "pyyaml==5.4",
+    "adafruit-circuitpython-dht==3.5.8",
+    "rpi.gpio==0.7.0",
 ]
 
 
 def get_long_description():
     """
-    Return the README
+    Return the README.
     """
     return open("README.md", "r", encoding="utf8").read()
 
