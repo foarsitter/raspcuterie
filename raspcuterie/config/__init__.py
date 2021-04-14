@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import yaml
-from flask import current_app, g
 
 from raspcuterie import base_path
 from raspcuterie.config.schema import RaspcuterieConfigSchema

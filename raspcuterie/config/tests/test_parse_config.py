@@ -1,15 +1,12 @@
-from pathlib import Path
-
 import raspcuterie
-from raspcuterie.devices.control import ControlRule
-from raspcuterie.devices.output.relay import OutputDevice
-
 from raspcuterie.config import (
     parse_config,
     register_input_devices,
     register_config_rules, RaspcuterieConfigSchema,
 )
 from raspcuterie.devices import InputDevice
+from raspcuterie.devices.control import ControlRule
+from raspcuterie.devices.output.relay import OutputDevice
 
 
 def test_parse_config():

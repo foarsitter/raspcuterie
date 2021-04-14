@@ -1,6 +1,6 @@
 from typing import List, Union, Dict
 
-from pydantic import BaseModel, Field, Extra
+from pydantic import BaseModel, Field
 
 from .charts import ChartSchema
 from .control import ControlGroupSchema
@@ -27,6 +27,3 @@ class RaspcuterieConfigSchema(BaseModel):
 
     control: Dict[str, ControlGroupSchema]
     charts: Dict[str, ChartSchema]
-    #
-    # class Config:
-    #     extra = Extra.forbid

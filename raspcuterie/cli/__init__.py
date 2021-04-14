@@ -3,7 +3,6 @@ import time
 from pathlib import Path
 
 import click
-from flask import current_app
 from flask.cli import with_appcontext  # noqa
 
 import raspcuterie

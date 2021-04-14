@@ -4,7 +4,6 @@ import yaml
 
 import raspcuterie
 from raspcuterie.config import schema
-from raspcuterie.config.schema.devices import DegreeSchema
 
 
 def test_schema():
