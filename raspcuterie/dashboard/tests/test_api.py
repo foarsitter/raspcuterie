@@ -12,13 +12,13 @@ from raspcuterie.devices.output.relay import DBRelay
 def relay(app):
 
     relay_name = "temp"
-    device = DBRelay(relay_name)
+    device = DBRelay(relay_name, 4)
 
     assert relay_name in OutputDevice.registry
 
     with app.app_context():
 
-        device.create_table(get_db())
+        device.series.create_table(get_db())
 
         device.update_table(False, datetime.datetime.now() - datetime.timedelta(days=100))
 
@@ -32,7 +32,8 @@ def am2302(app):
 
     am2302 = AM2302("temperature")
     with app.app_context():
-        am2302.create_table(get_db())
+        am2302.h_series.create_table(get_db())
+        am2302.t_series.create_table(get_db())
 
     return am2302
 

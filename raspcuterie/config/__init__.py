@@ -23,10 +23,10 @@ def parse_config(file: Path):
 
 def register_input_devices(config: RaspcuterieConfigSchema, logger):
     for device in config.devices:
-        if device.type in InputDevice.types:
-            device_class = InputDevice.types[device.type]
-        elif device.type in OutputDevice.types:
-            device_class = OutputDevice.types[device.type]
+        if device.type.lower() in InputDevice.types:
+            device_class = InputDevice.types[device.type.lower()]
+        elif device.type.lower() in OutputDevice.types:
+            device_class = OutputDevice.types[device.type.lower()]
         else:
             device_class = None
 
@@ -40,20 +40,21 @@ def register_input_devices(config: RaspcuterieConfigSchema, logger):
             device_class(device.name, **kwargs)
 
 
-def register_config_rules(config):
-    control_rules = config["control"]
+def register_config_rules(config: RaspcuterieConfigSchema):
+    control_objects = config.control
 
-    for device, rules in control_rules.items():
+    for controle_name, obj in control_objects.items():
 
-        device = OutputDevice.registry[device]
+        for device, rules in obj.rules.items():
+            device = OutputDevice.registry[device.lower()]
 
-        for rule in rules:
-            ControlRule(
-                device,
-                expression=rule["expression"],
-                action=rule["action"],
-                name=rule["rule"],
-            )
+            for rule in rules:
+                ControlRule(
+                    device,
+                    expression=rule.expression,
+                    action=rule.action,
+                    name=rule.rule,
+                )
 
 
 def get_config_file(app) -> Path:

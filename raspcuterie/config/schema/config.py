@@ -27,6 +27,6 @@ class RaspcuterieConfigSchema(BaseModel):
 
     control: Dict[str, ControlGroupSchema]
     charts: Dict[str, ChartSchema]
-
-    class Config:
-        extra = Extra.forbid
+    #
+    # class Config:
+    #     extra = Extra.forbid

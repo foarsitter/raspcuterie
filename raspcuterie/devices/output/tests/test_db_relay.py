@@ -5,8 +5,8 @@ from raspcuterie.devices.output.relay import DBRelay
 def test_on(app):
 
     with app.app_context():
-        x = DBRelay("test")
-        x.create_table(get_db())
+        x = DBRelay("test", 4)
+        x.series.create_table(get_db())
         x.on()
 
         assert x.value() is True
@@ -15,7 +15,7 @@ def test_on(app):
 def test_off(app):
 
     with app.app_context():
-        x = DBRelay("test")
+        x = DBRelay("test", 4)
 
         x.off()
 
@@ -31,8 +31,8 @@ def _count(x):
 def test_update_table(app):
 
     with app.app_context():
-        x = DBRelay("test")
-        x.create_table(get_db())
+        x = DBRelay("test", 4)
+        x.series.create_table(get_db())
         x.on()
 
         assert x.value() is True

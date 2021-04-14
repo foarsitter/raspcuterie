@@ -18,12 +18,12 @@ class UnionList(BaseModel):
 
 @pytest.fixture
 def am2302():
-    return dict(type="am2302", gpio=4)
+    return dict(type="AM2302", gpio=4, name="temp")
 
 
 @pytest.fixture
 def sinus():
-    return dict(type="sinus")
+    return dict(type="sinus", name="sinus")
 
 
 @pytest.fixture

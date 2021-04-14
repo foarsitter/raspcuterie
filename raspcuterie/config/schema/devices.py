@@ -31,12 +31,15 @@ class AM2302Schema(InputDeviceSchema):
     gpio: int
 
 
-class SinusSchema(AM2302Schema):
+class SinusSchema(InputDeviceSchema):
     type: Literal["sinus"]
 
 
-class BME280Schema(AM2302Schema):
+class BME280Schema(InputDeviceSchema):
     type: Literal["bme280"]
+    degree: Optional[DegreeSchema] = DegreeSchema.celsius
+    prefix: Optional[str]
+    # gpio: int
 
 
 class RelaySwitchSchema(OutputDeviceSchema):

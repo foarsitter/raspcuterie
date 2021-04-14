@@ -1,4 +1,3 @@
-import bme280
 from flask import current_app
 
 from raspcuterie.devices import InputDevice, LogDevice
@@ -41,7 +40,7 @@ class BME280(InputDevice, LogDevice):
         return humidity, temperature
 
     def raw(self):
-
+        import bme280
         from smbus2 import smbus2
 
         port = 1

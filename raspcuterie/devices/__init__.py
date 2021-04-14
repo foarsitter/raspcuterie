@@ -35,7 +35,7 @@ class InputDevice(ABC, EntryPointDiscoverable):
     types: Dict[str, Type["InputDevice"]] = {}
 
     def __init__(self, name):
-        InputDevice.registry[name] = self
+        InputDevice.registry[name.lower()] = self
         self.name = name
 
     def __init_subclass__(cls, **kwargs):
@@ -46,7 +46,7 @@ class InputDevice(ABC, EntryPointDiscoverable):
         else:
             name = cls.__name__
 
-        InputDevice.types[name] = cls
+        InputDevice.types[name.lower()] = cls
 
     @abstractmethod
     def read(self):
@@ -66,12 +66,12 @@ class OutputDevice(ABC, EntryPointDiscoverable):
     types: Dict[str, Type["OutputDevice"]] = {}
 
     def __init__(self, name):
-        OutputDevice.registry[name] = self
+        OutputDevice.registry[name.lower()] = self
         self.name = name
 
     def __init_subclass__(cls, **kwargs):
         super(OutputDevice, cls).__init_subclass__(**kwargs)
-        OutputDevice.types[cls.type] = cls
+        OutputDevice.types[cls.type.lower()] = cls
 
     @abstractmethod
     def value(self):

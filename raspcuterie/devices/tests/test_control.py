@@ -13,11 +13,11 @@ def test_matches(monkeypatch, temperature, match):
 
     AM2302("am2303")
 
-    relay = DBRelay("test", created_table=False)
+    relay = DBRelay("test", 4)
 
     x = ControlRule(device=relay, expression="temperature >= 10", action="on")
 
-    assert x.matches() == match
+    assert x.matches({'temperature': temperature}) == match
 
 
 def test_execute(monkeypatch, app):
@@ -26,7 +26,7 @@ def test_execute(monkeypatch, app):
 
         monkeypatch.setattr(AM2302, "read", lambda: (0, 7))
 
-        relay = DBRelay("test")
+        relay = DBRelay("test", 4)
 
         assert "test" in OutputDevice.registry
 
