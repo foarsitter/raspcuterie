@@ -17,7 +17,7 @@ jobs:
         pip install -r requirements-dev.txt
     - name: Analysing the code with pylint
       run: |
-        flake8 .
+        flake8--exclude ./src/pydantic .
     - name: Test with pytest
       run: |
         coverage run -m pytest
