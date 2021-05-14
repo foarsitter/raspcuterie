@@ -89,4 +89,5 @@ def schema():
 
     from ..config import RaspcuterieConfigSchema
 
+    RaspcuterieConfigSchema.update_forward_refs()
     output_file.write_text(RaspcuterieConfigSchema.schema_json())

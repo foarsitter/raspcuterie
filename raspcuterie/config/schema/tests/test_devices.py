@@ -2,6 +2,7 @@ from typing import Union, List
 
 import pytest
 from pydantic import BaseModel, Field
+from pydantic.fields import Annotated
 
 from raspcuterie.config.schema import AM2302Schema, SinusSchema, RelaySwitchSchema
 
@@ -10,20 +11,23 @@ class UnionField(BaseModel):
     field: Union[SinusSchema, AM2302Schema] = Field(..., discriminator="type")
 
 
+DevicesUnion = Annotated[
+    Union[SinusSchema, AM2302Schema, RelaySwitchSchema], Field(discriminator="type")
+]
+
+
 class UnionList(BaseModel):
-    union_list: List[Union[SinusSchema, AM2302Schema, RelaySwitchSchema]] = Field(
-        ..., discriminator="type"
-    )
+    union_list: List[DevicesUnion]
 
 
 @pytest.fixture
 def am2302():
-    return dict(type="AM2302", gpio=4, name="temp")
+    return dict(type="AM2302", gpio=4, name="Better")
 
 
 @pytest.fixture
 def sinus():
-    return dict(type="sinus", name="sinus")
+    return dict(type="sinus", name="Some sinus", gpio=99)
 
 
 @pytest.fixture

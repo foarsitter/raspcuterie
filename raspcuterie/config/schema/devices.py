@@ -1,8 +1,9 @@
 import abc
 from enum import Enum
-from typing import Literal, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Extra
+from typing import Literal
 
 
 class DegreeSchema(str, Enum):

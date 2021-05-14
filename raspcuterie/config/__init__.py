@@ -70,6 +70,8 @@ def setup(app):
     file = get_config_file(app)
     config = parse_config(file)
 
+    RaspcuterieConfigSchema.update_forward_refs()
+
     app.schema = RaspcuterieConfigSchema.parse_obj(config)
     app.config["config"] = config["raw"]
     register_input_devices(app.schema, app.logger)

@@ -18,7 +18,7 @@ class BME280(InputDevice, LogDevice):
             value integer not null
         );"""
 
-    def __init__(self, name, degree=DEGREE_CELSIUS, prefix=""):
+    def __init__(self, name, degree=DEGREE_CELSIUS, prefix="", **kwargs):
         super().__init__(name)
         self.port = 1
         self.address = 0x76
