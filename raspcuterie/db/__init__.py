@@ -1,7 +1,7 @@
 import sqlite3
 from datetime import datetime
 
-from flask import g, current_app
+from flask import current_app, g
 
 
 def raw_connection(app):

@@ -4,7 +4,6 @@ from flask import Flask, g
 
 from raspcuterie import base_path, version
 from raspcuterie.config import setup
-
 from raspcuterie.dashboard import api, dashboard
 from raspcuterie.db import close_db, init_db, raw_connection
 from raspcuterie.utils import gettext

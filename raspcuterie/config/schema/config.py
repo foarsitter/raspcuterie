@@ -1,6 +1,6 @@
-from typing import List, Union, Dict
+from typing import Dict, List, Union
 
-from pydantic import BaseModel, Field, Extra
+from pydantic import BaseModel, Extra, Field
 from pydantic.fields import Annotated
 
 from .charts import ChartSchema
@@ -8,11 +8,10 @@ from .control import ControlGroupSchema
 from .devices import (
     AM2302Schema,
     BME280Schema,
+    DBRelaySwitchSchema,
     RelaySwitchSchema,
     SinusSchema,
-    DBRelaySwitchSchema,
 )
-
 
 DevicesUnion = Annotated[
     Union[

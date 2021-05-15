@@ -2,8 +2,7 @@ from typing import List
 
 from flask import current_app
 
-from raspcuterie.devices import InputDevice
-from raspcuterie.devices import OutputDevice
+from raspcuterie.devices import InputDevice, OutputDevice
 
 
 class ControlRule:

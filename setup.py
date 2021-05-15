@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 minimal_requirements = [
     "Flask==1.1.2",
@@ -20,7 +20,7 @@ setup(
     description="Charcuterie dashboard and controller for the Raspberry PI",
     license="MIT",
     name="raspcuterie",
-    version="0.2.0",
+    version="1.0.0",
     py_modules=["raspcuterie"],
     long_description=get_long_description(),
     long_description_content_type="text/markdown",

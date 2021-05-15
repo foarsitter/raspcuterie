@@ -25,8 +25,8 @@ class AM2302(InputDevice, LogDevice):
         sensor = f"am2302_{gpio_pin}"
         if sensor not in g:
 
-            from board import pin
             from adafruit_dht import DHT22  # noqa
+            from board import pin
 
             gpio_pin = pin.Pin(gpio_pin)
 

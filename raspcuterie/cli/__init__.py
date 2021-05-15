@@ -6,6 +6,7 @@ import click
 from flask.cli import with_appcontext
 
 import raspcuterie
+
 from ..devices import InputDevice, OutputDevice
 from ..gpio import GPIO
 

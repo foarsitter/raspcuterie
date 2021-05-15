@@ -1,10 +1,10 @@
-from typing import Union, List
+from typing import List, Union
 
 import pytest
 from pydantic import BaseModel, Field
 from pydantic.fields import Annotated
 
-from raspcuterie.config.schema import AM2302Schema, SinusSchema, RelaySwitchSchema
+from raspcuterie.config.schema import AM2302Schema, RelaySwitchSchema, SinusSchema
 
 
 class UnionField(BaseModel):

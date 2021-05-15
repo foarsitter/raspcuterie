@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, current_app
+from flask import Blueprint, current_app, jsonify, request
 from werkzeug.exceptions import NotFound
 
 from raspcuterie.config import RaspcuterieConfigSchema
@@ -6,7 +6,7 @@ from raspcuterie.devices import InputDevice
 from raspcuterie.devices.input.am2302 import AM2302
 from raspcuterie.devices.output.relay import OutputDevice, RelaySwitch
 from raspcuterie.devices.series import Series
-from raspcuterie.utils import gettext, slope, min_max_avg_over_period
+from raspcuterie.utils import gettext, min_max_avg_over_period, slope
 
 bp = Blueprint("api", __name__, url_prefix="/api")
 
