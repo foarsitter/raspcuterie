@@ -2,7 +2,6 @@ from pathlib import Path
 from typing import Dict
 
 import yaml
-from flask import current_app, g
 
 from raspcuterie import base_path
 from raspcuterie.config.schema import RaspcuterieConfigSchema

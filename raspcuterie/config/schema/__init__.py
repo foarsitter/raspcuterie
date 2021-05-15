@@ -1,12 +1,4 @@
+from .charts import *  # noqa
 from .config import RaspcuterieConfigSchema  # noqa
-from .devices import (  # noqa
-    SinusSchema,
-    AM2302Schema,
-    RelaySwitchSchema,
-    OutputDeviceSchema,
-    DegreeSchema,
-    DBRelaySwitchSchema,
-    BME280Schema,
-)  # noqa
-from .control import ControlGroupSchema, ControleRuleSchema  # noqa
-from .charts import ChartSchema  # noqa
+from .control import *  # noqa
+from .devices import *  # noqa
