@@ -1,6 +1,8 @@
 from pathlib import Path
+from typing import Dict
 
 import yaml
+from flask import current_app, g
 
 from raspcuterie import base_path
 from raspcuterie.config.schema import RaspcuterieConfigSchema
@@ -9,7 +11,7 @@ from raspcuterie.devices.control import ControlRule
 from raspcuterie.devices.output.relay import OutputDevice
 
 
-def parse_config(file: Path):
+def read_config_as_yaml(file: Path) -> Dict:
     InputDevice.discover()
     OutputDevice.discover()
 
@@ -22,10 +24,10 @@ def parse_config(file: Path):
 
 def register_input_devices(config: RaspcuterieConfigSchema, logger):
     for device in config.devices:
-        if device.type.lower() in InputDevice.types:
-            device_class = InputDevice.types[device.type.lower()]
-        elif device.type.lower() in OutputDevice.types:
-            device_class = OutputDevice.types[device.type.lower()]
+        if device.type in InputDevice.types:
+            device_class = InputDevice.types[device.type]
+        elif device.type in OutputDevice.types:
+            device_class = OutputDevice.types[device.type]
         else:
             device_class = None
 
@@ -40,13 +42,13 @@ def register_input_devices(config: RaspcuterieConfigSchema, logger):
 
 
 def register_config_rules(config: RaspcuterieConfigSchema):
-    control_objects = config.control
+    control_rules = config.control
 
-    for controle_name, obj in control_objects.items():
+    for group_name, control_group in control_rules.items():
 
-        for device, rules in obj.rules.items():
-            device = OutputDevice.registry[device.lower()]
+        for device_name, rules in control_group.rules.items():
 
+            device = OutputDevice.registry[device_name]
             for rule in rules:
                 ControlRule(
                     device,
@@ -68,7 +70,9 @@ def get_config_file(app) -> Path:
 
 def setup(app):
     file = get_config_file(app)
-    config = parse_config(file)
+    config = read_config_as_yaml(file)
+
+    app.logger.info(f"Loading config {file}")
 
     RaspcuterieConfigSchema.update_forward_refs()
 

@@ -12,7 +12,7 @@ from raspcuterie.devices.output.relay import DBRelay
 def relay(app):
 
     relay_name = "temp"
-    device = DBRelay(relay_name, 4)
+    device = DBRelay(relay_name)
 
     assert relay_name in OutputDevice.registry
 
@@ -20,7 +20,9 @@ def relay(app):
 
         device.series.create_table(get_db())
 
-        device.update_table(False, datetime.datetime.now() - datetime.timedelta(days=100))
+        device.update_table(
+            False, datetime.datetime.now() - datetime.timedelta(days=100)
+        )
 
         assert device.value() is False
 
@@ -32,22 +34,24 @@ def am2302(app):
 
     am2302 = AM2302("temperature")
     with app.app_context():
-        am2302.h_series.create_table(get_db())
         am2302.t_series.create_table(get_db())
+        am2302.h_series.create_table(get_db())
 
     return am2302
 
 
-def test_relay_toggle(client, relay):
+def test_relay_toggle(client, relay, app):
 
     response = client.post("api/relay/temp/toggle")
 
     data = response.get_json()
 
-    assert data["state"] == relay.value() is True
+    with app.app_context():
+
+        assert data["state"] == relay.value() is True
 
 
-def test_relay_current(client, relay):
+def test_relay_current(client, relay, app):
 
     response = client.get("api/relay/current.json")
 
@@ -55,7 +59,8 @@ def test_relay_current(client, relay):
 
     data = response.get_json()
 
-    assert data[relay.name] == relay.value()
+    with app.app_context():
+        assert data[relay.name] == relay.value()
 
 
 def test_am2303_chart(app, monkeypatch, client, am2302):

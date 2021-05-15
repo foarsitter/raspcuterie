@@ -1,6 +1,6 @@
 import importlib
 import pkgutil
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from typing import Dict, Type
 
 import pkg_resources
@@ -34,8 +34,8 @@ class InputDevice(ABC, EntryPointDiscoverable):
     registry: Dict[str, "InputDevice"] = {}
     types: Dict[str, Type["InputDevice"]] = {}
 
-    def __init__(self, name):
-        InputDevice.registry[name.lower()] = self
+    def __init__(self, name, **kwargs):
+        InputDevice.registry[name] = self
         self.name = name
 
     def __init_subclass__(cls, **kwargs):
@@ -46,7 +46,7 @@ class InputDevice(ABC, EntryPointDiscoverable):
         else:
             name = cls.__name__
 
-        InputDevice.types[name.lower()] = cls
+        InputDevice.types[name] = cls
 
     @abstractmethod
     def read(self):
@@ -65,13 +65,13 @@ class OutputDevice(ABC, EntryPointDiscoverable):
     registry: Dict[str, "OutputDevice"] = {}
     types: Dict[str, Type["OutputDevice"]] = {}
 
-    def __init__(self, name):
-        OutputDevice.registry[name.lower()] = self
+    def __init__(self, name, **kwargs):
+        OutputDevice.registry[name] = self
         self.name = name
 
     def __init_subclass__(cls, **kwargs):
         super(OutputDevice, cls).__init_subclass__(**kwargs)
-        OutputDevice.types[cls.type.lower()] = cls
+        OutputDevice.types[cls.type] = cls
 
     @abstractmethod
     def value(self):

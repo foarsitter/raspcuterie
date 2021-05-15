@@ -1,23 +1,21 @@
 import pytest
 
-from raspcuterie.devices.input.am2302 import AM2302
-from raspcuterie.devices.control import ControlRule
 from raspcuterie.devices import OutputDevice
+from raspcuterie.devices.control import ControlRule
+from raspcuterie.devices.input.am2302 import AM2302
 from raspcuterie.devices.output.relay import DBRelay
 
 
 @pytest.mark.parametrize("temperature,match", [(11, True), (9, False)])
-def test_matches(monkeypatch, temperature, match):
-
-    monkeypatch.setattr(AM2302, "read", lambda self: (0, temperature))
+def test_matches(temperature, match):
 
     AM2302("am2303")
 
-    relay = DBRelay("test", 4)
+    relay = DBRelay("test")
 
     x = ControlRule(device=relay, expression="temperature >= 10", action="on")
 
-    assert x.matches({'temperature': temperature}) == match
+    assert x.matches(dict(temperature=temperature)) == match
 
 
 def test_execute(monkeypatch, app):
@@ -26,7 +24,7 @@ def test_execute(monkeypatch, app):
 
         monkeypatch.setattr(AM2302, "read", lambda: (0, 7))
 
-        relay = DBRelay("test", 4)
+        relay = DBRelay("test")
 
         assert "test" in OutputDevice.registry
 

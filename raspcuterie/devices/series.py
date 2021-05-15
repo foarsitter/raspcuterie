@@ -4,10 +4,11 @@ from typing import Dict
 from flask import current_app
 
 from raspcuterie.db import get_db
-from raspcuterie.utils import slope, min_max_avg_over_period
+from raspcuterie.utils import min_max_avg_over_period, slope
 
 
 class Series:
+    type: str
     registry: Dict[str, "Series"] = {}
 
     table_sql = """
@@ -27,7 +28,7 @@ class Series:
 
     def log(self, value, time_value=None):
 
-        if not value:
+        if value is None:
             current_app.logger.info(f"Received None for {self.name}, discarding value.")
             return
 
@@ -92,6 +93,8 @@ class Series:
 
 
 class IntegerSeries(Series):
+    type = "integer"
+
     def last_observation(self, period="-24 hours"):
         time = None
 
@@ -123,6 +126,7 @@ class IntegerSeries(Series):
 
 
 class BooleanSeries(Series):
+    type = "boolean"
 
     table_sql = """
     create table if not exists {0}

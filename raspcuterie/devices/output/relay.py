@@ -4,7 +4,7 @@ from builtins import super
 from flask import current_app
 
 from raspcuterie.db import get_db
-from raspcuterie.devices import OutputDevice, LogDevice
+from raspcuterie.devices import LogDevice, OutputDevice
 from raspcuterie.devices.series import BooleanSeries
 from raspcuterie.gpio import GPIO
 
@@ -145,6 +145,9 @@ ORDER BY time DESC;""".format(
 
 class DBRelay(RelaySwitch, LogDevice):
     type = "dbrelay"
+
+    def __init__(self, name, gpio=0, timeout=10, icon="fa-close"):
+        super(DBRelay, self).__init__(name, gpio=gpio, timeout=timeout, icon=icon)
 
     def _set_output(self, value):
         self.update_table(value == GPIO.HIGH)

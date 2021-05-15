@@ -1,31 +1,33 @@
-import raspcuterie
+from pathlib import Path
+
 from raspcuterie.config import (
-    parse_config,
+    RaspcuterieConfigSchema,
+    read_config_as_yaml,
+    register_config_rules,
     register_input_devices,
-    register_config_rules, RaspcuterieConfigSchema,
 )
 from raspcuterie.devices import InputDevice
 from raspcuterie.devices.control import ControlRule
 from raspcuterie.devices.output.relay import OutputDevice
 
 
-def test_parse_config():
-    file = raspcuterie.lib_path / "config_dev.yaml"
+def test_parse_config(app):
+    file = Path(__file__).parent.parent.parent.parent / "config_dev.yaml"
 
     ControlRule.registry = []
 
-    x = parse_config(file)
+    x = read_config_as_yaml(file)
 
-    x = RaspcuterieConfigSchema.parse_obj(x)
+    config_object = RaspcuterieConfigSchema.parse_obj(x)
 
-    assert x
+    assert config_object
 
-    register_input_devices(x, None)
+    register_input_devices(config_object, app.logger)
 
-    assert len(InputDevice.registry) == 2
+    assert len(InputDevice.registry) == 3
 
     assert len(OutputDevice.registry) == 5
 
-    register_config_rules(x)
+    register_config_rules(config_object)
 
     assert len(ControlRule.registry) == 4

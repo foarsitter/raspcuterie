@@ -70,7 +70,7 @@
                 <div class="column is-9">
                     <div class="notification is-white">
                         {% for name,chart in charts.items() %}
-                            <div id="{{ name }}">
+                            <div id="chart-{{ name }}">
                                 <apexchart type="line" height="230" ref="{{ name }}" :options="{{ name }}ChartOptions"
                                            :series="{{ name }}Series"></apexchart>
                             </div>
@@ -233,7 +233,7 @@
         integrity="sha256-n7FNwoYsyZMMiu5/NHArDRUq4JFdaZNPz8mE+OMC5VM=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bulma-extensions@6.2.7/dist/js/bulma-extensions.min.js"
         integrity="sha256-q4zsxO0fpPm6VhtL/9QkCFE5ZkNa0yeUxhmt1VO1ev0=" crossorigin="anonymous"></script>
-<script>
+<script type="text/javascript">
 
     function graph(name, goal) {
 
@@ -323,58 +323,31 @@
                 page: "dashboard",
                 period: "-24 hours",
                 aggregate: 300,
-            {% for name, device in output_devices.items() %}
-                {{ name }}: false,
-            {% endfor %}
-        {% for name, chart in charts.items() %}
-            {{ name }}ChartOptions: graph("{{ chart.title }}", 75),
-            {{ name }}Series: [],
-        {% endfor %}
-        {#temperatureSeries: [],#}
-        {#temperatureChartOptions: graph("temperature", 12.5),#}
-        temperature:
-            {
-                current: 0,
-                    min
-            :
-                0,
-                    max
-            :
-                0,
-                    avg
-            :
-                0,
-                    slope
-            :
-                1,
-                    loading
-            :
-                true,
+                {% for name, json in charts_json.items() %}
+                    "{{ name }}ChartOptions": {{ json|safe }},
+                    "{{ name }}Series": [],
+                {% endfor %}
+                {% for name, device in output_devices.items() %}
+                    "{{ name }}": false,
+                {% endfor %}
+                temperature: {
+                    current: 0,
+                    min: 0,
+                    max: 0,
+                    avg: 0,
+                    slope: 1,
+                    loading: true,
+                },
+                lastRequestTime: "n/a",
+                humidity: {
+                    current: 0,
+                    min: 0,
+                    max: 0,
+                    avg: 0,
+                    slope: 1,
+                    loading: true,
+                },
             }
-        ,
-            lastRequestTime: "n/a",
-                humidity
-        :
-            {
-                current: 0,
-                    min
-            :
-                0,
-                    max
-            :
-                0,
-                    avg
-            :
-                0,
-                    slope
-            :
-                1,
-                    loading
-            :
-                true,
-            }
-        ,
-        }
         },
         methods: {
             {% for name, device in output_devices.items() %}

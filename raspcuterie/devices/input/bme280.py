@@ -5,7 +5,7 @@ from raspcuterie.devices.series import IntegerSeries
 
 
 class BME280(InputDevice, LogDevice):
-    type = "BME280"
+    type = "bme280"
 
     DEGREE_CELSIUS = "celsius"
     DEGREE_FAHRENHEIT = "fahrenheit"

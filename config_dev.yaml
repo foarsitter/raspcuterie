@@ -17,14 +17,27 @@ devices:
     type: "dbrelay"
     gpio: 13
   - name: temperature
-    type: "sinus"
+    type: "AM2302"
+    prefix: "am2"
+    degree: celsius
+    gpio: 4
+  - name: temperature
+    type: "AM2302"
+    prefix: "am1"
+    degree: fahrenheit
+    gpio: 4
   - name: weight
+    gpio: 0
     type: "sinus"
-  - name: fuck
+  - name: fan
     type: "dbrelay"
     timeout: 0
     gpio: 13
     icon: "fa-times"
+  - type: bme280
+    name: test
+    gpio: 0
+    degree: celsius
 
 control:
   default:
@@ -54,10 +67,10 @@ charts:
   temperature:
     title: Temperatuur
     series:
+      - am2_temperature
       - am1_temperature
       - humidifier
   temperature2:
     title: Temperatuur 2
     series:
-      - am1_temperature
       - dehumidifier

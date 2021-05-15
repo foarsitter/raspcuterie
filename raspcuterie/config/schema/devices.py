@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Optional
 
 from pydantic import BaseModel, Extra
-from typing import Literal
+from typing_extensions import Literal
 
 
 class DegreeSchema(str, Enum):
