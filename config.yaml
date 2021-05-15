@@ -1,35 +1,60 @@
 name: raspcuterie
 devices:
-  input:
-    temperature:
-      type: sinus
-    weight:
-      type: sinus
-  output:
-    refrigerator:
-      type: relay
-      gpio: 6
-    heater:
-      type: relay
-      gpio: 19
-    humidifier:
-      type: relay
-      gpio: 26
-    dehumidifier:
-      type: relay
-      gpio: 13
+  - type: AM2302
+    name: am1
+    gpio: 4
+  - type: AM2302
+    name: am2
+    gpio: 23
+  - type: relay
+    name: refrigreator
+    gpio: 26
+  - type: relay
+    name: heater
+    gpio: 13
+    timeout: 1
+  - type: relay
+    name: humidifier
+    gpio: 6
+    timeout: 1
+  - name: dehumidifier
+    type: relay
+    gpio: 19
+    timeout: 1
+  - name: fan
+    type: relay
+    gpio: 17
+    timeout: 1
+
+charts:
+  humidity:
+    title: "Luchtvochtigheid %"
+    series:
+      - am1_humidity
+      - am2_humidity
+      - dehumidifier
+      - fan
+  temperature:
+    title: Temperatuur
+    series:
+      - am2_temperature
+      - am1_temperature
+      - refrigerator
+
 control:
-  refrigerator:
-    - rule: "Stop cooling"
-      expression: "temperature < 21"
-      action: "off"
-    - rule: "Start cooling"
-      expression: "temperature > 21"
-      action: "on"
-  dehumidifier:
-    - rule: "Start"
-      expression: "humidity > 77"
-      action: "on"
-    - rule: "Stop"
-      expression: "humidity < 70"
-      action: "off"
+  default:
+    rules:
+      refrigerator:
+        - rule: "Stop cooling"
+          expression: "temperature < 13.5"
+          action: "off"
+        - rule: "Start cooling"
+          expression: "temperature > 14"
+          action: "on"
+      dehumidifier:
+        - rule: "Start"
+          expression: "humidity_avg_3h > 80"
+          action: "on"
+        - rule: "Stop"
+          expression: "humidity_avg_3h < 75"
+          action: "off"
