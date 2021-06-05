@@ -1,15 +1,33 @@
 import logging
+import sys
 import time
+from functools import wraps
 from pprint import pprint
 
 from flask import current_app
-from timeout_decorator import timeout
+
 
 from raspcuterie import version
 from raspcuterie.cli import cli, with_appcontext
 from raspcuterie.devices import InputDevice, OutputDevice
 from raspcuterie.devices.control import ControlRule
 from raspcuterie.gpio import GPIO
+
+if sys.platform.startswith("win"):
+
+    def timeout(*args, **kwargs):
+        def decorate(function):
+            @wraps(function)
+            def new_function(*args, **kwargs):
+                return function(*args, **kwargs)
+
+            return new_function
+
+        return decorate
+
+
+else:
+    from timeout_decorator import timeout
 
 
 def evaluate_config_rules(context):

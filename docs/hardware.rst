@@ -6,6 +6,7 @@ Raspcuterie is met onderstaande hardware ontwikkeld:
 - Raspberry Pi zero with header [`Okaphone <https://www.okaphone.com/artikel.asp?id=487575>`__]
 - Micro-SDHC geheugenkaart [`Okaphone <https://www.okaphone.com/artikel.asp?id=487575>`__]
 - AM2302 Temperatuur en luchtvochtigheid sensor [`Okaphone <https://www.okaphone.com/artikel.asp?id=480699>`__]
+- bme280 Temperatuur en luchtvochtigheid sensor [`Okaphone <https://www.okaphone.com/artikel.asp?id=487215>`__]
 - Relais module [`Okaphone <https://www.okaphone.com/artikel.asp?id=484452>`__]
 - Ventilator [`Okaphone <https://www.okaphone.com/artikel.asp?id=490326>`__]
 - Jumper cables male-male [`Okaphone <https://www.okaphone.com/artikel.asp?id=471086>`__]
@@ -29,10 +30,13 @@ Het goedkoopste is natuurlijk om al de onderdelen online in het buitenland te be
 Devices
 ........
 
+BME280
+````````````
+Deze sensor is makkelijker in gebruik en volgens sommigen ook nauwkeuriger. Lees hier hoe je de sensor installeert: https://github.com/kbrownlees/bme280
 
 AM2302
 ````````````
-In de onderstaande link staat uitgelegd hoe je de sensor koppeld met je RPi.
+In de onderstaande link staat uitgelegd hoe je de sensor koppelt met je RPi.
 Kinderspel zeg je over 3 maanden. Voor nu zijn die nummertjes van die pinnetjes lastig te onderscheiden.
 Het wil helpen om een overzicht te printen en naast je bordje te leggen. Dan heb je een goed overzicht.
 

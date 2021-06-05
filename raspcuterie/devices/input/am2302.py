@@ -1,11 +1,15 @@
 from flask import current_app, g
 
 from raspcuterie.devices import InputDevice, LogDevice
-from raspcuterie.devices.series import IntegerSeries
+from raspcuterie.devices.series import HumiditySeries, TemperatureSeries
 from raspcuterie.utils import min_max_avg_over_period
 
 
-class AM2302(InputDevice, LogDevice):
+class HumidityTemperatureDevice(InputDevice, LogDevice):
+    pass
+
+
+class AM2302(HumidityTemperatureDevice):
     type = "AM2302"
 
     DEGREE_CELSIUS = "celsius"
@@ -17,8 +21,8 @@ class AM2302(InputDevice, LogDevice):
         self.degree = degree
         self.prefix = prefix
 
-        self.h_series = IntegerSeries(f"{prefix}_humidity")
-        self.t_series = IntegerSeries(f"{prefix}_temperature")
+        self.h_series = HumiditySeries(f"{prefix}_humidity")
+        self.t_series = TemperatureSeries(f"{prefix}_temperature")
 
     @staticmethod
     def get_sensor(gpio_pin):

@@ -16,8 +16,14 @@ module_path = Path(__file__).parent
 
 
 @click.group()
-def cli():
-    pass
+@click.option("--config", type=click.File(), default=None)
+@click.pass_context
+@click.version_option(version=raspcuterie.version)
+def cli(ctx, config):
+
+    ctx.ensure_object(dict)
+
+    ctx.obj["config"] = config
 
 
 from . import cron, fake, install  # noqa
@@ -25,7 +31,8 @@ from . import cron, fake, install  # noqa
 
 @cli.command(short_help="Echo the current value of the input and output devices")
 @with_appcontext
-def devices():
+@click.pass_context
+def devices(ctx):
     secure_pin = 24
 
     GPIO.setup(secure_pin, GPIO.OUT)
@@ -84,7 +91,8 @@ def version():
 
 
 @cli.command(short_help="Write schema to raspcuterie.json")
-def schema():
+@click.option("--file", type=click.File(mode="w"))
+def schema(output_file):
 
     output_file = Path("raspcuterie.schema.json")
 

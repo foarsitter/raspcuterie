@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel
 
@@ -8,7 +8,6 @@ class Chart(BaseModel):
     type: str
     group: str
     height: int
-    width = "100%"
 
 
 class Title(BaseModel):
@@ -30,13 +29,13 @@ class Label(BaseModel):
 
 
 class YAxis(BaseModel):
-    tickAmount: int
-    serieName: str
-    min: int
-    max: int
+    tickAmount: Optional[int]
+    seriesName: str
+    min: Optional[int]
+    max: Optional[int]
     opposite: bool
     show: bool
-    # labels: Label = Label(minWidth=40)
+    labels: Optional[Label]
 
 
 class DatetimeFormatter(BaseModel):

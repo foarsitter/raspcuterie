@@ -140,7 +140,7 @@ ORDER BY time DESC;""".format(
 
     @property
     def table_name(self):
-        return "relay_" + self.name
+        return self.series.name
 
 
 class DBRelay(RelaySwitch, LogDevice):

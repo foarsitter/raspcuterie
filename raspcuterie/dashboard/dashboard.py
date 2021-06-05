@@ -6,8 +6,8 @@ from pygments.formatters.html import HtmlFormatter
 from pygments.lexers.data import YamlLexer
 
 from raspcuterie.config import RaspcuterieConfigSchema
-from raspcuterie.dashboard.apexcharts import ChartObject, YAxis
-from raspcuterie.devices import OutputDevice
+from raspcuterie.dashboard.apexcharts import ChartObject, YAxis, Label
+from raspcuterie.devices import OutputDevice, InputDevice
 from raspcuterie.devices.series import Series
 
 bp = Blueprint("dashboard", __name__, template_folder="./templates")
@@ -29,6 +29,9 @@ def dashboard():
         obj.title.text = schema.title
         obj.chart.id = name
 
+        show = True
+        group_series_name = None
+
         for series in schema.series:
             series_obj = Series.registry.get(series, None)
 
@@ -40,34 +43,41 @@ def dashboard():
                 obj.markers.size.append(2)
                 obj.yaxis.append(
                     YAxis(
-                        tickAmount=1,
+                        # tickAmount=1,
                         opposite=True,
                         show=False,
                         min=0,
                         max=3,
-                        serieName=series,
+                        seriesName=series,
                     )
                 )
             elif series_obj.type == "integer":
                 obj.markers.size.append(0)
+
+                if group_series_name is None:
+                    group_series_name = series
+
                 obj.yaxis.append(
                     YAxis(
                         tickAmount=4,
                         opposite=False,
-                        show=True,
-                        min=0,
-                        max=100,
-                        serieName=series,
+                        show=show,
+                        labels=Label(minWidth=20),
+                        # min=series_obj.min,
+                        # max=series_obj.max,
+                        seriesName=group_series_name,
                     )
                 )
                 obj.stroke.curve.append("smooth")
+                show = False
 
-        charts_json[name] = obj.json()
+        charts_json[name] = obj.json(exclude_none=True)
 
     return render_template(
         "dashboard.html",
         config_text=config_text,
         output_devices=OutputDevice.registry,
+        input_devices=InputDevice.registry,
         charts=current_app.schema.charts,
         charts_json=charts_json,
     )

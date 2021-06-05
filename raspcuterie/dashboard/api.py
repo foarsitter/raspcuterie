@@ -6,7 +6,7 @@ from raspcuterie.devices import InputDevice
 from raspcuterie.devices.input.am2302 import AM2302
 from raspcuterie.devices.output.relay import OutputDevice, RelaySwitch
 from raspcuterie.devices.series import Series
-from raspcuterie.utils import gettext, min_max_avg_over_period, slope
+from raspcuterie.utils import gettext
 
 bp = Blueprint("api", __name__, url_prefix="/api")
 
@@ -44,50 +44,54 @@ def chart_series(chart_name: str):
     return jsonify(result)
 
 
-@bp.route("/am2302/current.json")
-def am2303_current():
+@bp.route("/devices/<device_name>/current.json")
+def am2303_current(device_name):
     """
     Returns the current values for the humidity and temperature
     :return:
     """
 
     from raspcuterie.devices import InputDevice
-
-    humidity, temperature, time = InputDevice.registry[
-        "temperature"
-    ].read_from_database()
-
-    temperature_slope = slope("temperature")
-    humidity_slope = slope("humidity")
+    from raspcuterie.devices.input import AM2302, BME280
 
     period = request.args.get("period", "-24 hours")
 
-    temperature_min_max = min_max_avg_over_period("temperature", period)
-    humidity_min_max = min_max_avg_over_period("humidity", period)
+    device = InputDevice.registry[device_name]
 
-    temperature = dict(
-        current=temperature,
-        min=round(temperature_min_max[0], 2),
-        max=round(temperature_min_max[1], 2),
-        avg=round(temperature_min_max[2], 2),
-        slope=temperature_slope,
-    )
+    if isinstance(device, (AM2302, BME280)):
 
-    humidity = dict(
-        current=humidity,
-        min=humidity_min_max[0],
-        max=humidity_min_max[1],
-        avg=round(humidity_min_max[2], 2),
-        slope=humidity_slope,
-    )
+        time, humidity = device.h_series.last_observation(period)
+        time, temperature = device.t_series.last_observation(period)
 
-    return jsonify(
-        dict(
-            temperature=temperature,
-            humidity=humidity,
-            time=time[: len("2020-12-22 11:08:10")],
+        # temperature_slope = slope(device.t_series.name)
+        # humidity_slope = slope(device.h_series.name)
+        #
+        # temperature_min_max = min_max_avg_over_period(device.t_series.name, period)
+        # humidity_min_max = min_max_avg_over_period(device.h_series.name, period)
+        #
+        # temperature = dict(
+        #     current=temperature,
+        #     min=round(temperature_min_max[0], 2),
+        #     max=round(temperature_min_max[1], 2),
+        #     avg=round(temperature_min_max[2], 2),
+        #     slope=temperature_slope,
+        # )
+        #
+        # humidity = dict(
+        #     current=humidity,
+        #     min=humidity_min_max[0],
+        #     max=humidity_min_max[1],
+        #     avg=round(humidity_min_max[2], 2),
+        #     slope=humidity_slope,
+        # )
+
+        return jsonify(
+            dict(
+                temperature=temperature,
+                humidity=humidity,
+                time=time[: len("2020-12-22 11:08:10")] if time else None,
+            )
         )
-    )
 
 
 @bp.route("/am2302/chart.json")

@@ -93,6 +93,8 @@ class Series:
 
 
 class IntegerSeries(Series):
+    min: int
+    max: int
     type = "integer"
 
     def last_observation(self, period="-24 hours"):
@@ -123,6 +125,16 @@ class IntegerSeries(Series):
         )
 
         return time, data
+
+
+class HumiditySeries(IntegerSeries):
+    min = 40
+    max = 85
+
+
+class TemperatureSeries(IntegerSeries):
+    min = 5
+    max = 30
 
 
 class BooleanSeries(Series):

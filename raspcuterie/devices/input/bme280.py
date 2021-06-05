@@ -1,7 +1,7 @@
 from flask import current_app
 
 from raspcuterie.devices import InputDevice, LogDevice
-from raspcuterie.devices.series import IntegerSeries
+from raspcuterie.devices.series import HumiditySeries, TemperatureSeries
 
 
 class BME280(InputDevice, LogDevice):
@@ -25,8 +25,8 @@ class BME280(InputDevice, LogDevice):
         self.degree = degree
         self.prefix = prefix
 
-        self.h_series = IntegerSeries(f"{prefix}_humidity")
-        self.t_series = IntegerSeries(f"{prefix}_temperature")
+        self.h_series = HumiditySeries(f"{prefix}_humidity")
+        self.t_series = TemperatureSeries(f"{prefix}_temperature")
 
     def read(self):
         humidity, temperature = self.raw()
@@ -55,10 +55,6 @@ class BME280(InputDevice, LogDevice):
 
         # the compensated_reading class has the following attributes
 
-        print(sensor.temperature)
-
-        print(sensor.humidity)
-
         try:
             temperature = sensor.temperature
             humidity = sensor.humidity
@@ -78,7 +74,7 @@ class BME280(InputDevice, LogDevice):
         humidity, temperature = self.read()
 
         humidity_min_3h, humidity_max_3h, humidity_avg_3h = min_max_avg_over_period(
-            self.h_series, "-3 hours"
+            self.h_series.name, "-3 hours"
         )
 
         values = dict(
@@ -93,3 +89,10 @@ class BME280(InputDevice, LogDevice):
         values[self.h_series.name] = humidity
 
         return values
+
+    def log(self):
+
+        humidity, temperature = self.read()
+
+        self.h_series.log(humidity)
+        self.t_series.log(temperature)

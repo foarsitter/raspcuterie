@@ -1,3 +1,5 @@
+import math
+from datetime import datetime
 from typing import List
 
 from flask import current_app
@@ -19,7 +21,7 @@ class ControlRule:
 
     @staticmethod
     def context():
-        context = {}
+        context = {"date": datetime.now(), "math": math}
 
         for device in InputDevice.registry.values():
             for key, value in device.get_context().items():
@@ -42,7 +44,7 @@ class ControlRule:
             action = getattr(self.device, self.action)
             return action()
         except Exception as e:
-            current_app.logger.exeception(e)
+            current_app.logger.exception(e)
 
     def execute_if_matches(self, context):
         if self.matches(context):

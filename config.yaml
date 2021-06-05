@@ -1,13 +1,19 @@
 name: raspcuterie
 devices:
+  - type: bme280
+    name: bme
+    gpio: 4
+    prefix: "bme"
   - type: AM2302
-    name: am1
+    name: "am1"
+    prefix: "am1"
     gpio: 4
   - type: AM2302
-    name: am2
+    prefix: "am2"
+    name: "am2"
     gpio: 23
   - type: relay
-    name: refrigreator
+    name: refrigerator
     gpio: 26
   - type: relay
     name: heater
@@ -32,6 +38,7 @@ charts:
     series:
       - am1_humidity
       - am2_humidity
+      - bme_humidity
       - dehumidifier
       - fan
   temperature:
@@ -39,11 +46,19 @@ charts:
     series:
       - am2_temperature
       - am1_temperature
+      - bme_temperature
       - refrigerator
 
 control:
   default:
     rules:
+      fan:
+        - rule: "Stop"
+          expression: "math.ceil(date.minute/15) % 2 == 0"
+          action: "off"
+        - rule: "Start"
+          expression: "math.ceil(date.minute/15) % 2 == 1"
+          action: "on"
       refrigerator:
         - rule: "Stop cooling"
           expression: "temperature < 13.5"

@@ -70,7 +70,4 @@ charts:
       - am2_temperature
       - am1_temperature
       - humidifier
-  temperature2:
-    title: Temperatuur 2
-    series:
-      - dehumidifier
+

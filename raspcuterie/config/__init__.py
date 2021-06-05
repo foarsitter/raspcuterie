@@ -78,4 +78,4 @@ def setup(app):
     app.schema = RaspcuterieConfigSchema.parse_obj(config)
     app.config["config"] = config["raw"]
     register_input_devices(app.schema, app.logger)
-    # register_config_rules(config)
+    register_config_rules(app.schema)

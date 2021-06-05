@@ -66,92 +66,109 @@
             <p class="subtitle">
                 Let it <strong>dry</strong>!
             </p>
-            <div class="columns" v-if="page == 'dashboard'">
-                <div class="column is-9">
-                    <div class="notification is-white">
-                        {% for name,chart in charts.items() %}
-                            <div id="chart-{{ name }}">
-                                <apexchart type="line" height="230" ref="{{ name }}" :options="{{ name }}ChartOptions"
-                                           :series="{{ name }}Series"></apexchart>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="notification is-white has-text-justified">
-                        <div class="level">
-                            {% for name, device in output_devices.items() %}
-                                <div class="level-item" title="{{ device.name }}">
+            <div v-if="page == 'dashboard'">
+                <div class="columns">
+                    <div class="column">
+                        <div class="notification is-white has-text-justified">
+                            <div class="level">
+                                {% for name, device in output_devices.items() %}
+                                    <div class="level-item" title="{{ device.name }}">
                                 <span class="fa-stack fa-md">
                                     <i class="fas {{ device.icon }} fa-lg  fa-stack-1x"></i>
                                     <i v-if="{{ device.name }}" class="fas fa-stack-2x fa-check has-text-success"></i>
                                     <i v-else class="fas fa-stack-2x fa-ban has-text-danger"></i>
                                 </span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="columns">
+                    <div class="column">
+                        <div class="notification is-white">
+                            {% for name,chart in charts.items() %}
+                                <div id="chart-{{ name }}">
+                                    <apexchart type="line" height="230" ref="{{ name }}"
+                                               :options="{{ name }}ChartOptions"
+                                               :series="{{ name }}Series"></apexchart>
                                 </div>
                             {% endfor %}
                         </div>
                     </div>
 
-                    <div class="card has-background-primary has-text-white mb-5">
-                        <div class="is-overlay is-flex modal-background is-align-content-end is-justify-content-flex-end"
-                             v-if="humidity.loading" style="background-color: rgba(10,10,10,.36);">
-                            <div class="fa-1x mr-3 mt-3">
-                                <i class="fas fa- fa-sync fa-spin"></i>
-                            </div>
-                        </div>
-                        <div class="card-content">
-                            <div class="media">
-                                <div class="media-left">
-                                    <i class="far fa-humidity fa-4x"></i>
-                                    <i class="far fa-long-arrow-alt-down fa-4x" v-if="humidity.slope < 0"></i>
-                                    <i class="far fa-long-arrow-alt-up fa-4x" v-else></i>
+                </div>
+                <div class="columns">
+                    {% for name,device in input_devices.items() %}
+                        <div class="column">
+                            <div class="card has-background-info has-text-white mb-5">
+                                <div class="is-overlay is-flex modal-background is-align-content-end is-justify-content-flex-end"
+                                     v-if="{{ name }}.humidity.loading" style="background-color: rgba(10,10,10,.36);">
+                                    <div class="fa-1x mr-3 mt-3">
+                                        <i class="fas fa- fa-sync fa-spin"></i>
+                                    </div>
                                 </div>
-                                <div class="media-content ">
-                                    <p class="title is-4 has-text-white">
-                                        {% raw %}{{ humidity.current }}{% endraw %}&deg;
-                                    </p>
-                                    <p class="subtitle is-6 has-text-white">
-                                        <i class="far fa-arrow-to-top mr-2"></i>
-                                        {% raw %}{{ humidity.max }}{% endraw %} <br/>
-                                        <i class="far fa-arrow-to-bottom  mr-2"></i>
-                                        {% raw %}{{ humidity.min }}{% endraw %} <br/>
-                                        <i class="far fa-tachometer-average  mr-2"></i>
-                                        {% raw %}{{ humidity.avg }}{% endraw %} <br/>
-                                    </p>
+                                <div class="card-content">
+                                    <div class="media">
+                                        <div class="media-left">
+                                            {{ name }} <br/>
+                                            <i class="far fa-humidity fa-4x"></i>
+                                            <i class="far fa-long-arrow-alt-down fa-4x"
+                                               v-if="{{ name }}.humidity.slope < 0"></i>
+                                            <i class="far fa-long-arrow-alt-up fa-4x" v-else></i>
+                                        </div>
+                                        <div class="media-content ">
+                                            <p class="title is-4 has-text-white">
+                                                {{ '{{' }} {{ name }}.humidity.current {{ '}}' }}&deg;
+                                            </p>
+                                            <p class="subtitle is-6 has-text-white">
+                                                <i class="far fa-arrow-to-top mr-2"></i>
+                                                {{ '{{' }} {{ name }}.humidity.max {{ '}}' }} <br/>
+                                                <i class="far fa-arrow-to-bottom  mr-2"></i>
+                                                {{ '{{' }} {{ name }}.humidity.min {{ '}}' }} <br/>
+                                                <i class="far fa-tachometer-average  mr-2"></i>
+                                                {{ '{{' }} {{ name }}.humidity.avg {{ '}}' }} <br/>
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="card has-background-primary has-text-white mb-5">
-                        <div class="is-overlay is-flex is-align-content-end	is-justify-content-flex-end"
-                             v-if="temperature.loading" style="background-color: rgba(10,10,10,.36);">
-                            <div class="fa-1x mr-3 mt-3">
-                                <i class="fas fa- fa-sync fa-spin"></i>
-                            </div>
-                        </div>
-                        <div class="card-content">
-                            <div class="media">
-                                <div class="media-left">
-                                    <i class="far fa-temperature-down fa-4x" v-if="temperature.slope < 0"></i>
-                                    <i class="far fa-temperature-up fa-4x" v-else></i>
+                            <div class="card has-background-primary has-text-white mb-5">
+                                <div class="is-overlay is-flex is-align-content-end	is-justify-content-flex-end"
+                                     v-if="{{ name }}.temperature.loading"
+                                     style="background-color: rgba(10,10,10,.36);">
+                                    <div class="fa-1x mr-3 mt-3">
+                                        <i class="fas fa- fa-sync fa-spin"></i>
+                                    </div>
                                 </div>
-                                <div class="media-content ">
-                                    <p class="title is-4 has-text-white">  {% raw %}{{ temperature.current
-                                        }}{% endraw %}&deg;</p>
-                                    <p class="subtitle is-6 has-text-white">
-                                        <i class="far fa-thermometer-three-quarters mr-2"></i>
-                                        {% raw %}{{ temperature.max }}{% endraw %} <br/>
-                                        <i class="far fa-thermometer-empty  mr-2"></i>
-                                        {% raw %}{{ temperature.min }}{% endraw %} <br/>
-                                        <i class="far fa-tachometer-average  mr-2"></i>
-                                        {% raw %}{{ temperature.avg }}{% endraw %} <br/>
-                                    </p>
+                                <div class="card-content">
+                                    <div class="media">
+                                        <div class="media-left">
+                                            {{ name }} <br/>
+                                            <i class="far fa-temperature-down fa-4x"
+                                               v-if="{{ name }}.temperature.slope < 0"></i>
+                                            <i class="far fa-temperature-up fa-4x" v-else></i>
+                                        </div>
+                                        <div class="media-content ">
+                                            <p class="title is-4 has-text-white">
+                                                {{ '{{' }} {{ name }}.temperature.current {{ '}}' }}&deg;
+                                            </p>
+                                            <p class="subtitle is-6 has-text-white">
+                                                <i class="far fa-thermometer-three-quarters mr-2"></i>
+                                                {{ '{{' }} {{ name }}.temperature.max {{ '}}' }} <br/>
+                                                <i class="far fa-thermometer-empty  mr-2"></i>
+                                                {{ '{{' }} {{ name }}.temperature.min {{ '}}' }} <br/>
+                                                <i class="far fa-tachometer-average  mr-2"></i>
+                                                {{ '{{' }} {{ name }}.temperature.avg {{ '}}' }} <br/>
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            {{ '{{' }} {{ name }}.lastRequestTime {{ '}}' }}
                         </div>
-                    </div>
-                    {% raw %}{{ lastRequestTime }}{% endraw %}
+                    {% endfor %}
                 </div>
             </div>
             <div class="tile is-ancestor" v-else>
@@ -330,23 +347,27 @@
                 {% for name, device in output_devices.items() %}
                     "{{ name }}": false,
                 {% endfor %}
-                temperature: {
-                    current: 0,
-                    min: 0,
-                    max: 0,
-                    avg: 0,
-                    slope: 1,
-                    loading: true,
-                },
-                lastRequestTime: "n/a",
-                humidity: {
-                    current: 0,
-                    min: 0,
-                    max: 0,
-                    avg: 0,
-                    slope: 1,
-                    loading: true,
-                },
+                {% for name, device in input_devices.items() %}
+                    "{{ name }}": {
+                        temperature: {
+                            current: 0,
+                            min: 0,
+                            max: 0,
+                            avg: 0,
+                            slope: 1,
+                            loading: true,
+                        },
+                        lastRequestTime: "n/a",
+                        humidity: {
+                            current: 0,
+                            min: 0,
+                            max: 0,
+                            avg: 0,
+                            slope: 1,
+                            loading: true,
+                        },
+                    },
+                {% endfor %}
             }
         },
         methods: {
@@ -366,12 +387,17 @@
                     {% for name, chart in charts.items() %}
                         this.update{{ name|title }}Chart()
                     {% endfor %}
-                    {#this.updateAM2302()#}
+                    {% for name, device in input_devices.items() %}
+                        this.update{{ name|title }}Device()
+                    {% endfor %}
                     this.updateRelayValues()
                 }, 1000 * 60);
 
                 {% for name, chart in charts.items() %}
                     this.update{{ name|title }}Chart()
+                {% endfor %}
+                {% for name, device in input_devices.items() %}
+                    this.update{{ name|title }}Device()
                 {% endfor %}
             },
             updateRelayValues() {
@@ -398,28 +424,30 @@
                     });
                 },
             {% endfor %}
-            updateAM2302() {
-                this.humidity.loading = true
-                this.temperature.loading = true
+// @formatter:off
+            {% for name,device in input_devices.items() %}
+                update{{name|title}}Device() {
+                    this.{{ name }}.humidity.loading = true
+                    this.{{ name }}.temperature.loading = true
 
-                axios({
-                    method: 'GET',
-                    url: "/api/am2302/current.json",
-                    params: {
-                        period: this.period,
-                        aggregate: this.aggregate,
-                    }
-                }).then(response => {
-                    this.humidity = response.data["humidity"]
-                    this.temperature = response.data["temperature"]
-                    this.lastRequestTime = response.data["time"]
+                    axios({
+                        method: 'GET',
+                        url: "/api/devices/{{ name }}/current.json",
+                        params: {
+                            period: this.period,
+                            aggregate: this.aggregate,
+                        }
+                    }).then(response => {
+                        this.{{ name }}.humidity = response.data["humidity"]
+                        this.{{ name }}.temperature = response.data["temperature"]
+                        this.{{ name }}.lastRequestTime = response.data["time"]
 
-
-                    this.humidity.loading = false
-                    this.temperature.loading = false
-
-                });
-            },
+                        this.{{ name }}.humidity.loading = false
+                        this.{{ name }}.temperature.loading = false
+                    });
+                },
+            {% endfor %}
+        // @formatter:on
             loadLocalStorage() {
                 if (localStorage.period) {
                     this.period = localStorage.period
@@ -433,25 +461,18 @@
         mounted: function () {
             this.loadLocalStorage()
             this.updateRelayValues()
-            {#this.updateAM2302Chart()#}
-            {#this.updateAM2302()#}
             this.updateChartInterval()
-        }
-
-        ,
+        },
         watch: {
             period(value) {
                 localStorage.period = value;
-                this.updateAM2302Chart()
             }
             ,
             aggregate(value) {
                 localStorage.aggregate = value;
-                this.updateAM2302Chart()
             }
         }
-    })
-    ;
+    });
 
 
 </script>
