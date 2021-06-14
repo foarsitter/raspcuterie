@@ -5,7 +5,7 @@ from pygments import highlight
 from pygments.formatters.html import HtmlFormatter
 from pygments.lexers.data import YamlLexer
 
-from raspcuterie.config import RaspcuterieConfigSchema
+from raspcuterie.config.schema import RaspcuterieConfigSchema
 from raspcuterie.dashboard.apexcharts import ChartObject, YAxis, Label
 from raspcuterie.devices import OutputDevice, InputDevice
 from raspcuterie.devices.series import Series

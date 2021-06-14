@@ -1,7 +1,7 @@
 from flask import Blueprint, current_app, jsonify, request
 from werkzeug.exceptions import NotFound
 
-from raspcuterie.config import RaspcuterieConfigSchema
+from raspcuterie.config.schema import RaspcuterieConfigSchema
 from raspcuterie.devices import InputDevice
 from raspcuterie.devices.input.am2302 import AM2302
 from raspcuterie.devices.output.relay import OutputDevice, RelaySwitch

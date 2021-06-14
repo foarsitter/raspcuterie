@@ -2,6 +2,7 @@ from flask import current_app
 
 from raspcuterie.devices import InputDevice, LogDevice
 from raspcuterie.devices.series import HumiditySeries, TemperatureSeries
+from raspcuterie.utils import min_max_avg_over_period
 
 
 class BME280(InputDevice, LogDevice):
@@ -69,7 +70,6 @@ class BME280(InputDevice, LogDevice):
         return humidity, temperature
 
     def get_context(self):
-        from raspcuterie.dashboard.api import min_max_avg_over_period
 
         humidity, temperature = self.read()
 

@@ -3,7 +3,6 @@ from pathlib import Path
 import yaml
 
 from raspcuterie.config import schema
-from raspcuterie.config.schema.devices import DegreeSchema
 
 
 def test_schema():
@@ -26,7 +25,7 @@ def test_schema():
     assert isinstance(settings.devices[3], schema.RelaySwitchSchema)
 
     assert isinstance(settings.devices[4], schema.AM2302Schema)
-    assert settings.devices[4].degree == DegreeSchema.celsius
+    assert settings.devices[4].degree == schema.DegreeSchema.celsius
 
     assert isinstance(settings.devices[5], schema.SinusSchema)
 

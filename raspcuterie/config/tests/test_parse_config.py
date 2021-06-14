@@ -1,11 +1,11 @@
 from pathlib import Path
 
-from raspcuterie.config import (
-    RaspcuterieConfigSchema,
+from raspcuterie.config.setup import (
     read_config_as_yaml,
-    register_config_rules,
+    register_control_rules,
     register_input_devices,
 )
+from raspcuterie.config.schema import RaspcuterieConfigSchema
 from raspcuterie.devices import InputDevice
 from raspcuterie.devices.control import ControlRule
 from raspcuterie.devices.output.relay import OutputDevice
@@ -28,6 +28,6 @@ def test_parse_config(app):
 
     assert len(OutputDevice.registry) == 5
 
-    register_config_rules(config_object)
+    register_control_rules(config_object)
 
     assert len(ControlRule.registry) == 4

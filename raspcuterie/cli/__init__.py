@@ -3,9 +3,12 @@ import time
 from pathlib import Path
 
 import click
+from flask import current_app
 from flask.cli import with_appcontext
 
 import raspcuterie
+from ..config.schema import RaspcuterieConfigSchema
+from ..config.setup import find_active_control_group
 
 from ..devices import InputDevice, OutputDevice
 from ..gpio import GPIO
@@ -96,7 +99,27 @@ def schema(output_file):
 
     output_file = Path("raspcuterie.schema.json")
 
-    from ..config import RaspcuterieConfigSchema
+    from ..config.schema import RaspcuterieConfigSchema
 
     RaspcuterieConfigSchema.update_forward_refs()
     output_file.write_text(RaspcuterieConfigSchema.schema_json())
+
+
+@cli.command(short_help="Display the rules of the active control group")
+@with_appcontext
+def control_rules():
+
+    config_schema: RaspcuterieConfigSchema = current_app.schema
+
+    x = find_active_control_group(config_schema.control)
+
+    if x is not None:
+        name, group = x
+
+        click.echo(f"Active control group: {name} and expires {group.expires}")
+
+        for device, rules in group.rules.items():
+            click.echo(device)
+
+            for rule in rules:
+                click.echo(f"{rule.rule} {rule.expression} {rule.action}")
