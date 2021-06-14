@@ -17,10 +17,7 @@ devices:
     type: "dbrelay"
     gpio: 13
   - name: temperature
-    type: "AM2302"
-    prefix: "am2"
-    degree: celsius
-    gpio: 4
+    type: "sinus"
   - name: temperature
     type: "AM2302"
     prefix: "am1"
@@ -33,9 +30,8 @@ devices:
     timeout: 0
     gpio: 13
     icon: "fa-times"
-  - type: bme280
+  - type: sinus
     name: test
-    degree: celsius
 
 control:
   default:
