@@ -19,10 +19,7 @@ devices:
   - name: temperature
     type: "sinus"
   - name: temperature
-    type: "AM2302"
-    prefix: "am1"
-    degree: fahrenheit
-    gpio: 4
+    type: "sinus"
   - name: weight
     type: "sinus"
   - name: fan
