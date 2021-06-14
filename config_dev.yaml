@@ -16,9 +16,9 @@ devices:
     timeout: 0
     type: "dbrelay"
     gpio: 13
-  - name: temperature
+  - name: am1
     type: "sinus"
-  - name: temperature
+  - name: am2
     type: "sinus"
   - name: weight
     type: "sinus"
