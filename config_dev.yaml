@@ -16,14 +16,16 @@ devices:
     timeout: 0
     type: "dbrelay"
     gpio: 13
-  - name: am1
+  - name: temperature
     type: "sinus"
-  - name: am2
-    type: "sinus"
+    prefix: am2
+  - name: temperature
+    type: sinus
+    prefix: am1
   - name: weight
-    type: "sinus"
+    type: sinus
   - name: fan
-    type: "dbrelay"
+    type: dbrelay
     timeout: 0
     gpio: 13
     icon: "fa-times"

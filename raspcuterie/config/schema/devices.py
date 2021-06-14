@@ -34,6 +34,7 @@ class AM2302Schema(InputDeviceSchema):
 
 class SinusSchema(InputDeviceSchema):
     type: Literal["sinus"]
+    prefix: Optional[str]
 
 
 class BME280Schema(InputDeviceSchema):
