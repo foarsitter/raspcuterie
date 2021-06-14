@@ -27,7 +27,6 @@ devices:
     degree: fahrenheit
     gpio: 4
   - name: weight
-    gpio: 0
     type: "sinus"
   - name: fan
     type: "dbrelay"
@@ -36,7 +35,6 @@ devices:
     icon: "fa-times"
   - type: bme280
     name: test
-    gpio: 0
     degree: celsius
 
 control:

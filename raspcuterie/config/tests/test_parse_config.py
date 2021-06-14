@@ -28,6 +28,6 @@ def test_parse_config(app):
 
     assert len(OutputDevice.registry) == 5
 
-    register_control_rules(config_object)
+    register_control_rules(config_object, app.logger)
 
     assert len(ControlRule.registry) == 4

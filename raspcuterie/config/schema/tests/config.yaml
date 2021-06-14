@@ -18,7 +18,6 @@ devices:
     degree: celsius
     gpio: 4
   - name: weight
-    gpio: 0
     type: "sinus"
 
 control:

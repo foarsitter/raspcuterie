@@ -27,7 +27,7 @@ def am2302():
 
 @pytest.fixture
 def sinus():
-    return dict(type="sinus", name="Some sinus", gpio=99)
+    return dict(type="sinus", name="Some sinus")
 
 
 @pytest.fixture

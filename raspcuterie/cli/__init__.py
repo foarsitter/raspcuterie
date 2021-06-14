@@ -95,14 +95,15 @@ def version():
 
 @cli.command(short_help="Write schema to raspcuterie.json")
 @click.option("--file", type=click.File(mode="w"))
-def schema(output_file):
+def schema(file=None):
 
-    output_file = Path("raspcuterie.schema.json")
+    if file is None:
+        file = Path("raspcuterie.schema.json")
 
     from ..config.schema import RaspcuterieConfigSchema
 
     RaspcuterieConfigSchema.update_forward_refs()
-    output_file.write_text(RaspcuterieConfigSchema.schema_json())
+    file.write_text(RaspcuterieConfigSchema.schema_json())
 
 
 @cli.command(short_help="Display the rules of the active control group")
