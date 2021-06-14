@@ -105,6 +105,8 @@ def schema(file=None):
     RaspcuterieConfigSchema.update_forward_refs()
     file.write_text(RaspcuterieConfigSchema.schema_json())
 
+    click.echo(f"Schema written to {file}")
+
 
 @cli.command(short_help="Display the rules of the active control group")
 @with_appcontext

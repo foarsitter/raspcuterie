@@ -41,7 +41,7 @@ class BME280Schema(InputDeviceSchema):
     type: Literal["bme280"]
     degree: Optional[DegreeSchema] = DegreeSchema.celsius
     prefix: Optional[str]
-    # gpio: int
+    gpio: int
 
 
 class RelaySwitchSchema(OutputDeviceSchema):

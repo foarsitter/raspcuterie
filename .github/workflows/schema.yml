@@ -24,7 +24,7 @@ jobs:
       run: |
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        git commit -m "Build schema changes" -a
+        git commit -m "Build schema changes" -a raspcuterie.schema.yaml
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
