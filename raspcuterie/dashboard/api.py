@@ -1,5 +1,8 @@
 from flask import Blueprint, current_app, jsonify, request
-from werkzeug.exceptions import NotFound
+from pygments import highlight
+from pygments.formatters.html import HtmlFormatter
+from pygments.lexers.data import YamlLexer
+from werkzeug.exceptions import NotFound, abort
 
 from raspcuterie.config.schema import RaspcuterieConfigSchema
 from raspcuterie.devices import InputDevice
@@ -63,28 +66,6 @@ def am2303_current(device_name):
         time, humidity = device.h_series.last_observation(period)
         time, temperature = device.t_series.last_observation(period)
 
-        # temperature_slope = slope(device.t_series.name)
-        # humidity_slope = slope(device.h_series.name)
-        #
-        # temperature_min_max = min_max_avg_over_period(device.t_series.name, period)
-        # humidity_min_max = min_max_avg_over_period(device.h_series.name, period)
-        #
-        # temperature = dict(
-        #     current=temperature,
-        #     min=round(temperature_min_max[0], 2),
-        #     max=round(temperature_min_max[1], 2),
-        #     avg=round(temperature_min_max[2], 2),
-        #     slope=temperature_slope,
-        # )
-        #
-        # humidity = dict(
-        #     current=humidity,
-        #     min=humidity_min_max[0],
-        #     max=humidity_min_max[1],
-        #     avg=round(humidity_min_max[2], 2),
-        #     slope=humidity_slope,
-        # )
-
         return jsonify(
             dict(
                 temperature=temperature,
@@ -144,6 +125,12 @@ def relay_current():
 
 @bp.route("/relay/<name>/toggle", methods=["POST", "GET"])
 def relay_toggle(name):
+
+    password = request.args.get("password", None)
+
+    if password != current_app.schema.password:
+        abort(403)
+
     device = OutputDevice.registry[name]
 
     if device.value() == 0:
@@ -152,3 +139,17 @@ def relay_toggle(name):
         device.off()
 
     return jsonify(dict(state=device.value()))
+
+
+@bp.route("/config.html", methods=["GET"])
+def config():
+
+    formatter = HtmlFormatter(linenos=True, style="friendly", noclasses=True)
+
+    config_str = current_app.config["config"]
+
+    config_str = config_str.replace(current_app.schema.password, "***password***")
+
+    config_text = highlight(config_str, YamlLexer(), formatter)
+
+    return config_text

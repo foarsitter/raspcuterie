@@ -176,19 +176,29 @@
                     <div class="tile">
                         <div class="tile is-parent">
                             <article class="tile is-child notification is-white">
-                                <label class="label">Period, since</label>
-                                <div class="control">
-                                    <div class="select">
-                                        <select v-model="period">
-                                            <option value="-1 hours">Last hour</option>
-                                            <option value="-2 hours">Last 2 hour</option>
-                                            <option value="-3 hours">Last 3 hour</option>
-                                            <option value="-12 hours">Last 12 hours</option>
-                                            <option value="-24 hours">Last day</option>
-                                            <option value="-7 days">Last week</option>
-                                            <option value="-14 days">Last 4 weeks</option>
-                                            <option value="-28 days">Last 8 weeks</option>
-                                        </select>
+                                <div class="field">
+                                    <label class="label">Period, since</label>
+                                    <div class="control">
+                                        <div class="select">
+                                            <select v-model="period">
+                                                <option value="-1 hours">Last hour</option>
+                                                <option value="-2 hours">Last 2 hour</option>
+                                                <option value="-3 hours">Last 3 hour</option>
+                                                <option value="-6 hours">Last 6 hour</option>
+                                                <option value="-9 hours">Last 9 hour</option>
+                                                <option value="-12 hours">Last 12 hours</option>
+                                                <option value="-24 hours">Last day</option>
+                                                <option value="-7 days">Last week</option>
+                                                <option value="-14 days">Last 4 weeks</option>
+                                                <option value="-28 days">Last 8 weeks</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label class="label">Password</label>
+                                    <div class="control">
+                                        <input v-model="password" class="input" type="password" placeholder="Password">
                                     </div>
                                 </div>
                             </article>
@@ -228,7 +238,7 @@
                         <div class="tile is-parent">
                             <div class="tile is-child notification is-white">
                                 <h1 class="h1">Config</h1>
-                                {{ config_text|safe }}
+                                <div v-html="configHtml"></div>
                             </div>
                         </div>
                     </div>
@@ -252,84 +262,6 @@
         integrity="sha256-q4zsxO0fpPm6VhtL/9QkCFE5ZkNa0yeUxhmt1VO1ev0=" crossorigin="anonymous"></script>
 <script type="text/javascript">
 
-    function graph(name, goal) {
-
-        return {
-            chart: {
-                id: name,
-                type: 'line',
-                group: 'social',
-                height: 230,
-            },
-            title: {
-                text: name,
-                align: 'left'
-            },
-            stroke: {
-                curve: ['smooth', 'stepline', 'stepline', 'smooth'],
-                width: 1,
-            },
-            markers: {
-                size: [0, 2, 2],
-            },
-            tooltip: {
-                x: {
-                    show: true,
-                    format: 'HH:mm',
-                },
-            },
-            xaxis: {
-                type: 'datetime',
-                labels: {
-                    datetimeFormatter: {
-                        year: 'yyyy',
-                        month: 'MMM \'yy',
-                        day: 'dd MMM',
-                        hour: 'HH:mm'
-                    },
-                    datetimeUTC: false
-                }
-            },
-            yaxis: [
-                {
-                    tickAmount: 4,
-                    min: function (min) {
-                        return Math.floor(min)
-                    },
-                    max: function (max) {
-                        return Math.ceil(max)
-                    },
-                    labels: {
-                        minWidth: 40
-                    },
-                    seriesName: name,
-                },
-                {
-                    opposite: true,
-                    seriesName: "Relay",
-                    min: 0,
-                    max: 3,
-                    show: false,
-                },
-                {
-                    seriesName: "Relay",
-                    opposite: true,
-                    show: false,
-                    min: 0,
-                    max: 3,
-                }
-            ],
-            annotations: {
-                yaxis: [
-                    {
-                        y: goal,
-                        borderColor: '#e30000',
-                    }
-                ]
-            }
-        }
-    }
-
     new Vue({
         el: '#app',
         components: {
@@ -337,6 +269,8 @@
         },
         data() {
             return {
+                configHtml: "",
+                password: "",
                 page: "dashboard",
                 period: "-24 hours",
                 aggregate: 300,
@@ -376,6 +310,7 @@
                     axios({
                         method: 'GET',
                         url: "/api/relay/{{ name }}/toggle",
+                        params: {password: this.password}
                     }).then(response => {
                         this.{{ name }} = response.data["state"]
                     })
@@ -462,6 +397,12 @@
             this.loadLocalStorage()
             this.updateRelayValues()
             this.updateChartInterval()
+
+            let self = this
+            axios.get('/api/config.html').then(function (response) {
+                self.configHtml = response.data
+                console.log(self.configHtml)
+            });
         },
         watch: {
             period(value) {

@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Optional
 
 from pydantic import BaseModel, Extra, Field
 from pydantic.fields import Annotated
@@ -27,6 +27,7 @@ DevicesUnion = Annotated[
 
 class RaspcuterieConfigSchema(BaseModel):
     name: str
+    password: Optional[str]
     devices: List[DevicesUnion]
 
     control: Dict[str, ControlGroupSchema]

@@ -1,9 +1,6 @@
 from typing import Dict
 
 from flask import Blueprint, current_app, render_template
-from pygments import highlight
-from pygments.formatters.html import HtmlFormatter
-from pygments.lexers.data import YamlLexer
 
 from raspcuterie.config.schema import RaspcuterieConfigSchema
 from raspcuterie.dashboard.apexcharts import ChartObject, YAxis, Label
@@ -15,10 +12,6 @@ bp = Blueprint("dashboard", __name__, template_folder="./templates")
 
 @bp.route("/")
 def dashboard():
-
-    config = current_app.config["config"]
-    formatter = HtmlFormatter(linenos=True, style="friendly", noclasses=True)
-    config_text = highlight(config, YamlLexer(), formatter)
 
     charts_json: Dict[str, str] = {}
 
@@ -46,9 +39,10 @@ def dashboard():
                         # tickAmount=1,
                         opposite=True,
                         show=False,
-                        min=0,
-                        max=3,
+                        min=-2,
+                        max=1,
                         seriesName=series,
+                        reversed=True,
                     )
                 )
             elif series_obj.type == "integer":
@@ -75,9 +69,9 @@ def dashboard():
 
     return render_template(
         "dashboard.html",
-        config_text=config_text,
         output_devices=OutputDevice.registry,
         input_devices=InputDevice.registry,
         charts=current_app.schema.charts,
         charts_json=charts_json,
+        name=s.name,
     )

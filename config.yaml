@@ -1,4 +1,5 @@
-name: raspcuterie
+name: Raspcuterie
+password: worst
 devices:
   - type: bme280
     name: bme
@@ -50,7 +51,24 @@ charts:
       - refrigerator
 
 control:
-  default:
+  fermenteren_20:
+    expires: 2021-06-14 22:00
+    rules:
+      fan:
+        - rule: "Stop"
+          expression: "math.ceil(date.minute/15) % 2 == 0"
+          action: "off"
+        - rule: "Start"
+          expression: "math.ceil(date.minute/15) % 2 == 1"
+          action: "on"
+      refrigerator:
+        - rule: "Stop cooling"
+          expression: "temperature < 20.0"
+          action: "off"
+        - rule: "Start cooling"
+          expression: "temperature > 20.5"
+          action: "on"
+  drogen:
     rules:
       fan:
         - rule: "Stop"
@@ -68,8 +86,8 @@ control:
           action: "on"
       dehumidifier:
         - rule: "Start"
-          expression: "humidity_avg_3h > 80"
+          expression: "humidity_avg_3h > 90"
           action: "on"
         - rule: "Stop"
-          expression: "humidity_avg_3h < 75"
+          expression: "humidity_avg_3h < 85"
           action: "off"

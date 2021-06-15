@@ -36,6 +36,7 @@ class YAxis(BaseModel):
     opposite: bool
     show: bool
     labels: Optional[Label]
+    reversed: bool = False
 
 
 class DatetimeFormatter(BaseModel):
