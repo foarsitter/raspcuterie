@@ -1,11 +1,14 @@
 from setuptools import find_packages, setup
 
+
 minimal_requirements = [
-    "Flask==1.1.2",
-    "Click==7.1.2",
-    "pyyaml==5.4",
-    "adafruit-circuitpython-dht==3.5.8",
+    "Flask[async]==2.0.2",
+    "Click==8.0.3",
+    "pyyaml==5.4.1",
+    "adafruit-circuitpython-dht==3.7.0",
     "rpi.gpio==0.7.0",
+    "pydantic==1.9.0",
+    "timeout-decorator==0.5.0",
 ]
 
 
