@@ -1,4 +1,5 @@
 name: raspcuterie
+password: test
 devices:
   - name: refrigerator
     timeout: 0
