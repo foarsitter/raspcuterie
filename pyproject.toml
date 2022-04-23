@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "raspcuterie"
-version = "1.0.0-alpha.0"
+version = "1.0.0-alpha.1"
 description = "Charcuterie dashboard and controller for the Raspberry PI"
 authors = ["jelmert <info@jelmert.nl>"]
 license = "MIT"
