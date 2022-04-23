@@ -78,20 +78,20 @@ def find_active_control_group(
     active_control_group_name = None
 
     for key, value in control_groups.items():
-        if active_control_group is None:
-            active_control_group = value
-            active_control_group_name = key
 
         # we have an expiry date in the future
-        if value.expires and value.expires > datetime.now():
-            if (
+        if value.expires is not None and value.expires > datetime.now():
+            if active_control_group is None:
+                active_control_group = value
+                active_control_group_name = key
+            elif (
                 active_control_group.expires is None
-                or active_control_group.expires > value.expires
+                or value.expires < active_control_group.expires
             ):
                 active_control_group = value
 
                 active_control_group_name = key
-        elif value.expires is None:
+        elif value.expires is None and active_control_group is None:
 
             active_control_group = value
 

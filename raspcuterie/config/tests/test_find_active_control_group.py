@@ -19,8 +19,21 @@ def test_find_active_control_group_with_default():
 
     control_groups = dict(
         x=ControlGroupSchema(expires=datetime.now() + timedelta(days=3), rules={}),
-        y=ControlGroupSchema(expires=datetime.now() + timedelta(days=1), rules={}),
+        y=ControlGroupSchema(expires=datetime.now() + timedelta(days=-1), rules={}),
         z=ControlGroupSchema(expires=datetime.now() + timedelta(days=2), rules={}),
+        d=ControlGroupSchema(expires=None, rules={}),
+    )
+
+    assert find_active_control_group(control_groups)[0] == "z"
+
+
+def test_find_active_control_group_with_default_and_all_expired():
+    """All groups are expired so the default group is used"""
+
+    control_groups = dict(
+        x=ControlGroupSchema(expires=datetime.now() + timedelta(days=-3), rules={}),
+        y=ControlGroupSchema(expires=datetime.now() + timedelta(days=-1), rules={}),
+        z=ControlGroupSchema(expires=datetime.now() + timedelta(days=-2), rules={}),
         d=ControlGroupSchema(expires=None, rules={}),
     )
 
