@@ -42,13 +42,13 @@ def am2302(app):
 
 def test_relay_toggle(client, relay, app):
 
-    response = client.post("api/relay/temp/toggle")
+    response = client.post("api/relay/temp/toggle?password=test")
+
+    assert response.status_code == 200
 
     data = response.get_json()
 
-    with app.app_context():
-
-        assert data["state"] == relay.value() is True
+    assert data["state"] == relay.value() is True
 
 
 def test_relay_current(client, relay, app):
