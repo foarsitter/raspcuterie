@@ -1,6 +1,5 @@
 from setuptools import find_packages, setup
 
-
 minimal_requirements = [
     "Flask[async]==2.0.2",
     "Click==8.0.3",
@@ -9,6 +8,9 @@ minimal_requirements = [
     "rpi.gpio==0.7.0",
     "pydantic==1.9.0",
     "timeout-decorator==0.5.0",
+    "pygments",
+    "rpi.bme280",
+    "smbus2",
 ]
 
 
