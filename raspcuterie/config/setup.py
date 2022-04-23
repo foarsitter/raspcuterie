@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from logging import Logger
 from pathlib import Path
@@ -6,7 +7,7 @@ from typing import Dict, Optional, Tuple
 import yaml
 
 from raspcuterie import base_path
-from raspcuterie.config.schema import RaspcuterieConfigSchema, ControlGroupSchema
+from raspcuterie.config.schema import ControlGroupSchema, RaspcuterieConfigSchema
 from raspcuterie.devices import InputDevice
 from raspcuterie.devices.control import ControlRule
 from raspcuterie.devices.output.relay import OutputDevice
@@ -113,6 +114,10 @@ def get_config_file(app) -> Path:
 
 
 def setup(app):
+
+    if app.debug or app.testing:
+        app.logger.setLevel(logging.DEBUG)
+
     file = get_config_file(app)
     config = read_config_as_yaml(file)
 
