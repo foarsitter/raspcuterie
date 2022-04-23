@@ -5,14 +5,6 @@ devices:
     name: bme
     gpio: 4
     prefix: "bme"
-  - type: AM2302
-    name: "am1"
-    prefix: "am1"
-    gpio: 4
-  - type: AM2302
-    prefix: "am2"
-    name: "am2"
-    gpio: 23
   - type: relay
     name: refrigerator
     gpio: 26
@@ -37,22 +29,18 @@ charts:
   humidity:
     title: "Luchtvochtigheid %"
     series:
-      - am1_humidity
-      - am2_humidity
       - bme_humidity
       - dehumidifier
       - fan
   temperature:
     title: Temperatuur
     series:
-      - am2_temperature
-      - am1_temperature
       - bme_temperature
       - refrigerator
 
 control:
   fermenteren_20:
-    expires: 2021-06-14 22:00
+    expires: 2022-04-26 15:00
     rules:
       fan:
         - rule: "Stop"
