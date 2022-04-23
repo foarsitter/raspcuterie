@@ -79,6 +79,10 @@ def find_active_control_group(
 
     for key, value in control_groups.items():
 
+        # shortcut
+        if len(control_groups) == 1:
+            return key, value
+
         # we have an expiry date in the future
         if value.expires is not None and value.expires > datetime.now():
             if active_control_group is None:
