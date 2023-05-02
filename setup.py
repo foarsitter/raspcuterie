@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 minimal_requirements = [
-    "Flask==1.1.2",
+    "Flask==2.2.5",
     "Click==7.1.2",
     "pyyaml==5.4",
     "adafruit-circuitpython-dht==3.5.1",
